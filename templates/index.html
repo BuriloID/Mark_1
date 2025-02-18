@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title%}
+CARDIGA NICK
+{% endblock %}
+{% block content %}
+<div class="slider">
+    <div class="slides">
+        <input type="radio" name="r" id="r1" checked>
+        <input type="radio" name="r" id="r2">
+        <input type="radio" name="r" id="r3">
+        <input type="radio" name="r" id="r4">
+
+        <div class="slide s1"><img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="law"></div>
+        <div class="slide"><img src="{{url_for('static', filename='img/slide2.jpg')}}" alt="law"></div>
+        <div class="slide"><img src="{{url_for('static', filename='img/slide3.jpg')}}" alt="law"></div>
+        <div class="slide"><img src="{{url_for('static', filename='img/slide4.jpg')}}" alt="law"></div>
+
+        <div class="navigation">
+            <label for="r1" class="bar"></label>
+            <label for="r2" class="bar"></label>
+            <label for="r3" class="bar"></label>
+            <label for="r4" class="bar"></label>
+        </div>
+
+    </div>
+</div>
+<div class="image__url">
+    <a href="{{ url_for('catalog', category='women') }}" class="picture_url wide">
+        <img src="{{url_for('static', filename='img/women.jpg')}}" alt="Женщины">
+        <div class="image-text">Женщинам</div>
+    </a>
+    <a href="{{ url_for('catalog', category='men') }}" class="picture_url">
+        <img src="{{url_for('static', filename='img/men.jpg')}}" alt="Мужчины">
+        <div class="image-text">Мужчинам</div>
+    </a>
+    <a href="{{ url_for('catalog', category='acs') }}" class="picture_url">
+        <img src="{{url_for('static', filename='img/new.jpg')}}" alt="Аксессуары">
+        <div class="image-text">Аксессуары</div>
+    </a>
+    <a href="{{url_for('catalog')}}" class="picture_url">
+        <img src="{{url_for('static', filename='img/sale.jpg')}}" alt="Распродажа">
+        <div class="image-text">Распродажа</div>
+    </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Каталог
+{% endblock %}
+{%block menu %}
+    <div class="wrapper">
+        <div class="menu">
+            <i class="fa fa-bars fa-2x burger"></i>
+            <nav class="menu_list">
+                <ul>
+                <li><a href="{{ url_for('catalog', category='women') }}" >Женщины</a>
+                    <ul>
+                        <li><a href="#">Джемперы</a></li>
+                        <li><a href="#">Свитеры</a></li>
+                        <li><a href="#">Кардиганы</a></li>
+                        <li><a href="#">Костюмы</a></li>
+                        <li><a href="#">Юбки</a></li>
+                        <li><a href="#">Футболки и топы</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('catalog', category='men') }}" >Мужчины</a>
+                     <ul>
+                        <li><a href="#">Джемперы</a></li>
+                         <li><a href="#">Свитеры</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('catalog', category='acs') }}" >Аксесуары</a>
+                    <ul>
+                        <li><a href="#">Шарфы</a></li>
+                        <li><a href="#">Шапки</a></li>
+                        <li><a href="#">Палантины</a></li>
+                    </ul>
+                </li>
+                <li><a href="" >Распродажа</a>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+<div class="catalog">
+        {% for product in products %}
+            <div class="product">
+                <!-- Проверяем, если есть изображение -->
+                {% if product.image_url %}
+                    <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
+                    <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
+                {% else %}
+                    <img src="https://via.placeholder.com/150"
+                    alt="{{ product.name }}">  <!-- Заглушка изображения, если оно не задано -->
+                {% endif %}
+                <h2>{{ product.description }}</h2>
+                <p>{{ product.name }}</p>
+                <p><strong>{{ product.price }} ₽</strong></p>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                <button class="btn">Перейти</button>
+                </a>  <!-- Кнопка для перехода на страницу товара -->
+            </div>
+        {% else %}
+            <p>Товары не найдены</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

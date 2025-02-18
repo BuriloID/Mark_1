@@ -1,0 +1,615 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:wght@586&display=swap');
+body {
+    background-color: whitesmoke;
+}
+/* HEADER */
+header{
+    display: flex;
+    position: relative;
+    align-items: center; /* Выравниваем элементы по вертикали */
+    justify-content: space-between; /* Логотип слева, меню по центру */
+    top: 0;
+    padding: 20px;
+    z-index: 1000;
+    background: white;
+    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+}
+.content{
+    transition: .5s;
+    position: relative;
+}
+.content_active{
+    transform: translateX(10%);
+}
+.floter {
+    background-color: #DCDCDC;
+    height: 200px;
+    transition: .5s;
+    position: sticky;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+.floter_active {
+    transform: translateX(10%);
+}
+.hor_menu{
+     flex-grow: 1; /* Меню занимает оставшееся пространство */
+    display: flex;
+    justify-content: center; /* Центрируем меню */
+}
+.hor_menu ul {
+    padding-left: 0;
+    margin: 0;
+}
+.hor_menu ul li {
+    justify-content: left;
+    font-size: 30px;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    list-style: none;
+    position: relative;
+    float: left;
+    display: block;
+    width: 180px; /* Фиксированная ширина для ровных блоков */
+    text-align: center;
+    box-sizing: border-box;
+}
+.hor_menu ul li a {
+    text-decoration: none;
+    padding: 12px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Делаем ссылку равной li */
+    height: 100%;
+    transition: .5s;
+}
+.hor_menu ul li a:hover {
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+/* Подменю */
+.hor_menu ul li ul {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: white;
+    display: none;
+    width: 180px; /* Делаем ширину такой же, как у li */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+.hor_menu ul li ul li {
+    font-size: 20px;
+    width: 100%; /* Делаем блок подменю на всю ширину */
+}
+
+.hor_menu ul li ul li a {
+    display: block; /* Делаем ссылку блочной */
+    width: 100%; /* Растягиваем на всю ширину блока */
+    padding: 10px 15px; /* Добавляем отступы для удобства */
+    text-align: left; /* Выравниваем текст */
+}
+
+.hor_menu ul li ul li a:hover {
+    background-color: #FFFAFA; /* Подсветка при наведении */
+}
+.hor_menu ul li ul li ul {
+    column-count: 2; /* Делим список на 2 колонки */
+    border-bottom-right-radius:10px ;
+    border-top-right-radius:10px ;
+    position: absolute;
+    left: 100%;
+    top: 0; /* Выравниваем по строке */
+    background-color: #FFFAFA;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: none;
+    width: 400px; /* Делаем ширину такой же, как у основного меню */
+    box-sizing: border-box;
+}
+.hor_menu ul li ul li:last-child {
+    border-bottom: none;
+}
+/* Показываем подменю при наведении */
+.hor_menu ul li:hover > ul {
+    display: block;
+}
+.header__img{
+    position: relative;
+    margin: 5px;
+    height: 90px;
+    width: 90px;
+}
+/*Иконки социальных сетей */
+.social{
+    font-family: 'FontAwesome', sans-serif;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+}
+.social__icon{
+    text-decoration: none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width: 45px;
+    height: 45px;
+    margin: 15px;
+    background-color: #f2f2f2;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px #00000080;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow:hidden;
+}
+
+.social__icon i {
+    font-size: 26px;
+    color: #67798e;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.social__icon:after{
+    content: "";
+    width: 70px;
+    height: 70px;
+    position:absolute;
+    transform: translate(0, 70px);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.social__icon.instagram:after{
+    background-color: #C71585;
+}
+.social__icon.vk:after{
+    background-color: #3b5998;
+}
+.social__icon.whatsapp:after{
+    background-color: #32CD32;
+}
+.social__icon.telegram:after{
+    background-color: #00acee;
+}
+
+.social__icon:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 0px 15px #00000080;
+}
+
+.social__icon:hover i{
+    color: #fff;
+}
+
+.social__icon:hover:after{
+    transform: translate(0);
+}
+/* Слайдер */
+.slider{
+    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+}
+.navigation {
+    z-index: 300;
+    position: absolute;
+    top: 550px;
+    left: 50%;
+    transform:translateX(-50%);
+    display: flex;
+}
+.bar {
+    height: 12px;
+    width: 12px;
+    margin: 6px;
+    cursor: pointer;
+    background-color: #dddddd;
+    opacity: .5;
+    border-radius: 10px;
+    transition:all .4s ease;
+}
+.bar:hover{
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+input[name="r"] {
+    position: absolute;
+    visibility: hidden;
+}
+.slides {
+    width: 400%;
+    height: 100%;
+    display: flex;
+}
+.slide {
+    width: 25%;
+    transition: all .6s ease;
+}
+.slide img {
+    object-fit:cover;
+    width: 100%;
+    height: 100%;
+}
+#r1:checked ~ .s1 {
+    margin-left: 0;
+}
+#r2:checked ~ .s1 {
+    margin-left: -25%;
+}
+#r3:checked ~ .s1 {
+    margin-left: -50%;
+}
+#r4:checked ~ .s1 {
+    margin-left: -75%;
+}
+.image__url {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение */
+    flex-wrap: wrap; /* Перенос на новую строку */
+    align-items: stretch; /* Растягивает элементы на одинаковую высоту */
+}
+.picture_url {
+    position: relative;
+    display: flex;
+    max-width: 300px; /* Ограничение ширины */
+    width: 100%;
+    text-align: center;
+}
+.picture_url.wide {
+    max-width: 450px; /* "Женщины" будет шире */
+}
+.picture_url img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 650px; /* Все изображения одной высоты */
+    object-fit: cover; /* Обрезка без искажений */
+     border: 2px solid #ccc;
+}
+.image-text {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: black;
+    font-size: 30px;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 800;
+    padding: 5px 10px;
+    text-align: right;
+}
+.picture_url:hover img{
+    position: relative;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    transition:all .4s ease;
+    opacity: .6;
+}
+
+/* БОКОВОЕ МЕНЮ */
+
+
+.menu {
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    z-index: 900;
+    left: 0;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    background-color: #DCDCDC;
+    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+    transition: .5s;
+    transform: translateX(-100%);
+}
+.menu_active{
+    transform: translateX(0%);
+}
+.menu_list {
+    top: 170px;
+    right: 15px;
+    list-style: none;
+    position: relative;
+    display: block;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.menu_list ul li{
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    width: 150px;
+    font-size: 20px;
+    font-family: "Raleway", serif;
+    color: black;
+}
+.menu_list ul li a{
+    display: block;
+    font-size: 20px;
+    font-family: "Raleway", serif;
+    color: black;
+    padding: 15px;
+    text-decoration: none;
+    transition: .5s;
+}
+.menu_list ul li a:hover{
+    box-shadow: 0px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+.menu_list ul li ul{
+    padding-left: 0;
+    position: absolute;
+    left: 150px;
+    top: 0;
+    display: none;
+    width: auto;
+    background-color: #DCDCDC;
+    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+}
+
+.menu_list ul li:hover ul{
+    display: block;
+}
+.menu_list ul li ul li a{
+    font-size: 17px;
+    white-space: nowrap;
+    text-transform: none;
+}
+.menu_list ul li ul li a:hover{
+    background-color: #D3D3D3;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+.burger {
+    position: fixed;
+    top: 140px;
+    left: 155px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.burger_active {
+    transform: rotate(90deg);
+}
+/* Стили каталога */
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-images {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.product-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    font-size: 1em;
+    color: #555;
+}
+
+/* Контейнер для карточек */
+.catalog {
+    display: flex;            /* Включаем Flexbox */
+    flex-wrap: wrap;          /* Если карточки не помещаются в одну строку, они переносятся */
+    justify-content: space-between;  /* Равномерно распределяем карточки по горизонтали */
+    gap: 20px;                /* Интервал между карточками */
+    margin: 45px 20px 0 20px;           /* Отступы от краёв (справа и слева) */
+}
+.product {
+    position: relative;
+    overflow: hidden;
+}
+
+.product .main-img,
+.product .hover-img {
+    width: 100%;
+    height: 75%;
+    transition: opacity 0.5s ease;
+}
+
+.product .hover-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+.product:hover .main-img {
+    opacity: 0;
+}
+.product:hover .hover-img {
+    opacity: 1;
+}
+/* Стили для карточки товара */
+.product {
+    background-color: #fff;  /* Белый фон для карточки товара */
+    border-radius: 15px;      /* Закругленные углы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Легкая тень для карточки */
+    overflow: hidden;         /* Чтобы изображение не выходило за границы карточки */
+    width: 350px;             /* Ширина карточки */
+    height: 550px;            /* Высота карточки */
+    text-align: center;       /* Текст по центру */
+    position: relative;       /* Позиционирование */
+    transition: transform 0.5s ease, box-shadow 0.5s ease;  /* Плавный эффект при наведении */
+}
+
+/* При наведении увеличиваем карточку и меняем тень */
+.product:hover {
+    transform: scale(1.05);  /* Карточка увеличивается при наведении */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);  /* Усиленная тень при наведении */
+}
+
+/* Стили для изображения товара */
+.product img {
+    width: 100%;  /* Изображение на всю ширину карточки */
+    height: 75%;  /* Фиксированная высота для изображения */
+    object-fit: cover;  /* Масштабируем изображение, чтобы оно заполнило контейнер */
+    transition: opacity 0.3s ease;  /* Плавный переход для смены изображения */
+}
+
+/* Стили для второго изображения при наведении */
+.product:hover img {
+    opacity: 0;
+}
+
+/* Всплывающее изображение при наведении */
+.product:hover .hover-img {
+    opacity: 1;  /* Показывает второе изображение */
+}
+
+/* Стили для названия товара */
+.product h2 {
+    font-family: "Raleway", serif;
+    font-size: 1.2em;  /* Уменьшаем размер шрифта для названия */
+    font-weight: bold;  /* Жирное начертание */
+    margin: 5px 0 8px 0;  /* Отступы сверху и снизу */
+    color: #333;  /* Темный цвет для текста */
+}
+
+/* Стили для описания товара */
+.product p {
+    font-family: "Raleway", serif;
+    font-size: 0.9em;  /* Немного уменьшаем шрифт для описания */
+    color: #666;  /* Светло-серый цвет текста */
+    line-height: 1.2;  /* Межстрочный интервал */
+    margin: 0 5px 5px 5px;  /* Отступы по бокам и снизу */
+}
+
+/* Стили для цены товара */
+.product strong {
+    font-size: 1.2em;  /* Уменьшаем шрифт для цены */
+    color: black;  /* Синий цвет для выделения цены */
+    display: block;  /* Цена на новой строке */
+    margin-top: 5px;  /* Отступ сверху */
+}
+
+/* Стили для кнопки "Перейти" */
+.product .btn {
+    background-color: #555555;
+    color: white;  /* Белый текст */
+    border: none;
+    padding: 10px 20px;  /* Отступы внутри кнопки */
+    border-radius: 5px;  /* Скругленные углы */
+    cursor: pointer;  /* Указатель при наведении */
+    font-size: 1em;  /* Размер шрифта */
+    margin-top: 5px;  /* Отступ сверху */
+    transition: background-color 0.3s ease;  /* Плавное изменение фона */
+}
+
+.product .btn:hover {
+    background-color: #67798e;  /* Темнее фон при наведении */
+}
+/* Стили для деталях о товаре*/
+.product-container {
+    gap: 20px;
+    display: flex;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}
+.product-image img {
+    max-width: 500px;
+}
+.product-image {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.thumbnails img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.thumbnails img:hover {
+    transform: scale(1.1);
+}
+.product-image button {
+    background: none;
+    border: none;
+    color: #dddddd;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transition: transform 0.5s ease, color 0.5s ease;
+    transform: translateY(-50%);
+    padding: 10px;
+}
+.product-image .fa-chevron-left {
+    left: 0px; /* Располагаем слева */
+}
+.product-image .fa-chevron-right {
+    right: 0px; /* Располагаем справа */
+}
+.product-image button:hover {
+    color: #86989B;
+    transform: translateY(-50%) scale(1.35);
+}
+.product-info {
+    font-family: "Raleway", serif;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.product-info h1 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.product-description {
+    font-size: 16px;
+    color: #555;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.buy-button {
+    background: #ff6600;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buy-button:hover {
+    background: #cc5500;
+}
