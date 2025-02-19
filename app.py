@@ -22,6 +22,7 @@ class ProductDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     full_description = db.Column(db.Text, nullable=True)
+    composition = db.Column(db.Text, nullable=True)
     extra_image1 = db.Column(db.String(500), nullable=True)
     extra_image2 = db.Column(db.String(500), nullable=True)
     extra_image3 = db.Column(db.String(500), nullable=True)

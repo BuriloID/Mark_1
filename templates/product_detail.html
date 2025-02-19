@@ -4,6 +4,9 @@
 {% endblock %}
 {% block content %}
     <div class="product-container">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fa fa-arrow-left"></i> Назад
+        </a>
      <div class="thumbnails">
              {% for i in range(1, 7) %}
             {% set image_attr = 'extra_image' ~ i %}
@@ -20,6 +23,17 @@
         <div class="product-info">
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>
+            <div class="size-options">
+                <button>XS</button>
+                <button>S</button>
+                <button>M</button>
+                <button>L</button>
+                <button>XL</button>
+            </div>
+            <h2>Описание</h2>
+            <p class="full-description">{{details.full_description }}</p>
+            <h2>Состав</h2>
+            <p class="full-description"></p>
             <strong class="product-price">{{ product.price }} ₽</strong>
             <button class="buy-button">Купить</button>
         </div>

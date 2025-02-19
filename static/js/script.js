@@ -1,36 +1,53 @@
-document.querySelector('.fa-bars').addEventListener("click", function(e) {
-  e.preventDefault();
-  document.querySelector('.menu').classList.toggle('menu_active');
-  document.querySelector('.content').classList.toggle('content_active');
-})
-document.addEventListener("DOMContentLoaded", function() {
-    const burger = document.querySelector(".burger");
-    burger.addEventListener("click", function() {
-        this.classList.toggle("burger_active");
-    });
-});
 document.addEventListener("DOMContentLoaded", function () {
+    // Гамбургер меню
+    const burger = document.querySelector(".burger");
+    if (burger) {
+        burger.addEventListener("click", function () {
+            this.classList.toggle("burger_active");
+        });
+    }
+    // Обработка кнопки .fa-bars для меню
+    const faBars = document.querySelector('.fa-bars');
+    if (faBars) {
+        faBars.addEventListener("click", function (e) {
+            e.preventDefault();
+            const menu = document.querySelector('.menu');
+            const content = document.querySelector('.content');
+            if (menu) menu.classList.toggle('menu_active');
+            if (content) content.classList.toggle('content_active');
+        });
+    }
+    // Обработка подменю и колонок в .hor_menu
     document.querySelectorAll(".hor_menu ul li ul li ul").forEach(ul => {
-        let items = ul.children.length; // Количество элементов в подменю
+        let items = ul.children.length;
         // Устанавливаем 2 колонки, только если количество элементов больше 4 и оно чётное
         if (items > 4 && items % 2 === 0) {
-            ul.style.columnCount = "2"; // Делаем 2 колонки
-            ul.style.width = "400px"; // Ширина автоматическая для подменю
-            ul.style.backgroundColor = "#FFFAFA"; // Цвет фона
-            ul.style.border = "1px solid rgba(0, 0, 0, 0.1)"; // Граница
-            ul.style.boxSizing = "border-box"; // Учитываем padding и border
+            ul.style.columnCount = "2";
+            ul.style.width = "400px";
+            ul.style.backgroundColor = "#FFFAFA";
+            ul.style.border = "1px solid rgba(0, 0, 0, 0.1)";
+            ul.style.boxSizing = "border-box";
         } else {
-            // Если элементов 3 или меньше, то убираем колонки
-            ul.style.columnCount = "1"; // Одна колонка
-            ul.style.columnGap = "0"; // Нет зазоров
-            ul.style.width = "400px"; // Фиксированная ширина для подменю
+            ul.style.columnCount = "1";
+            ul.style.columnGap = "0";
+            ul.style.width = "400px";
         }
-        // Убираем маргины и паддинги у всех дочерних элементов
         Array.from(ul.children).forEach(li => {
-            li.style.margin = "0"; // Убираем маргин
-            li.style.padding = "0"; // Убираем паддинг
+            li.style.margin = "0";
+            li.style.padding = "0";
         });
     });
+    // Функция смены главного изображения
+    function changeMainImage(newSrc) {
+        let mainImage = document.getElementById("mainImage");
+        if (mainImage && mainImage.src !== newSrc) {
+            mainImage.classList.add("fade-out"); // Начинаем анимацию исчезновения
+            setTimeout(() => {
+                mainImage.src = newSrc;
+                mainImage.classList.remove("fade-out"); // Возвращаем нормальное состояние
+            }, 200); // Время должно совпадать с CSS-анимацией
+        }
+    }
 });
 function changeMainImage(newSrc) {
     let mainImage = document.getElementById("mainImage");
