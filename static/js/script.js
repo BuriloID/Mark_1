@@ -33,8 +33,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 function changeMainImage(newSrc) {
-    document.getElementById("mainImage").src = newSrc;
+    let mainImage = document.getElementById("mainImage");
+
+    if (mainImage.src !== newSrc) {
+        mainImage.classList.add("fade-out"); // Начинаем анимацию исчезновения
+        setTimeout(() => {
+            mainImage.src = newSrc;
+            mainImage.classList.remove("fade-out"); // Возвращаем нормальное состояние
+        }, 200); // Время должно совпадать с CSS-анимацией
+    }
 }
+
 
 
 

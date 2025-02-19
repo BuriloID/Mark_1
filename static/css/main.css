@@ -512,6 +512,7 @@ input[name="r"] {
 }
 /* Стили для деталях о товаре*/
 .product-container {
+    font-family: "Cormorant Garamond", serif;
     gap: 20px;
     display: flex;
     background: white;
@@ -521,14 +522,25 @@ input[name="r"] {
     max-height: 100%;
     margin: auto;
 }
-.product-image img {
-    max-width: 500px;
-}
 .product-image {
+    width: 450px; /* Фиксированная ширина */
+    height: 800px; /* Фиксированная высота */
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden; /* Обрезка лишнего */
+}
+
+.product-image img {
+    width: 100%; /* Заполняет всю ширину */
+    height: 100%; /* Заполняет всю высоту */
+    object-fit: cover; /* Обрезка, чтобы картинка не искажалась */
+    transition: opacity 0.5s ease-in-out; /* Плавная смена */
+    opacity: 1;
+}
+.product-image img.fade-out {
+    opacity: 0; /* Исчезновение перед сменой */
 }
 .thumbnails {
     display: flex;
@@ -571,7 +583,6 @@ input[name="r"] {
     transform: translateY(-50%) scale(1.35);
 }
 .product-info {
-    font-family: "Raleway", serif;
     margin-left: 20px;
     display: flex;
     flex-direction: column;
@@ -580,16 +591,17 @@ input[name="r"] {
 
 .product-info h1 {
     margin-top: 0;
-    font-size: 24px;
+    font-size: 34px;
 }
 
 .product-description {
-    font-size: 16px;
+    font-size: 26px;
     color: #555;
 }
 
 .product-price {
-    font-size: 20px;
+    font-family: "Raleway", serif;
+    font-size: 30px;
     font-weight: bold;
     margin: 10px 0;
 }
