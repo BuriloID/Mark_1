@@ -5,9 +5,29 @@
 {% block content %}
     <div class="product-container">
      <div class="thumbnails">
-            <img class="thumbnail" src="{{ url_for('static', filename=product.image_url_back) }}" alt="Thumbnail 1">
-            <img class="thumbnail" src="{{ url_for('static', filename=product.image_url) }}" alt="Thumbnail 2">
-            <img class="thumbnail" src="{{ url_for('static', filename=product.image_url) }}" alt="Thumbnail 3">
+            {% if details.extra_image1 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image1) }}" alt="Thumbnail 1">
+    {% endif %}
+
+    {% if details.extra_image2 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image2) }}" alt="Thumbnail 2">
+    {% endif %}
+
+    {% if details.extra_image3 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image3) }}" alt="Thumbnail 3">
+    {% endif %}
+
+    {% if details.extra_image4 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image4) }}" alt="Thumbnail 4">
+    {% endif %}
+
+    {% if details.extra_image5 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image5) }}" alt="Thumbnail 5">
+    {% endif %}
+
+    {% if details.extra_image6 %}
+        <img class="thumbnail" src="{{ url_for('static', filename=details.extra_image6) }}" alt="Thumbnail 6">
+    {% endif %}
      </div>
         <div class="product-image">
             <button class="fa fa-chevron-left" onclick="prevImage()"></button>

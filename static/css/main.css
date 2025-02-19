@@ -90,9 +90,6 @@ header{
     text-align: left; /* Выравниваем текст */
 }
 
-.hor_menu ul li ul li a:hover {
-    background-color: #FFFAFA; /* Подсветка при наведении */
-}
 .hor_menu ul li ul li ul {
     column-count: 2; /* Делим список на 2 колонки */
     border-bottom-right-radius:10px ;
@@ -288,9 +285,8 @@ input[name="r"] {
 }
 
 /* БОКОВОЕ МЕНЮ */
-
-
 .menu {
+    border-bottom-right-radius: 20px;
     height: 100vh;
     position: absolute;
     top: 0;
@@ -308,6 +304,7 @@ input[name="r"] {
     transform: translateX(0%);
 }
 .menu_list {
+    height: 70px;
     top: 170px;
     right: 15px;
     list-style: none;
@@ -317,18 +314,16 @@ input[name="r"] {
     justify-content: space-around;
 }
 .menu_list ul li{
+    font-family: "Cormorant Garamond", serif;
     display: block;
     margin: 0 auto;
     position: relative;
     width: 150px;
-    font-size: 20px;
-    font-family: "Raleway", serif;
+    font-size: 25px;
     color: black;
 }
 .menu_list ul li a{
     display: block;
-    font-size: 20px;
-    font-family: "Raleway", serif;
     color: black;
     padding: 15px;
     text-decoration: none;
@@ -352,7 +347,6 @@ input[name="r"] {
     display: block;
 }
 .menu_list ul li ul li a{
-    font-size: 17px;
     white-space: nowrap;
     text-transform: none;
 }
@@ -475,7 +469,7 @@ input[name="r"] {
 
 /* Стили для названия товара */
 .product h2 {
-    font-family: "Raleway", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: 1.2em;  /* Уменьшаем размер шрифта для названия */
     font-weight: bold;  /* Жирное начертание */
     margin: 5px 0 8px 0;  /* Отступы сверху и снизу */
@@ -484,7 +478,7 @@ input[name="r"] {
 
 /* Стили для описания товара */
 .product p {
-    font-family: "Raleway", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: 0.9em;  /* Немного уменьшаем шрифт для описания */
     color: #666;  /* Светло-серый цвет текста */
     line-height: 1.2;  /* Межстрочный интервал */
@@ -493,6 +487,7 @@ input[name="r"] {
 
 /* Стили для цены товара */
 .product strong {
+    font-family: "Raleway", serif;
     font-size: 1.2em;  /* Уменьшаем шрифт для цены */
     color: black;  /* Синий цвет для выделения цены */
     display: block;  /* Цена на новой строке */
