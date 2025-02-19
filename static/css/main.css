@@ -402,7 +402,7 @@ input[name="r"] {
 .catalog {
     display: flex;            /* Включаем Flexbox */
     flex-wrap: wrap;          /* Если карточки не помещаются в одну строку, они переносятся */
-    justify-content: space-between;  /* Равномерно распределяем карточки по горизонтали */
+    justify-content: center;
     gap: 20px;                /* Интервал между карточками */
     margin: 45px 20px 0 20px;           /* Отступы от краёв (справа и слева) */
 }
