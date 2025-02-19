@@ -6,11 +6,11 @@
     <div class="product-container">
      <div class="thumbnails">
              {% for i in range(1, 7) %}
-        {% set image_attr = 'extra_image' ~ i %}
-        {% if details[image_attr] %}
+            {% set image_attr = 'extra_image' ~ i %}
+            {% if details[image_attr] %}
             <img class="thumbnail" src="{{ url_for('static', filename=details[image_attr]) }}" alt="Thumbnail {{ i }}" onclick="changeMainImage(this.src)">
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+            {% endfor %}
      </div>
         <div class="product-image">
             <button class="fa fa-chevron-left" onclick="prevImage()"></button>
