@@ -42,12 +42,15 @@ def about():
     return render_template('about.html')
 @app.route('/catalog')
 def catalog():
+    name = request.args.get('name')
     category = request.args.get('category')  # Получаем категорию из параметра запроса
+    query = Product.query  # Начинаем с базового запроса
     if category:
-        products = Product.query.filter_by(category=category).all()  # Фильтруем по категории
-    else:
-        products = Product.query.all()  # Показываем все товары, если категории нет
-    return render_template('catalog.html', products=products, selected_category=category)
+        query = query.filter_by(category=category)  # Фильтруем по категории
+    if name:
+        query = query.filter_by(name=name)  # Фильтруем по названию товара
+    products = query.all()  # Выполняем запрос
+    return render_template('catalog.html', products=products, selected_category=category, selected_name=name)
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     product = Product.query.get_or_404(product_id)
