@@ -1,9 +1,10 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 # Настройки для базы данных
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///product.db'  # Путь к базе данных
+app.config['SECRET_KEY'] = 'supersecretkey'  # Ключ для работы сессий
 
 db = SQLAlchemy(app)
 class Product(db.Model):
@@ -37,7 +38,6 @@ class ProductDetails(db.Model):
 @app.route('/')
 def index():
     return render_template('index.html')
-
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -63,6 +63,33 @@ def new():
 @app.route('/client')
 def client():
     return render_template('client.html')
+@app.route('/cart')
+def cart():
+    cart_items = session.get('cart', {})
+    total_price = sum(item['price'] * item['quantity'] for item in cart_items.values())
+    return render_template('cart.html', cart=cart_items, total_price=total_price)
+@app.route('/add_to_cart/<int:product_id>')
+def add_to_cart(product_id):
+    product = Product.query.get_or_404(product_id)
+    cart = session.get('cart', {})
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += 1
+    else:
+        cart[str(product_id)] = {
+            'name': product.name,
+            'price': product.price,
+            'quantity': 1,
+            'image_url': product.image_url
+        }
+    session['cart'] = cart
+    return redirect(url_for('cart'))
+@app.route('/remove_from_cart/<int:product_id>')
+def remove_from_cart(product_id):
+    cart = session.get('cart', {})
+    if str(product_id) in cart:
+        del cart[str(product_id)]
+    session['cart'] = cart
+    return redirect(url_for('cart'))
 
 if __name__ == "__main__":
     with app.app_context():

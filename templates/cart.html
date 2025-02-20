@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина</title>
+</head>
+<body>
+    <h1>Ваша корзина</h1>
+    {% if cart %}
+        <ul>
+            {% for product_id, item in cart.items() %}
+                <li>
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" width="50">
+                    {{ item.name }} - {{ item.price }} ₽ x {{ item.quantity }}
+                    <a href="{{ url_for('remove_from_cart', product_id=product_id) }}">Удалить</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <p><strong>Итого: {{ total_price }} ₽</strong></p>
+    {% else %}
+        <p>Корзина пуста</p>
+    {% endif %}
+    <a href="/">Продолжить покупки</a>
+</body>
+</html>
