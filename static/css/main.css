@@ -644,6 +644,7 @@ input[name="r"] {
     margin-top: 20px;
 }
 .full-description{
+    font-size: 19px;
     max-width: 600px;
     word-wrap: break-word;
 }
