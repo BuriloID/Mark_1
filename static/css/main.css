@@ -707,7 +707,6 @@ input[name="r"] {
     font-size: 36px;
     font-weight: bold; /* Сделаем текст жирным */
 }
-
 /* Стили для текста в <p> */
 .block_dir p {
     word-wrap: break-word; /* Перенос длинных слов */
@@ -718,7 +717,21 @@ input[name="r"] {
     margin-top: 15px; /* Отступ между заголовком и абзацем */
     max-width: 100%; /* Ограничиваем ширину, чтобы текст переносился */
 }
-
+.footer-links {
+    font-family: "Cormorant Garamond", serif;
+    display: flex;
+    gap: 50px; /* Отступ между ссылками */
+    padding-bottom: 20px;
+}
+.footer-link {
+    text-decoration: none;
+    color: #777;
+    font-size: 26px;
+    transition: color 0.3s ease;
+}
+.footer-link:hover {
+    color: #333; /* Темнее при наведении */
+}
 
 
 
