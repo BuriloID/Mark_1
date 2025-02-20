@@ -648,7 +648,6 @@ input[name="r"] {
     word-wrap: break-word;
 }
 /* Стили для кнопки "Назад" */
-/* Стили для кнопки "Назад" */
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -670,6 +669,56 @@ input[name="r"] {
     transform: scale(1.1); /* Скалируем элемент на 10% при наведении */
     color: black; /* Цвет текста при наведении */
 }
+/* Общие стили для контейнера */
+.directory {
+    margin: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.block_dir {
+    font-family: "Cormorant Garamond", serif;
+    max-height: 33vh;
+    display: flex;
+    flex-direction: column; /* Элементы располагаются вертикально */
+    align-items: flex-start; /* Выравнивание по левому краю */
+    font-size: 18px;
+    flex: 1;
+    min-width: 250px;
+}
+
+/* Контейнер для иконки и заголовка */
+.block_dir .title {
+    display: flex;
+    align-items: center; /* Выравниваем иконку и заголовок по центру */
+    gap: 10px; /* Отступ между иконкой и заголовком */
+}
+
+/* Стили для иконок */
+.block_dir i {
+    margin-right: 10px;
+    font-size: 36px;
+}
+
+/* Стили для текста в заголовке */
+.block_dir span {
+    font-size: 36px;
+    font-weight: bold; /* Сделаем текст жирным */
+}
+
+/* Стили для текста в <p> */
+.block_dir p {
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow-wrap: break-word; /* Гарантированный перенос слов */
+    white-space: normal; /* Позволяет тексту переноситься */
+    font-size: 24px;
+    color: #777;
+    margin-top: 15px; /* Отступ между заголовком и абзацем */
+    max-width: 100%; /* Ограничиваем ширину, чтобы текст переносился */
+}
+
 
 
 
