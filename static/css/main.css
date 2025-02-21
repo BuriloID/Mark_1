@@ -617,6 +617,11 @@ input[name="r"] {
     background: black;
     color: white;
 }
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
 .buy-button {
     max-width: 200px;
     background: black;
@@ -733,6 +738,14 @@ input[name="r"] {
 .footer-link:hover {
     color: #333; /* Темнее при наведении */
 }
-
-
+.cart-icon{
+    font-size: 30px;
+    margin-right: 40px;
+    color: #555555;
+    transition: all 0.5s ease;
+}
+.cart-icon:hover{
+   color: black;
+   transform: scale(1.1);
+}
 

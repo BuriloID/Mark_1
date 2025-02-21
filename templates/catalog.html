@@ -54,9 +54,6 @@
     <a href="{{ url_for('product_detail', product_id=product.id) }}">
         <button class="btn">Перейти</button>
     </a>
-    <a href="{{ url_for('add_to_cart', product_id=product.id) }}">
-        <button class="btn">Добавить в корзину</button>
-    </a>
     </div>
         {% else %}
             <p>Товары не найдены</p>

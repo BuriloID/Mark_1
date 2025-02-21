@@ -35,7 +35,12 @@
             <h2>Состав</h2>
             <p class="full-description"></p>
             <strong class="product-price">{{ product.price }} ₽</strong>
+            <div class="btn-group">
             <button class="buy-button">Купить</button>
+            <a href="{{ url_for('add_to_cart', product_id=product.id) }}">
+                <button class="buy-button">Добавить в корзину</button>
+            </a>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -6,12 +6,15 @@
     <title>Корзина</title>
 </head>
 <body>
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fa fa-arrow-left"></i> Назад
+        </a>
     <h1>Ваша корзина</h1>
     {% if cart %}
         <ul>
             {% for product_id, item in cart.items() %}
                 <li>
-                    <img src="{{ item.image_url }}" alt="{{ item.name }}" width="50">
+                    <img src="{{url_for('static', filename=item.image_url)}}" alt="{{ item.name }}" width="50">
                     {{ item.name }} - {{ item.price }} ₽ x {{ item.quantity }}
                     <a href="{{ url_for('remove_from_cart', product_id=product_id) }}">Удалить</a>
                 </li>
