@@ -624,7 +624,7 @@ input[name="r"] {
     margin-top: 10px;
 }
 .buy-button {
-    max-width: 200px;
+    width: 200px;
     background: black;
     color: white;
     padding: 12px 20px;
@@ -634,7 +634,6 @@ input[name="r"] {
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
-    width: 100%;
 }
 .buy-button:hover {
     background: #dddddd;
