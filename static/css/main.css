@@ -457,16 +457,15 @@ input[name="r"] {
 /* Стили для названия товара */
 .product h2 {
     font-family: "Cormorant Garamond", serif;
-    font-size: 1.2em;  /* Уменьшаем размер шрифта для названия */
+    font-size: 1.5em;  /* Уменьшаем размер шрифта для названия */
     font-weight: bold;  /* Жирное начертание */
-    margin: 5px 0 8px 0;  /* Отступы сверху и снизу */
     color: #333;  /* Темный цвет для текста */
 }
 
 /* Стили для описания товара */
 .product p {
     font-family: "Cormorant Garamond", serif;
-    font-size: 0.9em;  /* Немного уменьшаем шрифт для описания */
+    font-size: 1.0em;  /* Немного уменьшаем шрифт для описания */
     color: #666;  /* Светло-серый цвет текста */
     line-height: 1.2;  /* Межстрочный интервал */
     margin: 0 5px 5px 5px;  /* Отступы по бокам и снизу */
@@ -491,7 +490,6 @@ input[name="r"] {
     border-radius: 5px;  /* Скругленные углы */
     cursor: pointer;  /* Указатель при наведении */
     font-size: 1em;  /* Размер шрифта */
-    margin-top: 5px;  /* Отступ сверху */
     transition: background-color 0.3s ease;  /* Плавное изменение фона */
 }
 
