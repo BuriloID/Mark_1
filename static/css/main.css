@@ -486,6 +486,7 @@ input[name="r"] {
 
 /* Стили для цены товара */
 .product strong {
+    font-weight: normal;
     font-family: "Raleway", serif;
     font-size: 1.2em;  /* Уменьшаем шрифт для цены */
     color: black;  /* Синий цвет для выделения цены */
@@ -596,7 +597,7 @@ input[name="r"] {
 .product-price {
     font-family: "Raleway", serif;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: normal;
     margin-bottom: 20px;
 }
 
