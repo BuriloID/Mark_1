@@ -1,25 +1,29 @@
 {% extends "base.html" %}
-{% block title%}
-{{ product.name }} {{ product.description }}- Купить в нашем магазине
+
+{% block title %}
+    {{ product.name }} {{ product.description }} - Купить в нашем магазине
 {% endblock %}
+
 {% block content %}
     <div class="product-container">
         <a href="javascript:history.back()" class="back-button">
             <i class="fa fa-arrow-left"></i> Назад
         </a>
-     <div class="thumbnails">
-             {% for i in range(1, 7) %}
-            {% set image_attr = 'extra_image' ~ i %}
-            {% if details[image_attr] %}
-            <img class="thumbnail" src="{{ url_for('static', filename=details[image_attr]) }}" alt="Thumbnail {{ i }}" onclick="changeMainImage(this.src)">
-            {% endif %}
+        <div class="thumbnails">
+            {% for i in range(1, 7) %}
+                {% set image_attr = 'extra_image' ~ i %}
+                {% if details[image_attr] %}
+                    <img class="thumbnail" src="{{ url_for('static', filename=details[image_attr]) }}" alt="Thumbnail {{ i }}" onclick="changeMainImage(this.src)">
+                {% endif %}
             {% endfor %}
-     </div>
+        </div>
+
         <div class="product-image">
             <button class="fa fa-chevron-left" onclick="prevImage()"></button>
             <img id="mainImage" src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}">
             <button class="fa fa-chevron-right" onclick="nextImage()"></button>
         </div>
+
         <div class="product-info">
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>
@@ -31,15 +35,15 @@
                 <button>XL</button>
             </div>
             <h2>Описание</h2>
-            <p class="full-description">{{details.full_description }}</p>
+            <p class="full-description">{{ details.full_description }}</p>
             <h2>Состав</h2>
-            <p class="full-description"></p>
+            <p class="full-description">{{ details.composition }}</p>
             <strong class="product-price">{{ product.price }} ₽</strong>
             <div class="btn-group">
-            <button class="buy-button">Купить</button>
-            <a href="{{ url_for('add_to_cart', product_id=product.id) }}">
-                <button class="buy-button">Добавить в корзину</button>
-            </a>
+                <button class="buy-button">Купить</button>
+                <a href="{{ url_for('add_to_cart', product_id=product.id) }}">
+                    <button class="buy-button">Добавить в корзину</button>
+                </a>
             </div>
         </div>
     </div>

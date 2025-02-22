@@ -19,9 +19,23 @@ class Product(db.Model):
     details = db.relationship('ProductDetails', backref='product', lazy=True)
     def __repr__(self):
         return f'<Product {self.name}>'
+
+class NewProduct(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=True)  # Описание товара
+    price = db.Column(db.Float, nullable=False)  # Цена товара
+    image_url = db.Column(db.String(500), nullable=True)  # Ссылка на изображение
+    image_url_back = db.Column(db.String(500), nullable=True)
+    category = db.Column(db.String(50), nullable=False)  # Поле категории товара
+    details = db.relationship('ProductDetails', backref='new_product', lazy=True)
+
+    def __repr__(self):
+        return f'<NewProduct {self.name}>'
 class ProductDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    new_product_id = db.Column(db.Integer, db.ForeignKey('new_product.id'), nullable=True)  # Внешний ключ для NewProduct
     full_description = db.Column(db.Text, nullable=True)
     composition = db.Column(db.Text, nullable=True)
     extra_image1 = db.Column(db.String(500), nullable=True)
@@ -52,14 +66,37 @@ def catalog():
         query = query.filter_by(name=name)  # Фильтруем по названию товара
     products = query.all()  # Выполняем запрос
     return render_template('catalog.html', products=products, selected_category=category, selected_name=name)
-@app.route('/product/<int:product_id>')
-def product_detail(product_id):
-    product = Product.query.get_or_404(product_id)
-    details = ProductDetails.query.filter_by(product_id=product_id).first()  # Берем доп. данные
-    return render_template('product_detail.html', product=product, details=details)
 @app.route('/new')
 def new():
-    return render_template('new.html')
+    try:
+        products = NewProduct.query.all()  # Получаем все товары из базы данных NewProduct
+        if not products:  # Если список пустой
+            message = "Товары не найдены"
+        else:
+            message = None  # Если товары есть, не передаем сообщение
+    except Exception as e:
+        message = f"Ошибка при загрузке товаров: {str(e)}"
+        products = []  # В случае ошибки отправляем пустой список товаров
+        print(f"Error: {str(e)}")  # Печатаем ошибку в консоль для отладки
+
+    return render_template('new.html', products=products, message=message)
+
+@app.route('/product/<int:product_id>')
+@app.route('/product/<int:product_id>')
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product_type = request.args.get('product_type')  # Получаем тип продукта (product или new_product)
+    # В зависимости от типа продукта ищем товар
+    if product_type == 'new_product':
+        product = NewProduct.query.get_or_404(product_id)
+        details = ProductDetails.query.filter_by(new_product_id=product.id).first()
+    else:
+        product = Product.query.get_or_404(product_id)
+        details = ProductDetails.query.filter_by(product_id=product.id).first()
+    # Проверяем, если товар не найден
+    if not product:
+        return "Product not found", 404
+    return render_template('product_detail.html', product=product, details=details)
 @app.route('/client')
 def client():
     return render_template('client.html')
