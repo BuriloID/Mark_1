@@ -7,35 +7,70 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///product.db'  # Путь к б
 app.config['SECRET_KEY'] = 'supersecretkey'  # Ключ для работы сессий
 
 db = SQLAlchemy(app)
+# Таблица для связи "Многие ко многим" между товарами и категориями
+product_category = db.Table('product_category',
+                            db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary_key=True),
+                            db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
+                            )
+
+new_product_category = db.Table('new_product_category',
+                                db.Column('new_product_id', db.Integer, db.ForeignKey('new_product.id'),
+                                          primary_key=True),
+                                db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
+                                )
+
+
+# Модель Категорий
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)  # 'men', 'women', 'acs'
+
+    def __repr__(self):
+        return f'<Category {self.name}>'
+
+
+# Основной товар
 class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # id товара
-    name = db.Column(db.String(100), nullable=False)  # Название товара
-    description = db.Column(db.String(500), nullable=True)  # Описание товара
-    price = db.Column(db.Float, nullable=False)  # Цена товара
-    image_url = db.Column(db.String(500), nullable=True)  # Ссылка на изображение
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
-    category = db.Column(db.String(50), nullable=False)  # Поле категории товара
-    # Связь с таблицей ProductDetails
+
+    # Связь многие ко многим с категориями
+    categories = db.relationship('Category', secondary=product_category, backref='products')
+
     details = db.relationship('ProductDetails', backref='product', lazy=True)
+
     def __repr__(self):
         return f'<Product {self.name}>'
 
+
+# Новые товары (если не можем объединить с Product)
 class NewProduct(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500), nullable=True)  # Описание товара
-    price = db.Column(db.Float, nullable=False)  # Цена товара
-    image_url = db.Column(db.String(500), nullable=True)  # Ссылка на изображение
+    description = db.Column(db.String(500), nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
-    category = db.Column(db.String(50), nullable=False)  # Поле категории товара
+
+    # Связь многие ко многим с категориями
+    categories = db.relationship('Category', secondary=new_product_category, backref='new_products')
+
     details = db.relationship('ProductDetails', backref='new_product', lazy=True)
 
     def __repr__(self):
         return f'<NewProduct {self.name}>'
+
+
+# Детали товара (связаны и с Product, и с NewProduct)
 class ProductDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    new_product_id = db.Column(db.Integer, db.ForeignKey('new_product.id'), nullable=True)  # Внешний ключ для NewProduct
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    new_product_id = db.Column(db.Integer, db.ForeignKey('new_product.id'), nullable=True)
+
     full_description = db.Column(db.Text, nullable=True)
     composition = db.Column(db.Text, nullable=True)
     extra_image1 = db.Column(db.String(500), nullable=True)
@@ -47,7 +82,6 @@ class ProductDetails(db.Model):
 
     def __repr__(self):
         return f'<ProductDetails {self.id}>'
-
 @app.route('/index')
 @app.route('/')
 def index():
@@ -58,14 +92,16 @@ def about():
 @app.route('/catalog')
 def catalog():
     name = request.args.get('name')
-    category = request.args.get('category')  # Получаем категорию из параметра запроса
-    query = Product.query  # Начинаем с базового запроса
-    if category:
-        query = query.filter_by(category=category)  # Фильтруем по категории
+    category_name = request.args.get('category')
+    # Запрос только для обычных товаров (не новинок)
+    query_product = Product.query
+    if category_name:
+        query_product = query_product.join(Product.categories).filter(Category.name == category_name)
     if name:
-        query = query.filter_by(name=name)  # Фильтруем по названию товара
-    products = query.all()  # Выполняем запрос
-    return render_template('catalog.html', products=products, selected_category=category, selected_name=name)
+        query_product = query_product.filter(Product.name == name)
+    # Получаем все товары из каталога
+    products = query_product.all()
+    return render_template('catalog.html', products=products, product_type='catalog')
 @app.route('/new')
 def new():
     try:
