@@ -643,6 +643,7 @@ input[name="r"] {
 }
 /* Стили для кнопки "Назад" */
 .back-button {
+    font-family: "Playfair", serif;
     display: inline-flex;
     align-items: center;
     font-size: 20px;
@@ -735,6 +736,91 @@ input[name="r"] {
 .cart-icon:hover{
    color: black;
    transform: scale(1.1);
+}
+/* Стили для корзины */
+h1 {
+    font-family: "Playfair", serif;
+    padding-top: 50px;
+    margin-left: 20px;
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.cart-items {
+    list-style: none;
+    padding: 0;
+}
+
+.cart-item {
+    margin-left: 20px;
+    font-family: "Playfair", serif;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+.cart-item-image {
+    border-radius: 5px;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.cart-item-details {
+    flex-grow: 1;
+}
+
+.cart-item-name {
+    font-size: 20px;
+    margin: 0;
+    color: #333;
+}
+
+.cart-item-price {
+    font-size: 20px;
+    color: black;
+}
+
+.remove-item {
+    margin-right: 20px;
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.remove-item:hover {
+    text-decoration: underline;
+}
+
+.cart-total {
+    margin-left: 20px;
+    font-family: "Playfair", serif;
+    margin-top: 20px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #333;
+}
+
+.continue-shopping {
+    margin-left: 20px;
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 16px;
+    background-color: #555555;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+
+.continue-shopping:hover {
+    background-color: black;
+    transform: scale(1.1);
 }
 
 

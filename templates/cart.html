@@ -1,25 +1,32 @@
 {% extends "base.html" %}
-{% block title%}
-Корзина
+
+{% block title %}
+    Корзина
 {% endblock %}
+
 {% block content %}
-        <a href="javascript:history.back()" class="back-button">
-            <i class="fa fa-arrow-left"></i> Назад
-        </a>
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fa fa-arrow-left"></i> Назад
+    </a>
     <h1>Ваша корзина</h1>
     {% if cart %}
-        <ul>
+        <ul class="cart-items">
             {% for product_id, item in cart.items() %}
-                <li>
-                    <img src="{{url_for('static', filename=item.image_url)}}" alt="{{ item.name }}" width="50">
-                    {{ item.name }} - {{ item.price }} ₽ x {{ item.quantity }}
-                    <a href="{{ url_for('remove_from_cart', product_id=product_id) }}">Удалить</a>
+                <li class="cart-item">
+                    <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <p class="cart-item-name">{{ item.name }}</p>
+                        <p class="cart-item-price">{{ item.price }} ₽ x {{ item.quantity }}</p>
+                    </div>
+                    <a href="{{ url_for('remove_from_cart', product_id=product_id) }}" class="remove-item">Удалить</a>
                 </li>
             {% endfor %}
         </ul>
-        <p><strong>Итого: {{ total_price }} ₽</strong></p>
+        <div class="cart-total">
+            <p><strong>Итого: {{ total_price }} ₽</strong></p>
+        </div>
     {% else %}
         <p>Корзина пуста</p>
     {% endif %}
-    <a href="/">Продолжить покупки</a>
+    <a href="/" class="continue-shopping">Продолжить покупки</a>
 {% endblock %}
