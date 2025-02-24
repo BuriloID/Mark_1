@@ -12,9 +12,7 @@
     <div class="catalog">
         {% for product in products %}
             <div class="product">
-                    <!--{% if product_type == 'new_product' %}
-                     <div class="new-label">New</div>
-                    {% endif %} -->
+                    <div class="new-label">New</div>
                 {% if product.image_url %}
                     <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
                     <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
