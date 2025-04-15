@@ -846,7 +846,7 @@ h1 {
     left: 0;
     top: 0;
     background-color: transparent;
-    z-index: 5000;
+    z-index: 2;
     transform: translateY(-44.5%) scale(0);
     transition: .4s ease-in-out;
 }
@@ -900,9 +900,10 @@ h1 {
     padding: 10px 0px;
 }
 .pop_up_close {
+    color: black;
     position: absolute;
-    top: 15px;
+    top: 5px;
     right: 15px;
-    font-size: 15px;
+    font-size: 25px;
     cursor: pointer;
 }
