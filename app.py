@@ -1,13 +1,19 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import telegram
+import telegram, time
+import asyncio
 app = Flask(__name__)
 # Подставьте ваш токен
 TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
 # Замените на ваш чат ID
-CHAT_ID = '5208308918'
+CHAT_ID = 5208308918
 bot = telegram.Bot(token=TOKEN)
+def send_message_sync(chat_id, text):
+    # Запуск асинхронной функции в синхронном контексте
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text))
 @app.route('/buy', methods=['POST'])
 def buy():
     first_name = request.form.get('firstName')
@@ -24,7 +30,9 @@ def buy():
         f" Email: {email}"
     )
     try:
-        bot.send_message(chat_id=int(CHAT_ID), text=message)
+        # Используем синхронный вызов через send_message_sync
+        response = send_message_sync(CHAT_ID, message)
+        print("Ответ от Telegram API:", response)  # Логируем ответ
         return "Заказ успешно отправлен!"
     except Exception as e:
         return f"Ошибка при отправке сообщения: {str(e)}", 500
