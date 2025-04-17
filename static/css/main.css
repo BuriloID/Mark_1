@@ -846,7 +846,7 @@ h1 {
     left: 0;
     top: 0;
     background-color: transparent;
-    z-index: 2;
+    z-index: 1200;
     transform: translateY(-44.5%) scale(0);
     transition: .4s ease-in-out;
 }

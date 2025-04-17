@@ -21,7 +21,6 @@
           <img class="header__img" src="{{url_for('static', filename='img/icon.png')}}" alt="law">
         </a>
       </div>
-
       <nav class="hor_menu">
       <ul>
         <li><a href="{{url_for('index')}}" >Главная</a></li>
@@ -60,6 +59,7 @@
       </nav>
        <a href="{{ url_for('cart') }}" class="fa fa-shopping-basket cart-icon"></a>
     </header>
+    
 <div class="vert_menu">
     {%block menu%}{%endblock%}
 </div>
@@ -94,26 +94,25 @@
                             <i class="fa fa-telegram"></i>
                           </a>
                         </div>
-                        <div class="pop_up" id="pop_up">
-                          <div class="pop_up_container">
-                              <div class="pop_up_body" id="pop_up_body">
-                                  <p>Заполнить форму</p>
-                                  <form action="">
-                                      <input type="text" placeholder="Имя">
-                                      <input type="text"placeholder="Фамилия">
-                                      <input type="text" placeholder="Отчество (при наличии)">
-                                      <input type="text" placeholder="Номер телефона">
-                                      <input type="text"placeholder="Электронная почта">
-                                      <button> Купить </button>
-                                  </form>
-                                  <div class="pop_up_close" id="pop_up_close">&#65794</div>
-                              </div>
-                          </div>
                       </div>
   </footer>
         </div>
 </div>
-
+<div class="pop_up" id="pop_up">
+  <div class="pop_up_container">
+      <div class="pop_up_body" id="pop_up_body">
+          <p>Заполнить форму</p>
+          <form action="">
+              <input type="text" placeholder="Имя">
+              <input type="text"placeholder="Фамилия">
+              <input type="text" placeholder="Отчество (при наличии)">
+              <input type="text" placeholder="Номер телефона">
+              <input type="text"placeholder="Электронная почта">
+              <button> Купить </button>
+          </form>
+          <div class="pop_up_close" id="pop_up_close">&#65794</div>
+      </div>
+  </div>
 
 </body>
 <script src="{{url_for('static', filename='js/script.js')}}"></script>
