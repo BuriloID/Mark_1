@@ -10,15 +10,11 @@ CHAT_ID = '5208308918'
 bot = telegram.Bot(token=TOKEN)
 @app.route('/buy', methods=['POST'])
 def buy():
-    data = request.json
-    first_name = data.get('firstName')
-    last_name = data.get('lastName')
-    middle_name = data.get('middleName', '')  # По желанию
-    phone = data.get('phone')
-    email = data.get('email')
-
-    # Отправка уведомления владельцу
-    message = f"Новый заказ:\nИмя: {first_name}\nФамилия: {last_name}\nОтчество: {middle_name}\nТелефон: {phone}\nEmail: {email}"
+    first_name = request.form.get('firstName')
+    last_name = request.form.get('lastName')
+    middle_name = request.form.get('middleName', '')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
     message = (
         f"🆕 Новый заказ:\n"
         f" Имя: {first_name}\n"
@@ -28,10 +24,10 @@ def buy():
         f" Email: {email}"
     )
     try:
-        bot.send_message(chat_id=CHAT_ID, text=message)
-        return jsonify({'status': 'success', 'message': 'Заказ успешно отправлен!'})
+        bot.send_message(chat_id=int(CHAT_ID), text=message)
+        return "Заказ успешно отправлен!"
     except Exception as e:
-        return jsonify({'status': 'error', 'message': f'Ошибка при отправке сообщения: {str(e)}'}), 500
+        return f"Ошибка при отправке сообщения: {str(e)}", 500
 # Настройки для базы данных
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///product.db'  # Путь к базе данных
 app.config['SECRET_KEY'] = 'supersecretkey'  # Ключ для работы сессий
