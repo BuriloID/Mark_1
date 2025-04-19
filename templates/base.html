@@ -110,13 +110,18 @@
               <input type="text" name="email" placeholder="Электронная почта">
               <!-- Скрытые поля с данными о товаре -->
               {% if product %}
-              <input type="hidden" name="product_name" value="{{ product.name }}">
-              <input type="hidden" name="product_price" value="{{ product.price }}">
-              <input type="hidden" name="product_id" value="{{ product.id }}">
-              <input type="hidden" name="product_url" value="{{ request.url }}">  <!-- Ссылка на товар -->
-          {% else %}
-              <p>Товар не найден</p>
-          {% endif %}
+                  <input type="hidden" name="product_name" value="{{ product.name }}">
+                  <input type="hidden" name="product_price" value="{{ product.price }}">
+                  <input type="hidden" name="product_id" value="{{ product.id }}">
+                  <input type="hidden" name="product_url" value="{{ request.url }}">
+              {% endif %}
+              {% if cart %}
+                  {% for product_id, item in cart.items() %}
+                      <input type="hidden" name="cart_items" value="{{ item.name }}">
+                      <input type="hidden" name="cart_item_price" value="{{ item.price }}">
+                      <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
+                  {% endfor %}
+              {% endif %}
               <button> Купить </button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>

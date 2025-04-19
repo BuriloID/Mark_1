@@ -21,11 +21,15 @@ def buy():
     middle_name = request.form.get('middleName', '')
     phone = request.form.get('phone')
     email = request.form.get('email')
-    # Данные товара
+    # Данные о товаре
     product_name = request.form.get('product_name')
     product_price = request.form.get('product_price')
     product_id = request.form.get('product_id')
     product_url = request.form.get('product_url')
+    # Список товаров из корзины
+    cart_items = request.form.getlist('cart_items')
+    cart_prices = request.form.getlist('cart_item_price')
+    cart_quantities = request.form.getlist('cart_item_quantity')
     message = (
         f"🆕 Новый заказ:\n"
         f"👤 Имя: {first_name}\n"
@@ -33,13 +37,22 @@ def buy():
         f"👤 Отчество: {middle_name}\n"
         f"📞 Телефон: {phone}\n"
         f"📧 Email: {email}\n\n"
-        f"📦 Товар: {product_name}\n"
-        f"💰 Цена: {product_price} ₽\n"
-        f"🔗 Ссылка: {product_url}"
     )
+    if cart_items:  # Если в корзине есть товары
+        cart_total = 0
+        message += "📦 Товары из корзины:\n"
+        for name, price, quantity in zip(cart_items, cart_prices, cart_quantities):
+            message += f"- {name}: {price} ₽ x {quantity}\n"
+            cart_total += float(price) * int(quantity)
+        message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
+    elif product_name:  # Если это одиночный товар
+        message += (
+            f"📦 Товар: {product_name}\n"
+            f"💰 Цена: {product_price} ₽\n"
+            f"🔗 Ссылка: {product_url}\n"
+        )
     try:
         response = send_message_sync(CHAT_ID, message)
-        print("Ответ от Telegram API:", response)
         return "Заказ успешно отправлен!"
     except Exception as e:
         return f"Ошибка при отправке сообщения: {str(e)}", 500
