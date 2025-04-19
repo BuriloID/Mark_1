@@ -21,18 +21,25 @@ def buy():
     middle_name = request.form.get('middleName', '')
     phone = request.form.get('phone')
     email = request.form.get('email')
+    # Данные товара
+    product_name = request.form.get('product_name')
+    product_price = request.form.get('product_price')
+    product_id = request.form.get('product_id')
+    product_url = request.form.get('product_url')
     message = (
         f"🆕 Новый заказ:\n"
-        f" Имя: {first_name}\n"
-        f" Фамилия: {last_name}\n"
-        f" Отчество: {middle_name}\n"
-        f" Телефон: {phone}\n"
-        f" Email: {email}"
+        f"👤 Имя: {first_name}\n"
+        f"👤 Фамилия: {last_name}\n"
+        f"👤 Отчество: {middle_name}\n"
+        f"📞 Телефон: {phone}\n"
+        f"📧 Email: {email}\n\n"
+        f"📦 Товар: {product_name}\n"
+        f"💰 Цена: {product_price} ₽\n"
+        f"🔗 Ссылка: {product_url}"
     )
     try:
-        # Используем синхронный вызов через send_message_sync
         response = send_message_sync(CHAT_ID, message)
-        print("Ответ от Telegram API:", response)  # Логируем ответ
+        print("Ответ от Telegram API:", response)
         return "Заказ успешно отправлен!"
     except Exception as e:
         return f"Ошибка при отправке сообщения: {str(e)}", 500

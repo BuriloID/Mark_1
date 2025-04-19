@@ -108,6 +108,15 @@
               <input type="text" name="middleName" placeholder="Отчество (при наличии)">
               <input type="text" name="phone" placeholder="Номер телефона">
               <input type="text" name="email" placeholder="Электронная почта">
+              <!-- Скрытые поля с данными о товаре -->
+              {% if product %}
+              <input type="hidden" name="product_name" value="{{ product.name }}">
+              <input type="hidden" name="product_price" value="{{ product.price }}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="hidden" name="product_url" value="{{ request.url }}">  <!-- Ссылка на товар -->
+          {% else %}
+              <p>Товар не найден</p>
+          {% endif %}
               <button> Купить </button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
