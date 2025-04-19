@@ -28,6 +28,7 @@ def buy():
     product_url = request.form.get('product_url')
     # Список товаров из корзины
     cart_items = request.form.getlist('cart_items')
+    cart_descriptions = request.form.getlist('cart_item_description')
     cart_prices = request.form.getlist('cart_item_price')
     cart_quantities = request.form.getlist('cart_item_quantity')
     message = (
@@ -41,8 +42,8 @@ def buy():
     if cart_items:  # Если в корзине есть товары
         cart_total = 0
         message += "📦 Товары из корзины:\n"
-        for name, price, quantity in zip(cart_items, cart_prices, cart_quantities):
-            message += f"- {name}: {price} ₽ x {quantity}\n"
+        for name, price, quantity, description in zip(cart_items, cart_prices, cart_quantities, cart_descriptions):
+            message += f"- {name} ({description}): {price} ₽ x {quantity}\n"
             cart_total += float(price) * int(quantity)
         message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
     elif product_name:  # Если это одиночный товар
@@ -183,6 +184,7 @@ def add_to_cart(product_id):
     else:
         cart_items[str(product_id)] = {
             'name': product.name,
+            'description': product.description,
             'price': product.price,
             'quantity': 1,
             'image_url': product.image_url

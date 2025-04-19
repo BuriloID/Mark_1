@@ -118,6 +118,7 @@
               {% if cart %}
                   {% for product_id, item in cart.items() %}
                       <input type="hidden" name="cart_items" value="{{ item.name }}">
+                      <input type="hidden" name="cart_item_description" value="{{ item.description }}">
                       <input type="hidden" name="cart_item_price" value="{{ item.price }}">
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
