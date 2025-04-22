@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
             li.style.padding = "0";
         });
     });
-});
 // Функция смены главного изображения
 function changeMainImage(newSrc) {
     let mainImage = document.getElementById("mainImage");
@@ -50,56 +49,52 @@ function changeMainImage(newSrc) {
         }, 200); // Время должно совпадать с CSS-анимацией
     }
 }
-const openPopUp = document.getElementById('open_pop_up');
-const closePopUp = document.getElementById('pop_up_close');
-const popUp = document.getElementById('pop_up');
-const orderForm = document.getElementById('form');
-openPopUp.addEventListener('click', function(e) {
-    e.preventDefault();
-    popUp.classList.add('active');
-});
-closePopUp.addEventListener('click', () => {
-    popUp.classList.remove('active');
-});
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("form");
-    const toast = document.getElementById("toast");
-    const popup = document.getElementById("pop_up");
-    const popUpClose = document.getElementById("pop_up_close");
+ // Форма, попап и тост
+ const form = document.getElementById("form");
+ const toast = document.getElementById("toast");
+ const popup = document.getElementById("pop_up");
+ const popUpClose = document.getElementById("pop_up_close");
+ const openPopUp = document.getElementById('open_pop_up');
 
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const formData = new FormData(form);
-
-        fetch("/buy", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                toast.classList.remove("hidden");
-                popup.classList.remove("active");
-
-                setTimeout(() => {
-                    toast.classList.add("hidden");
-                }, 5000);
-
-                form.reset();
-            } else {
-                toast.classList.add("hidden");
-                console.log("Ошибка при отправке заказа: ", data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Ошибка:", error);
-            toast.classList.add("hidden");
-        });
-    });
-
-    popUpClose.addEventListener("click", function () {
-        popup.classList.remove("active");
-    });
+ if (form) {
+     form.addEventListener("submit", function (e) {
+         e.preventDefault();
+         const formData = new FormData(form);
+         fetch("/buy", {
+             method: "POST",
+             body: formData
+         })
+         .then(response => response.json())
+         .then(data => {
+             if (data.status === 'success') {
+                 if (toast) toast.classList.remove("hidden");
+                 if (popup) popup.classList.remove("active");
+                 setTimeout(() => {
+                     if (toast) toast.classList.add("hidden");
+                 }, 5000);
+                 form.reset();
+             } else {
+                 if (toast) toast.classList.add("hidden");
+                 console.log("Ошибка при отправке заказа: ", data.message);
+             }
+         })
+         .catch(error => {
+             console.error("Ошибка:", error);
+             if (toast) toast.classList.add("hidden");
+         });
+     });
+ }
+ if (popUpClose) {
+     popUpClose.addEventListener("click", () => {
+         if (popup) popup.classList.remove("active");
+     });
+ }
+ if (openPopUp) {
+     openPopUp.addEventListener("click", function(e) {
+         e.preventDefault();
+         if (popup) popup.classList.add('active');
+     });
+ }
 });
 
 
