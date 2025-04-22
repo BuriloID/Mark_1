@@ -102,7 +102,7 @@
   <div class="pop_up_container">
       <div class="pop_up_body" id="pop_up_body">
           <p>Заполнить форму</p>
-          <form action="/buy" method="post">
+          <form id="form" action="/buy" method="post">
               <input type="text" name="firstName" placeholder="Имя">
               <input type="text" name="lastName" placeholder="Фамилия">
               <input type="text" name="middleName" placeholder="Отчество (при наличии)">
@@ -125,10 +125,13 @@
               {% endif %}
               <button> Купить </button>
           </form>
+          <div id="toast" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+            Заказ отправлен изготовителю!
+          </div>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
       </div>
   </div>
-
+  
 </body>
 <script src="{{url_for('static', filename='js/script.js')}}"></script>
 </html>

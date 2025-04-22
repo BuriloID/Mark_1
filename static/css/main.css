@@ -907,3 +907,21 @@ h1 {
     font-size: 25px;
     cursor: pointer;
 }
+#toast {
+    display: none;
+    position: fixed;
+    top: 4rem;
+    right: 4rem;
+    background-color: #38a169; /* Зеленый */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 9999;
+}
+#toast.show {
+    display: block;
+    opacity: 1;
+}

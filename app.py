@@ -31,32 +31,22 @@ def buy():
     cart_descriptions = request.form.getlist('cart_item_description')
     cart_prices = request.form.getlist('cart_item_price')
     cart_quantities = request.form.getlist('cart_item_quantity')
-    message = (
-        f"🆕 Новый заказ:\n"
-        f"👤 Имя: {first_name}\n"
-        f"👤 Фамилия: {last_name}\n"
-        f"👤 Отчество: {middle_name}\n"
-        f"📞 Телефон: {phone}\n"
-        f"📧 Email: {email}\n\n"
-    )
-    if cart_items:  # Если в корзине есть товары
+    message = f"🆕 Новый заказ:\n👤 Имя: {first_name}\n👤 Фамилия: {last_name}\n📞 Телефон: {phone}\n📧 Email: {email}\n"
+    if cart_items:
         cart_total = 0
         message += "📦 Товары из корзины:\n"
         for name, price, quantity, description in zip(cart_items, cart_prices, cart_quantities, cart_descriptions):
             message += f"- {name} ({description}): {price} ₽ x {quantity}\n"
             cart_total += float(price) * int(quantity)
         message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
-    elif product_name:  # Если это одиночный товар
-        message += (
-            f"📦 Товар: {product_name}\n"
-            f"💰 Цена: {product_price} ₽\n"
-            f"🔗 Ссылка: {product_url}\n"
-        )
+    elif product_name:
+        message += f"📦 Товар: {product_name}\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
     try:
-        response = send_message_sync(CHAT_ID, message)
-        return "Заказ успешно отправлен!"
+        # Отправка сообщения
+        send_message_sync(CHAT_ID, message)
+        return jsonify({'status': 'success', 'message': 'Заказ успешно отправлен!'}), 200
     except Exception as e:
-        return f"Ошибка при отправке сообщения: {str(e)}", 500
+        return jsonify({'status': 'error', 'message': f'Ошибка при отправке сообщения: {str(e)}'}), 500
 # Настройки для базы данных
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///product.db'  # Путь к базе данных
 app.config['SECRET_KEY'] = 'supersecretkey'  # Ключ для работы сессий

@@ -53,7 +53,7 @@ function changeMainImage(newSrc) {
 const openPopUp = document.getElementById('open_pop_up');
 const closePopUp = document.getElementById('pop_up_close');
 const popUp = document.getElementById('pop_up');
-const orderForm = document.getElementById('orderForm');
+const orderForm = document.getElementById('form');
 openPopUp.addEventListener('click', function(e) {
     e.preventDefault();
     popUp.classList.add('active');
@@ -61,31 +61,46 @@ openPopUp.addEventListener('click', function(e) {
 closePopUp.addEventListener('click', () => {
     popUp.classList.remove('active');
 });
-// Отправка данных формы
-orderForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    const data = {};
-    formData.forEach((value, key) => { data[key] = value });
-    fetch('/buy', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Заказ успешно отправлен!');
-            popUp.classList.remove('active'); // Закрываем поп-ап после успешной отправки
-            this.reset(); // Очищаем форму
-        } else {
-            alert('Ошибка: ' + data.message);
-        }
-    })
-    .catch((error) => {
-        console.error('Ошибка:', error);
-        alert('Произошла ошибка при отправке заказа.');
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("form");
+    const toast = document.getElementById("toast");
+    const popup = document.getElementById("pop_up");
+    const popUpClose = document.getElementById("pop_up_close");
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        fetch("/buy", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                toast.classList.remove("hidden");
+                popup.classList.remove("active");
+
+                setTimeout(() => {
+                    toast.classList.add("hidden");
+                }, 5000);
+
+                form.reset();
+            } else {
+                toast.classList.add("hidden");
+                console.log("Ошибка при отправке заказа: ", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка:", error);
+            toast.classList.add("hidden");
+        });
+    });
+
+    popUpClose.addEventListener("click", function () {
+        popup.classList.remove("active");
     });
 });
+
+
+
