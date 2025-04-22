@@ -98,6 +98,9 @@
   </footer>
         </div>
 </div>
+<div id="toast" class="hidden position-fixed top-0 end-0 m-3 bg-success text-white p-2 rounded shadow">
+  Заказ отправлен изготовителю!
+</div>
 <div class="pop_up" id="pop_up">
   <div class="pop_up_container">
       <div class="pop_up_body" id="pop_up_body">
@@ -123,11 +126,8 @@
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
-              <button> Купить </button>
+              <button id="open_pop_up"> Купить </button>
           </form>
-          <div id="toast" class="hidden fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
-            Заказ отправлен изготовителю!
-          </div>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
       </div>
   </div>

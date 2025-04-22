@@ -67,11 +67,13 @@ function changeMainImage(newSrc) {
          .then(response => response.json())
          .then(data => {
              if (data.status === 'success') {
-                 if (toast) toast.classList.remove("hidden");
-                 if (popup) popup.classList.remove("active");
-                 setTimeout(() => {
-                     if (toast) toast.classList.add("hidden");
-                 }, 5000);
+                if (popup) popup.classList.remove("active");
+                if (toast) {
+                    toast.classList.add("show"); // Показываем тост
+                    setTimeout(() => {
+                        toast.classList.remove("show"); 
+                    }, 4000); 
+                }
                  form.reset();
              } else {
                  if (toast) toast.classList.add("hidden");
