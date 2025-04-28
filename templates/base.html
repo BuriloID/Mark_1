@@ -12,6 +12,7 @@
     <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}">
 
     <title>{% block title%}{%endblock%}</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@cdek-it/widget@3" charset="utf-8"></script>
 </head>
 <body>
 <div class="page">
@@ -98,6 +99,21 @@
   </footer>
         </div>
 </div>
+  <!-- Баннер для согласия с куками -->
+  <div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-content">
+      <p>Мы используем куки для улучшения работы сайта. Нажмите "Принять", чтобы согласиться с их использованием. Если вы отклоните куки, корзина не будет сохраняться между сессиями.</p>
+      <div class="cookie-actions">
+        <button id="accept-cookies" class="cookie-button">Принять</button>
+        <button id="decline-cookies" class="cookie-button">Отклонить</button>
+      </div>
+    </div>
+  </div>
+  <button id="cookie-settings" style="display: none;">Настройки куки</button>
+  <!-- Предупреждение для пользователя, если куки отклонены -->
+  <div id="cookie-warning" class="cookie-warning" style="display: none;">
+    <p>Внимание: Для сохранения корзины в вашем браузере необходимо включить куки. Пожалуйста, включите куки для корректной работы корзины.</p>
+  </div>
 <div id="toast" class="hidden position-fixed top-0 end-0 m-3 bg-success text-white p-2 rounded shadow">
   Заказ отправлен изготовителю!
 </div>
@@ -126,12 +142,14 @@
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
+              <!-- Контейнер для виджета СДЭК -->
+              <div id="cdek-map" style="width:400px; height:100px;"></div>
               <button id="open_pop_up"> Купить </button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
       </div>
   </div>
-  
 </body>
 <script src="{{url_for('static', filename='js/script.js')}}"></script>
+<script src="https://widget.cdek.ru/widget/cdek-widget.min.js"></script>
 </html>

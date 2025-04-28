@@ -28,11 +28,12 @@
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>
             <div class="size-options">
-                <button>XS</button>
-                <button>S</button>
-                <button>M</button>
-                <button>L</button>
-                <button>XL</button>
+                <input type="hidden" id="selectedSize" name="selectedSize" value="">
+                <button type="button" onclick="selectSize('XS')">XS</button>
+                <button type="button" onclick="selectSize('S')">S</button>
+                <button type="button" onclick="selectSize('M')">M</button>
+                <button type="button" onclick="selectSize('L')">L</button>
+                <button type="button" onclick="selectSize('XL')">XL</button>
             </div>
             <h2>Описание</h2>
             <p class="full-description">{{ details.full_description }}</p>

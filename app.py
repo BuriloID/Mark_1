@@ -1,9 +1,35 @@
 
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 import telegram, time
 import asyncio
+import hashlib
+import json
+import requests
 app = Flask(__name__)
+CDEK_ACCOUNT = 'твой_account'
+CDEK_SECURE = 'твой_secure_key'
+@app.route('/service', methods=['POST'])
+def cdek_service():
+    req_data = request.get_json()
+    # Генерация security hash
+    secure = hashlib.md5(f"{CDEK_ACCOUNT}&{CDEK_SECURE}".encode()).hexdigest()
+    headers = {
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "account": CDEK_ACCOUNT,
+        "secure": secure,
+        "date": time.strftime("%Y-%m-%d %H:%M:%S"),
+        **req_data
+    }
+    # Запрос к СДЭК
+    response = requests.post(
+        "https://widget.cdek.ru/widget/scripts/service.php",
+        headers=headers,
+        data=json.dumps(payload)
+    )
+    return jsonify(response.json())
 # Подставьте ваш токен
 TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
 # Замените на ваш чат ID
@@ -16,6 +42,7 @@ def send_message_sync(chat_id, text):
     return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text))
 @app.route('/buy', methods=['POST'])
 def buy():
+    size = request.form.get('selectedSize')  # Новый параметр
     first_name = request.form.get('firstName')
     last_name = request.form.get('lastName')
     middle_name = request.form.get('middleName', '')
@@ -41,6 +68,8 @@ def buy():
         message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
     elif product_name:
         message += f"📦 Товар: {product_name}\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
+    if size:
+        message += f"📏 Размер: {size}\n"
     try:
         # Отправка сообщения
         send_message_sync(CHAT_ID, message)
@@ -162,13 +191,18 @@ def client():
     return render_template('client.html')
 @app.route('/cart')
 def cart():
-    cart_items = session.get('cart', {})
+    # Получаем куку с корзиной, если она есть
+    cart_cookie = request.cookies.get('cart', '{}')
+    cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
     total_price = sum(item['price'] * item['quantity'] for item in cart_items.values())
     return render_template('cart.html', cart=cart_items, total_price=total_price)
 @app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_id):
     product = Product.query.get_or_404(product_id)
-    cart_items = session.get('cart', {})
+    # Получаем куку с корзиной, если она есть
+    cart_cookie = request.cookies.get('cart', '{}')
+    cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
+    # Если товар уже в корзине, увеличиваем количество
     if str(product_id) in cart_items:
         cart_items[str(product_id)]['quantity'] += 1
     else:
@@ -179,8 +213,10 @@ def add_to_cart(product_id):
             'quantity': 1,
             'image_url': product.image_url
         }
-    session['cart'] = cart_items  # Обновляем сессию
-    return redirect(url_for('cart'))
+    # Сохраняем обновленную корзину в куки (срок действия 7 дней)
+    resp = make_response(redirect(url_for('cart')))
+    resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)  # Кука на 365 дней
+    return resp
 @app.route('/remove_from_cart/<product_id>')
 def remove_from_cart(product_id):
     try:
@@ -188,11 +224,16 @@ def remove_from_cart(product_id):
         product_id = int(product_id)
     except ValueError:
         return "Invalid product ID", 400  # Возвращаем ошибку, если передано неверное значение
-    cart_items = session.get('cart', {})
+    # Получаем куку с корзиной
+    cart_cookie = request.cookies.get('cart', '{}')
+    cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
+    # Удаляем товар, если он есть в корзине
     if str(product_id) in cart_items:
         del cart_items[str(product_id)]
-    session['cart'] = cart_items
-    return redirect(url_for('cart'))
+    # Сохраняем обновленную корзину в куки
+    resp = make_response(redirect(url_for('cart')))
+    resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)  # Кука на 365 дней
+    return resp
 
 if __name__ == "__main__":
     with app.app_context():

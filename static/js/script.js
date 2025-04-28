@@ -97,7 +97,87 @@ function changeMainImage(newSrc) {
          if (popup) popup.classList.add('active');
      });
  }
+    // Инициализация виджета СДЭК
+    new window.CDEKWidget({
+        root: 'cdek-map',
+        apiKey: 'твой-ключ-яндекс-карт',
+        from: 'Москва',
+        servicePath: 'http://localhost:5000/service',
+        defaultLocation: 'Москва'
+      });
+// Проверка наличия куки для согласия
+if (!getCookie('cookies_accepted')) {
+    console.log('Cookie not found, showing banner.');
+    document.getElementById('cookie-banner').style.display = 'block';  // Показываем баннер
+} else {
+    console.log('Cookie found:', getCookie('cookies_accepted'));
+    document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер, если куки уже есть
+}
+
+// Обработчик для кнопки "Принять"
+document.getElementById('accept-cookies').onclick = function() {
+    setCookie('cookies_accepted', 'true', 7);  // Устанавливаем куку на 7 дней
+    document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер
+};
+
+// Обработчик для кнопки "Отклонить"
+document.getElementById('decline-cookies').onclick = function() {
+    setCookie('cookies_accepted', 'false', 7);  // Устанавливаем куку, что куки отклонены
+    document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер
+    document.getElementById('cookie-warning').style.display = 'block';  // Показываем предупреждение о том, что корзина не сохраняется
+};
+
+// Функция для установки куки
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+// Функция для получения куки по имени
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+if (getCookie('cookies_accepted') === 'false') {
+    // Удаляем корзину из cookies
+    setCookie('cart', '', -1);
+}
+if (!getCookie('cookies_accepted')) {
+    console.log('Cookie not found, showing banner.');
+    var banner = document.getElementById('cookie-banner');
+    banner.classList.add('show');  // плавное появление
+    banner.style.display = 'block';  // чтобы баннер вообще был видимым
+} else {
+    console.log('Cookie found:', getCookie('cookies_accepted'));
+}
+// После отказа — показываем кнопку "Настройки куки"
+document.getElementById('decline-cookies').onclick = function() {
+    setCookie('cookies_accepted', 'false', 7);
+    document.getElementById('cookie-banner').style.display = 'none';
+    document.getElementById('cookie-warning').style.display = 'block';
+    document.getElementById('cookie-settings').style.display = 'block'; // показать кнопку настроек
+};
+// Если пользователь уже отказался ранее — показать "Настройки куки"
+if (getCookie('cookies_accepted') === 'false') {
+    document.getElementById('cookie-settings').style.display = 'block';
+}
+// При клике на "Настройки куки" — можно снова показать баннер
+document.getElementById('cookie-settings').onclick = function() {
+    document.getElementById('cookie-banner').style.display = 'block';
+    document.getElementById('cookie-warning').style.display = 'none';
+    this.style.display = 'none'; // прячем кнопку настроек
+};
+function selectSize(size) {
+    document.getElementById('selectedSize').value = size;
+}
 });
-
-
-
