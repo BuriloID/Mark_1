@@ -37,18 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
             li.style.padding = "0";
         });
     });
-// Функция смены главного изображения
-function changeMainImage(newSrc) {
-    let mainImage = document.getElementById("mainImage");
-
-    if (mainImage && mainImage.src !== newSrc) {
-        mainImage.classList.add("fade-out"); // Начинаем анимацию исчезновения
-        setTimeout(() => {
-            mainImage.src = newSrc;
-            mainImage.classList.remove("fade-out"); // Возвращаем нормальное состояние
-        }, 200); // Время должно совпадать с CSS-анимацией
-    }
-}
  // Форма, попап и тост
  const form = document.getElementById("form");
  const toast = document.getElementById("toast");
@@ -181,3 +169,13 @@ function selectSize(size) {
     document.getElementById('selectedSize').value = size;
 }
 });
+function changeMainImage(newSrc) {
+    let mainImage = document.getElementById("mainImage");
+    if (mainImage && mainImage.src !== newSrc) {
+        mainImage.classList.add("fade-out"); // Начинаем анимацию исчезновения
+        setTimeout(() => {
+            mainImage.src = newSrc;
+            mainImage.classList.remove("fade-out"); // Возвращаем нормальное состояние
+        }, 200); // Время должно совпадать с CSS-анимацией
+    }
+}

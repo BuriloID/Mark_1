@@ -17,13 +17,11 @@
                 {% endif %}
             {% endfor %}
         </div>
-
         <div class="product-image">
             <button class="fa fa-chevron-left" onclick="prevImage()"></button>
             <img id="mainImage" src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}">
             <button class="fa fa-chevron-right" onclick="nextImage()"></button>
         </div>
-
         <div class="product-info">
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>

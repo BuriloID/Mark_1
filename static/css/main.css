@@ -68,6 +68,18 @@ header{
 .hor_menu ul li a:hover {
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
+.hamburger {
+    display: none; /* Скрыто по умолчанию */
+    cursor: pointer;
+    font-size: 30px;
+}
+.hamburger div {
+    width: 35px;
+    height: 5px;
+    margin: 6px 0;
+    background-color: #333;
+    transition: 0.4s;
+}
 /* Подменю */
 .hor_menu ul li ul {
     position: absolute;
@@ -90,7 +102,6 @@ header{
     padding: 10px 15px; /* Добавляем отступы для удобства */
     text-align: left; /* Выравниваем текст */
 }
-
 .hor_menu ul li ul li ul {
     column-count: 2; /* Делим список на 2 колонки */
     border-bottom-right-radius:10px ;
@@ -1028,4 +1039,5 @@ h1 {
 #cookie-settings:hover {
     background-color: #45a049;
 }
+
 
