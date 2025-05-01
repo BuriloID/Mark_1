@@ -572,7 +572,8 @@ input[name="r"] {
 }
 
 .product .btn:hover {
-    background-color: #67798e;  /* Темнее фон при наведении */
+    background-color: #67798e;
+    border: none;  /* Темнее фон при наведении */
 }
 /* Стили для деталях о товаре*/
 .product-container {
