@@ -46,15 +46,40 @@ CARDIGA NICK
 <div class="directory">
     <h1 class="block_dir">
         <span><i class="fa fa-map-marker"></i>Доставка по всей России</span>
-        <p>Вы можете заказать одежду нашего бренда из любой страны. Доставляем СДЭК, Boxberry, Почтой России</p>
+        <p>Мы заботимся о том, чтобы ваша покупка была доставлена вовремя и в целости. Оформите заказ, и мы привезем ваши вязаные изделия в любую точку России с максимальной удобством для вас!</p>
     </h1>
     <h1 class="block_dir">
-        <span> <i class="fa fa-hand-scissors-o"></i>Пошив по вашим меркам</span>
-        <p>Вы можете заказать изделие точно под вашу фигуру, если вам не подошли размеры из нашего каталога</p>
+        <span> <i class="fa fa-hand-scissors-o"></i>Ручная работа с любовью</span>
+        <p>Каждое изделие создается вручную с вниманием к деталям и заботой о качестве. Мы вкладываем душу в каждую петлю, чтобы вы могли наслаждаться не только красотой, но и комфортом наших вязаных вещей.</p>
     </h1>
     <h1 class="block_dir">
         <span><i class="fa fa-diamond"></i>Авторские принты</span>
-        <p>Каждый ##########################################################################################</p>
+        <p>Каждое наше изделие — это уникальный дизайн, разработанный талантливыми мастерами. Авторские принты и эксклюзивные узоры, которые добавят ярких акцентов в ваш гардероб и подчеркнут ваш стиль.</p>
     </h1>
+</div>
+<h2 class="new-arrivals">Новинки</h2>
+<div class="catalog">
+    {% for product in products %}
+        <div class="product">
+                <div class="new-label">New</div>
+            {% if product.image_url %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
+                <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
+            {% else %}
+                <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
+            {% endif %}
+            <h2>{{ product.description }}</h2>
+            <p>{{ product.name }}</p>
+            <p><strong>{{ product.price }} ₽</strong></p>
+                <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product') }}">
+                <button class="btn">Перейти</button>
+                </a>
+        </div>
+    {% else %}
+        <p>Товары не найдены</p>
+    {% endfor %}
+</div>
+<div class="center-btn-container">
+    <button class="btn"><a href="{{ url_for('new') }}">Все новинки</a></button>
 </div>
 {% endblock %}

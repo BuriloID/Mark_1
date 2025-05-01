@@ -1,12 +1,14 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import telegram, time
 import asyncio
 import hashlib
 import json
 import requests
 app = Flask(__name__)
+CORS(app)
 CDEK_ACCOUNT = 'твой_account'
 CDEK_SECURE = 'твой_secure_key'
 @app.route('/service', methods=['POST'])
@@ -48,6 +50,7 @@ def buy():
     middle_name = request.form.get('middleName', '')
     phone = request.form.get('phone')
     email = request.form.get('email')
+    print(f"Размер: {size}")
     # Данные о товаре
     product_name = request.form.get('product_name')
     product_price = request.form.get('product_price')
@@ -141,7 +144,16 @@ class ProductDetails(db.Model):
 @app.route('/index')
 @app.route('/')
 def index():
-    return render_template('index.html')
+    try:
+        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()  # Получаем 5 товаров из базы данных NewProduct
+        if not products:  # Если список пустой
+            message = "Товары не найдены"
+        else:
+            message = None  # Если товары есть, не передаем сообщение
+    except Exception as e:
+        message = f"Ошибка при загрузке товаров: {str(e)}"
+        products = []  # В случае ошибки отправляем пустой список товаров
+    return render_template('index.html', products=products)
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -169,8 +181,6 @@ def new():
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"
         products = []  # В случае ошибки отправляем пустой список товаров
-        print(f"Error: {str(e)}")  # Печатаем ошибку в консоль для отладки
-
     return render_template('new.html', products=products, message=message)
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):

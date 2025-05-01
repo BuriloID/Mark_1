@@ -18,21 +18,19 @@
             {% endfor %}
         </div>
         <div class="product-image">
-            <button class="fa fa-chevron-left" onclick="prevImage()"></button>
             <img id="mainImage" src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}">
-            <button class="fa fa-chevron-right" onclick="nextImage()"></button>
         </div>
         <div class="product-info">
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>
             <div class="size-options">
                 <input type="hidden" id="selectedSize" name="selectedSize" value="">
-                <button type="button" onclick="selectSize('XS')">XS</button>
-                <button type="button" onclick="selectSize('S')">S</button>
-                <button type="button" onclick="selectSize('M')">M</button>
-                <button type="button" onclick="selectSize('L')">L</button>
-                <button type="button" onclick="selectSize('XL')">XL</button>
-            </div>
+                <button type="button" onclick="selectSize('XS', this)">XS</button>
+                <button type="button" onclick="selectSize('S', this)">S</button>
+                <button type="button" onclick="selectSize('M', this)">M</button>
+                <button type="button" onclick="selectSize('L', this)">L</button>
+                <button type="button" onclick="selectSize('XL', this)">XL</button>
+              </div>
             <h2>Описание</h2>
             <p class="full-description">{{ details.full_description }}</p>
             <h2>Состав</h2>

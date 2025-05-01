@@ -15,9 +15,105 @@ header{
     background: white;
     box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
 }
+.header__img {
+    position: relative;
+    margin: 5px;
+    height: 70px;
+    width: 70px;
+    object-fit: contain;
+}
+.burger {
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none;  /* по умолчанию скрыта, включаем ниже */
+    align-self: center;
+  }
+  .hor_menu{
+    flex-grow: 1; /* Меню занимает оставшееся пространство */
+   display: flex;
+   justify-content: center; /* Центрируем меню */
+}
+.hor_menu ul {
+   display: flex;
+   list-style: none;
+   padding-left: 0;
+   margin: 0;
+}
+.hor_menu ul li {
+   justify-content: left;
+   font-size: 30px;
+   font-family: "Cormorant Garamond", serif;
+   font-weight: 500;
+   list-style: none;
+   position: relative;
+   float: left;
+   display: block;
+   width: 180px; /* Фиксированная ширина для ровных блоков */
+   text-align: center;
+   box-sizing: border-box;
+}
+.hor_menu ul li a {
+   text-decoration: none;
+   padding: 12px;
+   color: black;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%; /* Делаем ссылку равной li */
+   height: 100%;
+   transition: .5s;
+}
+.hor_menu ul li a:hover {
+   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+@media (max-width: 768px) {
+.burger {
+    display: block;
+}
+.header__img {
+    width: 40px;
+    height: 40px;
+  }
+header {
+    flex-direction: column; /* элементы будут располагаться друг под другом */
+    align-items: flex-start; /* выравнивание по левому краю */
+    padding: 10px;
+    height: 50px;
+}
+.hor_menu {
+    display: none;
+  }
+  /* Показываем меню при открытии (через JS добавляется класс .open) */
+  .hor_menu.open {
+    display: block;
+    position: absolute;
+    top: 60px; /* или сколько у тебя высота header */
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    z-index: 999;
+  }
+  .hor_menu ul {
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 0;
+  }
+  .hor_menu ul ul {
+    display: none; /* скрываем подменю */
+  }
+  .hor_menu ul li:hover > ul {
+    display: block; /* можно заменить на "по клику", если нужно */
+  }
+  }
+  /* HEADER */
 .content{
     transition: .5s;
     position: relative;
+    padding-bottom: 60px;
 }
 .content_active{
     transform: translateX(10%);
@@ -31,42 +127,6 @@ header{
 }
 .floter_active {
     transform: translateX(10%);
-}
-.hor_menu{
-     flex-grow: 1; /* Меню занимает оставшееся пространство */
-    display: flex;
-    justify-content: center; /* Центрируем меню */
-}
-.hor_menu ul {
-    padding-left: 0;
-    margin: 0;
-}
-.hor_menu ul li {
-    justify-content: left;
-    font-size: 30px;
-    font-family: "Cormorant Garamond", serif;
-    font-weight: 500;
-    list-style: none;
-    position: relative;
-    float: left;
-    display: block;
-    width: 180px; /* Фиксированная ширина для ровных блоков */
-    text-align: center;
-    box-sizing: border-box;
-}
-.hor_menu ul li a {
-    text-decoration: none;
-    padding: 12px;
-    color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%; /* Делаем ссылку равной li */
-    height: 100%;
-    transition: .5s;
-}
-.hor_menu ul li a:hover {
-    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
 .hamburger {
     display: none; /* Скрыто по умолчанию */
@@ -95,7 +155,6 @@ header{
     font-size: 20px;
     width: 100%; /* Делаем блок подменю на всю ширину */
 }
-
 .hor_menu ul li ul li a {
     display: block; /* Делаем ссылку блочной */
     width: 100%; /* Растягиваем на всю ширину блока */
@@ -122,12 +181,6 @@ header{
 .hor_menu ul li:hover > ul {
     display: block;
 }
-.header__img{
-    position: relative;
-    margin: 5px;
-    height: 90px;
-    width: 90px;
-}
 /*Иконки социальных сетей */
 .social{
     font-family: 'FontAwesome', sans-serif;
@@ -150,14 +203,12 @@ header{
     position: relative;
     overflow:hidden;
 }
-
 .social__icon i {
     font-size: 26px;
     color: #67798e;
     transition: all 0.3s ease;
     z-index: 1;
 }
-
 .social__icon:after{
     content: "";
     width: 70px;
@@ -167,7 +218,6 @@ header{
     border-radius: 50%;
     transition: all 0.3s ease;
 }
-
 .social__icon.instagram:after{
     background-color: #C71585;
 }
@@ -180,16 +230,13 @@ header{
 .social__icon.telegram:after{
     background-color: #00acee;
 }
-
 .social__icon:hover {
     transform: translateY(-4px);
     box-shadow: 0px 0px 15px #00000080;
 }
-
 .social__icon:hover i{
     color: #fff;
 }
-
 .social__icon:hover:after{
     transform: translate(0);
 }
@@ -213,7 +260,7 @@ header{
     width: 12px;
     margin: 6px;
     cursor: pointer;
-    background-color: #dddddd;
+    background-color: #555;
     opacity: .5;
     border-radius: 10px;
     transition:all .4s ease;
@@ -605,33 +652,41 @@ input[name="r"] {
     display: flex;
     flex-direction: column;
 }
-
 .product-info h1 {
     font-size: 36px;
     font-weight: bold;
 }
-
 .product-price {
     font-family: "Raleway", serif;
     font-size: 24px;
     font-weight: normal;
     margin-bottom: 20px;
 }
-
 .size-options {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
 .size-options button {
+    width: 50px;           /* фиксированная ширина */
+    height: 50px;          /* фиксированная высота */
     background: white;
     border: 2px solid black;
-    padding: 10px 15px;
     font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    border-radius: 6px;    /* скругление углов (по желанию) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;            /* убираем внутренние отступы */
 }
 .size-options button:hover {
+    background: black;
+    color: white;
+}
+.size-options button.selected {
     background: black;
     color: white;
 }
@@ -1039,5 +1094,54 @@ h1 {
 #cookie-settings:hover {
     background-color: #45a049;
 }
-
+.new-arrivals {
+    opacity: 0; /* Изначально скрыта */
+    transform: translateY(50px); /* Сдвиг по оси Y */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Плавное появление */
+    font-size: 56px;
+    font-family: "Playfair", serif;
+    font-weight: bold;
+    text-align: left;
+    margin: 30px 0 30px 30px;
+}
+.new-arrivals.visible {
+    opacity: 1; /* Делает элемент видимым */
+    transform: translateY(0); /* Возвращает элемент в исходное положение */
+}
+.btn {
+    background-color: white; 
+    border: 2px solid black; 
+    padding: 10px 45px; 
+    font-size: 24px; 
+    border-radius: 0;
+    font-weight: bold; 
+    color: black; 
+    font-family: "Playfair", serif;
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+    text-decoration: none; 
+    display: inline-block; 
+    text-align: center; 
+    margin: 0 auto; 
+    box-sizing: border-box;
+}
+/* Центрирование кнопки на странице */
+.center-btn-container {
+    display: flex;
+    margin-top: 25px;
+    justify-content: center;
+    align-items: center;
+}
+/* Эффект при наведении */
+.btn:hover {
+    border: 2px solid black; 
+    background-color: rgb(207, 206, 206); 
+    transform: translateY(-3px); 
+}
+/* Стили для ссылки внутри кнопки */
+.btn a {
+    color: black; 
+    text-decoration: none; 
+    display: block; 
+}
 

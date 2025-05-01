@@ -165,9 +165,6 @@ document.getElementById('cookie-settings').onclick = function() {
     document.getElementById('cookie-warning').style.display = 'none';
     this.style.display = 'none'; // прячем кнопку настроек
 };
-function selectSize(size) {
-    document.getElementById('selectedSize').value = size;
-}
 });
 function changeMainImage(newSrc) {
     let mainImage = document.getElementById("mainImage");
@@ -179,3 +176,34 @@ function changeMainImage(newSrc) {
         }, 200); // Время должно совпадать с CSS-анимацией
     }
 }
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return rect.top >= 0 && rect.bottom <= window.innerHeight;
+}
+// Получаем элемент "Новинки"
+const newArrivals = document.querySelector('.new-arrivals');
+// Добавляем обработчик события прокрутки
+window.addEventListener('scroll', function() {
+    if (isElementInViewport(newArrivals)) {
+        newArrivals.classList.add('visible'); // Добавляем класс для анимации
+    } else {
+        newArrivals.classList.remove('visible'); // Убираем класс, если элемент выходит из видимости
+    }
+});
+function selectSize(size, el) {
+    // Установить выбранный размер в скрытое поле
+    document.getElementById('selectedSize').value = size;
+    // Убрать класс 'selected' с всех кнопок
+    const buttons = document.querySelectorAll('.size-options button');
+    buttons.forEach(btn => btn.classList.remove('selected'));
+    // Добавить класс 'selected' выбранной кнопке
+    if (el && el.classList) {
+        el.classList.add('selected');
+    }
+}   
+const burger = document.querySelector('.burger');
+  const menu = document.querySelector('.hor_menu');
+
+  burger.addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
