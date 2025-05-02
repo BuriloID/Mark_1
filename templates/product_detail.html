@@ -3,7 +3,6 @@
 {% block title %}
     {{ product.name }} {{ product.description }} - Купить в нашем магазине
 {% endblock %}
-
 {% block content %}
     <div class="product-container">
         <a href="javascript:history.back()" class="back-button">
@@ -23,19 +22,12 @@
         <div class="product-info">
             <h1>{{ product.name }}</h1>
             <p class="product-description">{{ product.description }}</p>
-            <div class="size-options">
-                <input type="hidden" id="selectedSize" name="selectedSize" value="">
-                <button type="button" onclick="selectSize('XS', this)">XS</button>
-                <button type="button" onclick="selectSize('S', this)">S</button>
-                <button type="button" onclick="selectSize('M', this)">M</button>
-                <button type="button" onclick="selectSize('L', this)">L</button>
-                <button type="button" onclick="selectSize('XL', this)">XL</button>
-              </div>
+            <p class="product-size">{{ details.size }}</p>
             <h2>Описание</h2>
             <p class="full-description">{{ details.full_description }}</p>
             <h2>Состав</h2>
             <p class="full-description">{{ details.composition }}</p>
-            <strong class="product-price">{{ product.price }} ₽</strong>
+            <strong class="product-price">{{ product.price | int}} ₽</strong>
             <div class="btn-group">
                 <button class="buy-button" id="open_pop_up">Купить</button>
                 <a href="{{ url_for('add_to_cart', product_id=product.id) }}">

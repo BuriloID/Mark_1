@@ -101,20 +101,17 @@ if (!getCookie('cookies_accepted')) {
     console.log('Cookie found:', getCookie('cookies_accepted'));
     document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер, если куки уже есть
 }
-
 // Обработчик для кнопки "Принять"
 document.getElementById('accept-cookies').onclick = function() {
     setCookie('cookies_accepted', 'true', 7);  // Устанавливаем куку на 7 дней
     document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер
 };
-
 // Обработчик для кнопки "Отклонить"
 document.getElementById('decline-cookies').onclick = function() {
     setCookie('cookies_accepted', 'false', 7);  // Устанавливаем куку, что куки отклонены
     document.getElementById('cookie-banner').style.display = 'none';  // Скрываем баннер
     document.getElementById('cookie-warning').style.display = 'block';  // Показываем предупреждение о том, что корзина не сохраняется
 };
-
 // Функция для установки куки
 function setCookie(name, value, days) {
     var expires = "";
@@ -203,7 +200,15 @@ function selectSize(size, el) {
 }   
 const burger = document.querySelector('.burger');
   const menu = document.querySelector('.hor_menu');
-
   burger.addEventListener('click', () => {
     menu.classList.toggle('open');
   });
+  let counter = 1;
+  const slideCount = 4; // у тебя 4 слайда
+  setInterval(() => {
+      document.getElementById('r' + counter).checked = true;
+      counter++;
+      if (counter > slideCount) {
+          counter = 1;
+      }
+  }, 10000); // 15000 мс = 15 секунд

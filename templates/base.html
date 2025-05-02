@@ -102,17 +102,17 @@
   <!-- Баннер для согласия с куками -->
   <div id="cookie-banner" class="cookie-banner">
     <div class="cookie-content">
-      <p>Мы используем куки для улучшения работы сайта. Нажмите "Принять", чтобы согласиться с их использованием. Если вы отклоните куки, корзина не будет сохраняться между сессиями.</p>
+      <p>Мы используем Сookie для улучшения работы сайта. Нажмите "Принять", чтобы согласиться с их использованием. Если вы отклоните Сookie, корзина не будет сохраняться между сессиями.</p>
       <div class="cookie-actions">
         <button id="accept-cookies" class="cookie-button">Принять</button>
         <button id="decline-cookies" class="cookie-button">Отклонить</button>
       </div>
     </div>
   </div>
-  <button id="cookie-settings" style="display: none;">Настройки куки</button>
+  <button id="cookie-settings" style="display: none;">Настройки Сookie</button>
   <!-- Предупреждение для пользователя, если куки отклонены -->
   <div id="cookie-warning" class="cookie-warning" style="display: none;">
-    <p>Внимание: Для сохранения корзины в вашем браузере необходимо включить куки. Пожалуйста, включите куки для корректной работы корзины.</p>
+    <p>Внимание: Для сохранения корзины в вашем браузере необходимо включить Сookie. Пожалуйста, включите Сookie для корректной работы корзины.</p>
   </div>
 <div id="toast" class="hidden position-fixed top-0 end-0 m-3 bg-success text-white p-2 rounded shadow">
   Заказ отправлен изготовителю!
@@ -132,6 +132,7 @@
               {% if product %}
                   <input type="hidden" name="product_name" value="{{ product.name }}">
                   <input type="hidden" name="product_price" value="{{ product.price }}">
+                  <input type="hidden" name="product_description" value="{{ product.description}}">
                   <input type="hidden" name="product_id" value="{{ product.id }}">
                   <input type="hidden" name="product_url" value="{{ request.url }}">
               {% endif %}

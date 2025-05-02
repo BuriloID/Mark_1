@@ -47,14 +47,14 @@ def buy():
     size = request.form.get('selectedSize')  # Новый параметр
     first_name = request.form.get('firstName')
     last_name = request.form.get('lastName')
-    middle_name = request.form.get('middleName', '')
+    middle_name = request.form.get('middleName')
     phone = request.form.get('phone')
     email = request.form.get('email')
     print(f"Размер: {size}")
     # Данные о товаре
     product_name = request.form.get('product_name')
     product_price = request.form.get('product_price')
-    product_id = request.form.get('product_id')
+    product_descriptions = request.form.get('product_description')
     product_url = request.form.get('product_url')
     # Список товаров из корзины
     cart_items = request.form.getlist('cart_items')
@@ -70,7 +70,7 @@ def buy():
             cart_total += float(price) * int(quantity)
         message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
     elif product_name:
-        message += f"📦 Товар: {product_name}\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
+        message += f"📦 Товар: {product_name} ({product_descriptions})\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
     if size:
         message += f"📏 Размер: {size}\n"
     try:
@@ -133,6 +133,7 @@ class ProductDetails(db.Model):
     new_product_id = db.Column(db.Integer, db.ForeignKey('new_product.id'), nullable=True)
     full_description = db.Column(db.Text, nullable=True)
     composition = db.Column(db.Text, nullable=True)
+    size = db.Column(db.Text, nullable=True)
     extra_image1 = db.Column(db.String(500), nullable=True)
     extra_image2 = db.Column(db.String(500), nullable=True)
     extra_image3 = db.Column(db.String(500), nullable=True)
@@ -244,7 +245,6 @@ def remove_from_cart(product_id):
     resp = make_response(redirect(url_for('cart')))
     resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)  # Кука на 365 дней
     return resp
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Создаём все таблицы

@@ -280,7 +280,7 @@ input[name="r"] {
 }
 .slide {
     width: 25%;
-    transition: all .6s ease;
+    transition: all .8s ease;
 }
 .slide img {
     object-fit:cover;
@@ -342,7 +342,6 @@ input[name="r"] {
     transition:all .4s ease;
     opacity: .6;
 }
-
 /* БОКОВОЕ МЕНЮ */
 .menu {
     border-bottom-right-radius: 20px;
@@ -507,7 +506,7 @@ input[name="r"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Легкая тень для карточки */
     overflow: hidden;         /* Чтобы изображение не выходило за границы карточки */
     width: 350px;             /* Ширина карточки */
-    height: 550px;            /* Высота карточки */
+    height: 580px;            /* Высота карточки */
     text-align: center;       /* Текст по центру */
     position: relative;       /* Позиционирование */
     transition: transform 0.5s ease, box-shadow 0.5s ease;  /* Плавный эффект при наведении */
@@ -539,24 +538,21 @@ input[name="r"] {
     font-weight: bold;  /* Жирное начертание */
     color: #333;  /* Темный цвет для текста */
 }
-
 /* Стили для описания товара */
 .product p {
     font-family: "Playfair", serif;
     font-size: 1.0em;  /* Немного уменьшаем шрифт для описания */
     color: #666;  /* Светло-серый цвет текста */
     line-height: 1.2;  /* Межстрочный интервал */
-    margin: 0 5px 5px 5px;  /* Отступы по бокам и снизу */
+    margin: 0 5px 5px 0px;  /* Отступы по бокам и снизу */
 }
-
 /* Стили для цены товара */
 .product strong {
     font-weight: normal;
-    font-family: "Raleway", serif;
-    font-size: 1.2em;  /* Уменьшаем шрифт для цены */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em;  /* Уменьшаем шрифт для цены */
     color: black;  /* Синий цвет для выделения цены */
     display: block;  /* Цена на новой строке */
-    margin-top: 5px;  /* Отступ сверху */
 }
 
 /* Стили для кнопки "Перейти" */
@@ -572,6 +568,7 @@ input[name="r"] {
 }
 
 .product .btn:hover {
+    transform: none;
     background-color: #67798e;
     border: none;  /* Темнее фон при наведении */
 }
@@ -637,12 +634,6 @@ input[name="r"] {
     transform: translateY(-50%);
     padding: 10px;
 }
-.product-image .fa-chevron-left {
-    left: 0px; /* Располагаем слева */
-}
-.product-image .fa-chevron-right {
-    right: 0px; /* Располагаем справа */
-}
 .product-image button:hover {
     color: #86989B;
     transform: translateY(-50%) scale(1.35);
@@ -658,7 +649,7 @@ input[name="r"] {
     font-weight: bold;
 }
 .product-price {
-    font-family: "Raleway", serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 24px;
     font-weight: normal;
     margin-bottom: 20px;
@@ -720,6 +711,11 @@ input[name="r"] {
     font-weight: bold;
     font-size: 18px;
     margin-top: 20px;
+}
+.product-size {
+    white-space: pre-line;  /* Преобразует символы новой строки в разрывы строк */
+    font-size: 21px;
+    max-width: 600px;
 }
 .full-description{
     font-size: 21px;
@@ -864,7 +860,6 @@ h1 {
     margin: 0;
     color: #333;
 }
-
 .cart-item-price {
     font-size: 20px;
     color: black;
