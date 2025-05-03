@@ -17,7 +17,7 @@
 <body>
 <div class="page">
    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-    <button class="burger" aria-label="Открыть меню">☰</button>
+    <button class="burger_media" aria-label="Открыть меню">☰</button>
       <div class="col-md-3 mb-2 mb-md-0">
         <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
           <img class="header__img" src="{{url_for('static', filename='img/icon.png')}}" alt="law">
@@ -50,8 +50,7 @@
                         <li><a href="{{ url_for('catalog', name='Шапка') }}">Шапки</a></li>
                         <li><a href="{{ url_for('catalog', name='Палантин') }}">Палантины</a></li>
                       </ul>
-
-                  <li><a href="#" >Распродажа</a>
+                  <li><a href="{{url_for('sale')}}" >Распродажа</a></li>
               </ul>
         </li>
         <li><a href="{{url_for('new')}}">Новинки</a></li>
@@ -59,7 +58,11 @@
         <li><a href="{{url_for('about')}}">О Нас</a></li>
       </ul>
       </nav>
-       <a href="{{ url_for('cart') }}" class="fa fa-shopping-basket cart-icon"></a>
+      <a href="{{ url_for('cart') }}" class="fa fa-shopping-basket cart-icon position-relative">
+        {% if cart_item_count > 0 %}
+            <span class="cart-count">{{ cart_item_count }}</span>
+        {% endif %}
+    </a>
     </header>
 <div class="vert_menu">
     {%block menu%}{%endblock%}

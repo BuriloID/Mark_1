@@ -16,14 +16,14 @@
                     <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-image">
                     <div class="cart-item-details">
                         <p class="cart-item-name">{{ item.name }} "{{ item.description }}"</p>
-                        <p class="cart-item-price">{{ item.price }} ₽ x {{ item.quantity }}</p>
+                        <p class="cart-item-price">{{ item.price | int }} ₽ x {{ item.quantity }}</p>
                     </div>
                     <a href="{{ url_for('remove_from_cart', product_id=product_id) }}" class="remove-item">Удалить</a>
                 </li>
             {% endfor %}
         </ul>
         <div class="cart-total">
-            <p><strong>Итого: {{ total_price }} ₽</strong></p>
+            <p><strong>Итого: {{ total_price | int}} ₽</strong></p>
         </div>
     {% else %}
         <p style="margin-left: 20px">Корзина пуста</p>

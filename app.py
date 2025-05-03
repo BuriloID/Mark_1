@@ -61,7 +61,7 @@ def buy():
     cart_descriptions = request.form.getlist('cart_item_description')
     cart_prices = request.form.getlist('cart_item_price')
     cart_quantities = request.form.getlist('cart_item_quantity')
-    message = f"🆕 Новый заказ:\n👤 Имя: {first_name}\n👤 Фамилия: {last_name}\n📞 Телефон: {phone}\n📧 Email: {email}\n"
+    message = f"🆕 Новый заказ:\n👤 Имя: {first_name}\n👤 Фамилия: {last_name}\n👤 Отчество: {middle_name if middle_name else 'Не указано'}\n📞 Телефон: {phone}\n📧 Email: {email}\n"
     if cart_items:
         cart_total = 0
         message += "📦 Товары из корзины:\n"
@@ -108,6 +108,7 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
+    sale = db.Column(db.Integer, default=0)  # Поле для распродажи
     # Связь многие ко многим с категориями
     categories = db.relationship('Category', secondary=product_category, backref='products')
     details = db.relationship('ProductDetails', backref='product', lazy=True)
@@ -183,6 +184,19 @@ def new():
         message = f"Ошибка при загрузке товаров: {str(e)}"
         products = []  # В случае ошибки отправляем пустой список товаров
     return render_template('new.html', products=products, message=message)
+@app.route('/sale')
+def sale():
+    try:
+        # Получаем товары, у которых sale_percentage больше 0
+        products_on_sale = Product.query.filter(Product.sale > 0).all()
+        if not products_on_sale:
+            message = "Нет товаров со скидкой."
+        else:
+            message = None
+    except Exception as e:
+        message = f"Ошибка при загрузке товаров: {str(e)}"
+        products_on_sale = []  # В случае ошибки отправляем пустой список товаров
+    return render_template('sale.html', products=products_on_sale, message=message)
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     product_type = request.args.get('product_type')  # Получаем тип продукта (product или new_product)
@@ -245,6 +259,17 @@ def remove_from_cart(product_id):
     resp = make_response(redirect(url_for('cart')))
     resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)  # Кука на 365 дней
     return resp
+def get_cart_item_count():
+    cart_cookie = request.cookies.get('cart', '{}')
+    cart_items = json.loads(cart_cookie)
+    return sum(item['quantity'] for item in cart_items.values())
+@app.context_processor
+def inject_cart_item_count():
+    try:
+        count = get_cart_item_count()
+    except Exception:
+        count = 0
+    return dict(cart_item_count=count)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Создаём все таблицы
