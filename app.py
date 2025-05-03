@@ -143,6 +143,68 @@ class ProductDetails(db.Model):
     extra_image6 = db.Column(db.String(500), nullable=True)
     def __repr__(self):
         return f'<ProductDetails {self.id}>'
+class Collection(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # 12 внешних ключей на таблицу Product
+    id_1 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_2 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_3 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_4 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_5 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_6 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_7 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_8 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_9 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_10 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_11 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    id_12 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    # Описание коллекции и основное изображение
+    col_description = db.Column(db.Text, nullable=True)
+    col_image = db.Column(db.String(255), nullable=True)
+    # Связи для удобства работы с объектами Product
+    product_1 = db.relationship('Product', foreign_keys=[id_1])
+    product_2 = db.relationship('Product', foreign_keys=[id_2])
+    product_3 = db.relationship('Product', foreign_keys=[id_3])
+    product_4 = db.relationship('Product', foreign_keys=[id_4])
+    product_5 = db.relationship('Product', foreign_keys=[id_5])
+    product_6 = db.relationship('Product', foreign_keys=[id_6])
+    product_7 = db.relationship('Product', foreign_keys=[id_7])
+    product_8 = db.relationship('Product', foreign_keys=[id_8])
+    product_9 = db.relationship('Product', foreign_keys=[id_9])
+    product_10 = db.relationship('Product', foreign_keys=[id_10])
+    product_11 = db.relationship('Product', foreign_keys=[id_11])
+    product_12 = db.relationship('Product', foreign_keys=[id_12])
+@app.route('/collection/<int:collection_id>')
+def show_collection(collection_id):
+    # Получаем коллекцию по ID
+    collection = Collection.query.get_or_404(collection_id)
+    # Собираем список товаров, исключая None (если товар не был добавлен в коллекцию)
+    products = [
+        collection.product_1,
+        collection.product_2,
+        collection.product_3,
+        collection.product_4,
+        collection.product_5,
+        collection.product_6,
+        collection.product_7,
+        collection.product_8,
+        collection.product_9,
+        collection.product_10,
+        collection.product_11,
+        collection.product_12
+    ]
+    products = [product for product in products if product is not None]
+    # Отправляем данные в шаблон
+    return render_template('collection.html', collection=collection, products=products)
+class CollectionTable(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_col = db.Column(db.Integer, db.ForeignKey('collection.id'), nullable=False)
+    col_image = db.Column(db.String(255), nullable=True)
+    collection = db.relationship('Collection', backref='collection_tables')
+@app.route('/collection_table')
+def collection_table():
+    collections = CollectionTable.query.all()  # Получаем все коллекции из новой таблицы
+    return render_template('collection_table.html', collections=collections)
 @app.route('/index')
 @app.route('/')
 def index():

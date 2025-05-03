@@ -177,15 +177,32 @@ function isElementInViewport(el) {
     const rect = el.getBoundingClientRect();
     return rect.top >= 0 && rect.bottom <= window.innerHeight;
 }
-// Получаем элемент "Новинки"
-const newArrivals = document.querySelector('.new-arrivals');
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.bottom >= 0
+    );
+}
+// Получаем все элементы с классом new-arrivals
+const newArrivalsElements = document.querySelectorAll('.new-arrivals');
 // Добавляем обработчик события прокрутки
 window.addEventListener('scroll', function() {
-    if (isElementInViewport(newArrivals)) {
-        newArrivals.classList.add('visible'); // Добавляем класс для анимации
-    } else {
-        newArrivals.classList.remove('visible'); // Убираем класс, если элемент выходит из видимости
-    }
+    newArrivalsElements.forEach(function(el) {
+        if (isElementInViewport(el)) {
+            el.classList.add('visible');
+        } else {
+            el.classList.remove('visible');
+        }
+    });
+});
+// Вызываем сразу при загрузке страницы
+window.addEventListener('load', function() {
+    newArrivalsElements.forEach(function(el) {
+        if (isElementInViewport(el)) {
+            el.classList.add('visible');
+        }
+    });
 });
 function selectSize(size, el) {
     // Установить выбранный размер в скрытое поле

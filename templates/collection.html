@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Коллекция
+{% endblock %}
+
+{% block menu %}
+    <!-- Меню здесь -->
+{% endblock %}
+
+{% block content %}
+<div class="collection-body">
+    {% if collection.col_image %}
+        <img src="{{ url_for('static', filename=collection.col_image) }}" alt="Коллекция" class="collection-image">
+    {% else %}
+        <img src="https://via.placeholder.com/300" alt="Коллекция" class="collection-image">
+    {% endif %}
+
+    <div class="collection-description">
+        <h1>{{ collection.col_description }}</h1>
+    </div>
+</div>
+<!-- Список товаров из коллекции -->
+<div class="catalog">
+    {% for product in products %}
+            <div class="product">
+                {% if product.image_url %}
+                    <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
+                    <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
+                {% endif %}
+                <h2>{{ product.description }}</h2>
+                <p>{{ product.name }}</p>
+                <p><strong>{{ product.price | int}} ₽</strong></p>
+                    <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product') }}">
+                    <button class="btn">Перейти</button>
+                    </a>
+            </div>
+        {% else %}
+            <p>Товары не найдены</p>
+        {% endfor %}
+    </div>
+{% endblock %}
