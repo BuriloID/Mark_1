@@ -201,12 +201,16 @@ class CollectionTable(db.Model):
     id_col = db.Column(db.Integer, db.ForeignKey('collection.id'), nullable=False)
     col_image = db.Column(db.String(255), nullable=True)
     collection = db.relationship('Collection', backref='collection_tables')
+    col_name = db.Column(db.String(255))  # Добавленный столбец
 @app.route('/collection_table')
 def collection_table():
     collections = CollectionTable.query.all()  # Получаем все коллекции из новой таблицы
     return render_template('collection_table.html', collections=collections)
 @app.route('/index')
 @app.route('/')
+def index():
+    collections = CollectionTable.query.all()  # Получаем все коллекции из базы данных
+    return render_template('index.html', collections=collections)
 def index():
     try:
         products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()  # Получаем 5 товаров из базы данных NewProduct
