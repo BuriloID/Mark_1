@@ -82,12 +82,14 @@ CARDIGA NICK
 <h2 class="new-arrivals">Коллекции</h2>
 <div class="collections">
     {% for collection in collections %}
+    <a href="{{ url_for('show_collection', collection_id=collection.id) }}" class="collection-card-link">
         <div class="collection-card">
             <img src="{{ url_for('static', filename=collection.col_image) }}" alt="{{ collection.col_description }}">
             <div class="collection-info">
-                <a href="{{ url_for('show_collection', collection_id=collection.id) }}" class="btn">{{ collection.col_name }} - Перейти</a>
+                <h3>{{ collection.col_name }}</h3>
             </div>
         </div>
+    </a>
     {% else %}
         <p>Коллекции не найдены</p>
     {% endfor %}
