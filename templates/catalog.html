@@ -39,6 +39,10 @@
     </div>
 {% endblock %}
 {% block content %}
+<form action="{{ url_for('catalog') }}" method="get" class="search-form">
+    <input type="text" name="search" placeholder="Поиск по названию или описанию..." value="{{ request.args.get('search', '') }}">
+    <button type="submit"><i class="fa fa-search"></i> Найти</button>
+</form>
     <div class="catalog">
         {% for product in products %}
             <div class="product">

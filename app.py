@@ -1,12 +1,13 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from flask_cors import CORS
 import telegram, time
 import asyncio
 import hashlib
 import json
 import requests
+from sqlalchemy import or_
 app = Flask(__name__)
 CORS(app)
 CDEK_ACCOUNT = 'твой_account'
@@ -209,8 +210,9 @@ def collection_table():
 @app.route('/index')
 @app.route('/')
 def index():
-    collections = CollectionTable.query.all()  # Получаем все коллекции из базы данных
-    return render_template('index.html', collections=collections)
+    products = NewProduct.query.all()  # <-- Именно NewProduct
+    collections = CollectionTable.query.all()
+    return render_template('index.html', products=products, collections=collections)
 def index():
     try:
         products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()  # Получаем 5 товаров из базы данных NewProduct
@@ -229,13 +231,19 @@ def about():
 def catalog():
     name = request.args.get('name')
     category_name = request.args.get('category')
-    # Запрос только для обычных товаров (не новинок)
+    search_query = request.args.get('search')
     query_product = Product.query
     if category_name:
         query_product = query_product.join(Product.categories).filter(Category.name == category_name)
     if name:
         query_product = query_product.filter(Product.name == name)
-    # Получаем все товары из каталога
+    if search_query:
+        query_product = query_product.filter(
+            or_(
+                Product.name.ilike(f"%{search_query}%"),
+                Product.description.ilike(f"%{search_query}%")
+            )
+        )
     products = query_product.all()
     return render_template('catalog.html', products=products, product_type='catalog')
 @app.route('/new')

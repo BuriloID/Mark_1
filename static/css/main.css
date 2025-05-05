@@ -1172,5 +1172,41 @@ h1 {
     padding: 20px;
     text-align: center;
 }
+.search-form {
+    display: flex;
+    justify-content: flex-end; /* Перемещает форму вправо */
+    margin: 20px auto;
+    max-width: 100%;
+    padding: 0 20px;
+}
+.search-form input[type="text"] {
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    border-radius: 8px 0 0 8px;
+    font-size: 16px;
+    width: 450px;
+    transition: border-color 0.3s;
+}
+.search-form input[type="text"]:focus {
+    outline: none;
+    border-color: #333;
+}
+.search-form button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.search-form button:hover {
+    background-color: #555;
+}
+.search-form i {
+    margin-right: 5px;
+}
+
 
 
