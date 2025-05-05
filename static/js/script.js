@@ -215,11 +215,6 @@ function selectSize(size, el) {
         el.classList.add('selected');
     }
 }   
-const burger = document.querySelector('.burger_media');
-  const menu = document.querySelector('.hor_menu_media');
-  burger.addEventListener('click', () => {
-    menu.classList.toggle('open');
-  });
   let counter = 1;
   const slideCount = 4; // у тебя 4 слайда
   setInterval(() => {
