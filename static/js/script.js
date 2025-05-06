@@ -1,13 +1,53 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Гамбургер меню
-    const burger = document.querySelector(".burger");
-    if (burger) {
-        burger.addEventListener("click", function () {
-            this.classList.toggle("burger_active");
-        });
+    // Бургер-меню для мобильной версии
+    const burger = document.querySelector('.burger_media');
+  const menu = document.getElementById('mobileMenu');
+
+  burger.addEventListener('click', () => {
+    menu.classList.toggle('open');
+  });
+  const catalogLink = document.querySelector("#catalogLink"); // Ссылка на "Каталог"
+  let lastClickTime = 0; // Время последнего клика
+  function isMobile() {
+    return window.innerWidth <= 768; // Если ширина экрана меньше или равна 768px
+  }
+  if (catalogLink && isMobile()) {
+    catalogLink.addEventListener("click", function(e) {
+      const currentTime = new Date().getTime(); // Время текущего клика
+      if (currentTime - lastClickTime < 1200) { // Если два клика происходят за 1200 мс
+        // Переход по ссылке
+        window.location.href = catalogLink.href;
+      } else {
+        // Ожидание второго клика
+        e.preventDefault();
+      }
+      lastClickTime = currentTime; // Обновляем время последнего клика
+    });
+  }
+  // Если пользователь изменяет размер окна (например, с мобильного на десктоп), нужно отключать/включать обработчик
+  window.addEventListener("resize", function() {
+    if (catalogLink) {
+      // Если экран стал мобильным
+      if (isMobile()) {
+        catalogLink.addEventListener("click", clickHandler);
+      } else {
+        catalogLink.removeEventListener("click", clickHandler);
+      }
     }
+  });
+  function clickHandler(e) {
+    const currentTime = new Date().getTime(); // Время текущего клика
+    if (currentTime - lastClickTime < 1200) { // Если два клика происходят за 1200 мс
+      // Переход по ссылке
+      window.location.href = catalogLink.href;
+    } else {
+      // Ожидание второго клика
+      e.preventDefault();
+    }
+    lastClickTime = currentTime; // Обновляем время последнего клика
+  }
     // Обработка кнопки .fa-bars для меню
-    const faBars = document.querySelector('.fa-bars');
+    const faBars = document.querySelector('.fa-bars ');
     if (faBars) {
         faBars.addEventListener("click", function (e) {
             e.preventDefault();
@@ -224,3 +264,27 @@ function selectSize(size, el) {
           counter = 1;
       }
   }, 10000); // 15000 мс = 15 секунд
+// Основной заголовок "Часто задаваемые вопросы"
+const faqToggleBtn = document.querySelector('.faq-toggle');
+const faqSection = document.querySelector('.faq-section');
+faqToggleBtn.addEventListener('click', () => {
+  faqSection.classList.toggle('open');
+  faqToggleBtn.classList.toggle('open'); // для поворота стрелки
+});
+// Все вопросы
+const faqQuestions = document.querySelectorAll('.faq-question');
+faqQuestions.forEach(question => {
+  question.addEventListener('click', () => {
+    const answer = question.nextElementSibling;
+    // Закрыть все ответы и сбросить стрелки
+    document.querySelectorAll('.faq-answer').forEach(a => {
+      if (a !== answer) a.classList.remove('open');
+    });
+    document.querySelectorAll('.faq-question').forEach(q => {
+      if (q !== question) q.classList.remove('open');
+    });
+    // Переключить выбранный
+    answer.classList.toggle('open');
+    question.classList.toggle('open');
+  });
+});

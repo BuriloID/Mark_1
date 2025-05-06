@@ -3,113 +3,147 @@
 body {
     background-color: whitesmoke;
 }
-/* HEADER */
-header{
+    /* HEADER */
+    header{
+        display: flex;
+        position: relative;
+        align-items: center; /* Выравниваем элементы по вертикали */
+        justify-content: space-between; /* Логотип слева, меню по центру */
+        top: 0;
+        padding: 20px;
+        z-index: 1000;
+        background: white;
+        box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+    }
+    .header__img {
+        position: relative;
+        margin: 5px;
+        height: 70px;
+        width: 70px;
+        object-fit: contain;
+    }
+    .burger_media {
+        font-size: 22px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: none;  /* по умолчанию скрыта, включаем ниже */
+        align-self: center;
+    }
+    .hor_menu{
+        flex-grow: 1; /* Меню занимает оставшееся пространство */
     display: flex;
-    position: relative;
-    align-items: center; /* Выравниваем элементы по вертикали */
-    justify-content: space-between; /* Логотип слева, меню по центру */
-    top: 0;
-    padding: 20px;
-    z-index: 1000;
-    background: white;
-    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
-}
-.header__img {
-    position: relative;
-    margin: 5px;
-    height: 70px;
-    width: 70px;
-    object-fit: contain;
-}
-.burger_media {
-    font-size: 22px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: none;  /* по умолчанию скрыта, включаем ниже */
-    align-self: center;
-  }
-  .hor_menu{
-    flex-grow: 1; /* Меню занимает оставшееся пространство */
-   display: flex;
-   justify-content: center; /* Центрируем меню */
-}
-.hor_menu ul {
-   display: flex;
-   list-style: none;
-   padding-left: 0;
-   margin: 0;
-}
-.hor_menu ul li {
-   justify-content: left;
-   font-size: 30px;
-   font-family: "Cormorant Garamond", serif;
-   font-weight: 500;
-   list-style: none;
-   position: relative;
-   float: left;
-   display: block;
-   width: 180px; /* Фиксированная ширина для ровных блоков */
-   text-align: center;
-   box-sizing: border-box;
-}
-.hor_menu ul li a {
-   text-decoration: none;
-   padding: 12px;
-   color: black;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 100%; /* Делаем ссылку равной li */
-   height: 100%;
-   transition: .5s;
-}
-.hor_menu ul li a:hover {
-   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-}
-@media (max-width: 768px) {
-.burger_media {
-    display: block;
-}
-.header__img {
-    width: 40px;
-    height: 40px;
-  }
-header {
-    flex-direction: column; /* элементы будут располагаться друг под другом */
-    align-items: flex-start; /* выравнивание по левому краю */
-    padding: 10px;
-    height: 50px;
-}
-.hor_menu_media {
-    display: none;
-  }
-  /* Показываем меню при открытии (через JS добавляется класс .open) */
-  .hor_menu_media.open {
-    display: block;
-    position: absolute;
-    top: 60px; /* или сколько у тебя высота header */
-    left: 0;
-    width: 100%;
-    background: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 10px 20px;
-    z-index: 999;
-  }
-  .hor_menu_media ul {
-    flex-direction: column;
-    gap: 12px;
+    justify-content: center; /* Центрируем меню */
+    }
+    .hor_menu ul {
+    display: flex;
+    list-style: none;
     padding-left: 0;
-  }
-  .hor_menu_media ul ul {
-    display: none; /* скрываем подменю */
-  }
-  .hor_menu_media ul li:hover > ul {
-    display: block; /* можно заменить на "по клику", если нужно*/ 
-  }
-  }
-  /* HEADER */
+    margin: 0;
+    }
+    .hor_menu ul li {
+    justify-content: left;
+    font-size: 30px;
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    list-style: none;
+    position: relative;
+    float: left;
+    display: block;
+    width: 180px; /* Фиксированная ширина для ровных блоков */
+    text-align: center;
+    box-sizing: border-box;
+    }
+    .hor_menu ul li a {
+    text-decoration: none;
+    padding: 12px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Делаем ссылку равной li */
+    height: 100%;
+    transition: .5s;
+    }
+    .hor_menu ul li a:hover {
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+    }
+    @media (max-width: 768px) {
+        header {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0px;
+            position: relative;
+          } 
+          .burger_media {
+            font-weight: bold;
+            display: block;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+          }
+          .header__img {
+            width: 50px;
+            height: 50px;
+            margin: 0;
+          }
+          .col-md-3 {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+          }
+          .cart-icon {
+            margin-left: auto;
+          }
+          .hor_menu {
+            display: none;
+            flex-direction: column;
+            align-items: center;           /* Центрируем */
+            width: 100%;
+            background: white;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 999;
+            padding: 20px;
+            text-align: center;
+          }
+          .hor_menu.open {
+            display: flex;
+          }
+          .hor_menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            align-items: center;
+          }
+          .hor_menu ul li > ul {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 5px;
+            position: absolute;
+            top: 0;
+            background: white;
+            z-index: 1000; /* Убедитесь, что подменю перекрывает другие элементы */
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Тень для подменю */
+        }
+        /* Когда пункт меню открыт, подменю становится видимым */
+        .hor_menu ul li.open > ul {
+            display: flex;
+        }
+        /* Дополнительные стили для более удобного использования */
+        .hor_menu ul li > a.toggle-sub {
+            cursor: pointer;
+        }
+        }      
 .content{
     transition: .5s;
     position: relative;
@@ -557,6 +591,29 @@ input[name="r"] {
     transform: none;
     background-color: #67798e;
     border: none;  /* Темнее фон при наведении */
+}
+@media screen and (max-width: 768px) {
+    .product {
+        width: 45%; /* Каждая карточка занимает 45% ширины, чтобы поместилось 2 карточки в ряд */
+        max-width: 45%; /* Максимальная ширина карточки */
+        max-height: 380px;
+    }
+    .product h2 {
+        font-size: 0.9em;  /* Уменьшаем размер шрифта для названия */
+    }
+    /* Стили для описания товара */
+    .product p {
+        font-size: 0.7em;  /* Уменьшаем шрифт для описания товара */
+    }
+    /* Стили для цены товара */
+    .product strong {
+        font-size: 0.8em;  /* Уменьшаем шрифт для цены */
+    }
+    /* Стили для кнопки "Перейти" */
+    .product .btn {
+        padding: 8px 15px;  /* Уменьшаем отступы внутри кнопки */
+        font-size: 0.7em;  /* Уменьшаем размер шрифта кнопки */
+    }
 }
 /* Стили для деталях о товаре*/
 .product-container {
@@ -1219,6 +1276,68 @@ h1 {
 .search-form i {
     margin-right: 5px;
 }
-
+.faq-container {
+    width: 80%;
+    margin: 20px auto;
+  }
+  .faq-toggle {
+    width: 100%;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .faq-toggle:hover {
+    text-decoration-line: underline;
+  }
+  .faq-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.3s;
+    padding: 0;
+  }
+  .faq-section.open {
+    max-height: 1000px; /* достаточно большое значение */
+    padding-top: 15px;
+  }
+  .faq-item {
+    margin-bottom: 10px;
+  }
+  .faq-question {
+    width: 100%;
+    padding: 12px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    transition: background-color 0.3s;
+  }
+  .faq-question:hover {
+    background-color: #e0e0e0;
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    margin-top: 5px;
+    border-left: 3px solid black;
+    padding: 0 10px;
+    transition: max-height 0.5s ease, padding 0.3s;
+  }
+  .faq-answer.open {
+    max-height: 200px;
+    padding: 10px;
+  }
+  .faq-answer p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  
 
 

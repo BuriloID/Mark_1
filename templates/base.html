@@ -23,10 +23,10 @@
           <img class="header__img" src="{{url_for('static', filename='img/icon.png')}}" alt="law">
         </a>
       </div>
-      <nav class="hor_menu">
-      <ul>
+      <nav id="mobileMenu" class="hor_menu">
+        <ul>
         <li><a href="{{url_for('index')}}" >Главная</a></li>
-        <li><a href="{{url_for('catalog')}}" class="{% if not selected_category %}active{% endif %}">Каталог</a>
+        <li><a href="{{url_for('catalog')}}" id="catalogLink" class="{% if not selected_category %}active{% endif %}">Каталог</a>
               <ul>
                   <li><a href="{{ url_for('catalog', category='women') }}">Женщины</a>
                       <ul>
