@@ -143,7 +143,8 @@
                   {% for product_id, item in cart.items() %}
                       <input type="hidden" name="cart_items" value="{{ item.name }}">
                       <input type="hidden" name="cart_item_description" value="{{ item.description }}">
-                      <input type="hidden" name="cart_item_price" value="{{ item.price }}">
+                      <input type="hidden" name="cart_item_price" value="{{ (item.price * (1 - item.sale / 100)) | round(0, 'floor') | int if item.sale else item.price }}">
+                      <input type="hidden" name="cart_item_old_price" value="{{ item.price }}">
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
