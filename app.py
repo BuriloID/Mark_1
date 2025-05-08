@@ -38,11 +38,10 @@ TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
 # Замените на ваш чат ID
 CHAT_ID = 5208308918
 bot = telegram.Bot(token=TOKEN)
-def send_message_sync(chat_id, text):
-    # Запуск асинхронной функции в синхронном контексте
+def send_message_sync(chat_id, text, reply_markup=None):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text))
+    return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup))
 @app.route('/buy', methods=['POST'])
 def buy():
     size = request.form.get('selectedSize')  # Новый параметр
@@ -62,6 +61,7 @@ def buy():
     cart_descriptions = request.form.getlist('cart_item_description')
     cart_prices = request.form.getlist('cart_item_price')
     cart_quantities = request.form.getlist('cart_item_quantity')
+    order_id = int(time.time())
     message = f"🆕 Новый заказ:\n👤 Имя: {first_name}\n👤 Фамилия: {last_name}\n👤 Отчество: {middle_name if middle_name else 'Не указано'}\n📞 Телефон: {phone}\n📧 Email: {email}\n"
     if cart_items:
         cart_total = 0
@@ -70,13 +70,21 @@ def buy():
             message += f"- {name} ({description}): {price} ₽ x {quantity}\n"
             cart_total += float(price) * int(quantity)
         message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
+        message += f"\n🆔 Заказ ID: {order_id}\n"
+        keyboard = telegram.InlineKeyboardMarkup([[
+    telegram.InlineKeyboardButton("✅ Начать выполнение", callback_data=f"start_{order_id}")
+]])
     elif product_name:
         message += f"📦 Товар: {product_name} ({product_descriptions})\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
+        message += f"\n🆔 Заказ ID: {order_id}\n"
+        keyboard = telegram.InlineKeyboardMarkup([[
+    telegram.InlineKeyboardButton("✅ Начать выполнение", callback_data=f"start_{order_id}")
+]])
     if size:
         message += f"📏 Размер: {size}\n"
     try:
         # Отправка сообщения
-        send_message_sync(CHAT_ID, message)
+        send_message_sync(CHAT_ID, message, reply_markup=keyboard)
         return jsonify({'status': 'success', 'message': 'Заказ успешно отправлен!'}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Ошибка при отправке сообщения: {str(e)}'}), 500
