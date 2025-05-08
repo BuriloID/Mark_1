@@ -896,10 +896,6 @@ h1 {
     margin: 0;
     color: #333;
 }
-.cart-item-price {
-    font-size: 20px;
-    color: black;
-}
 .remove-item {
     margin-right: 20px;
     color: black;
@@ -1367,6 +1363,23 @@ h1 {
     font-family: 'Montserrat', sans-serif;
     font-size: 26px;
     font-weight: normal;
+}
+.cart-item-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    margin-top: 5px;
+}
+.cart-item-price .old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    margin-right: 5px;
+}
+.cart-item-price .new-price {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    color: #000;
 }
 
   

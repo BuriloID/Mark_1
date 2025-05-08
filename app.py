@@ -293,7 +293,9 @@ def cart():
     # Получаем куку с корзиной, если она есть
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
-    total_price = sum(item['price'] * item['quantity'] for item in cart_items.values())
+    total_price = sum(
+    (item['price'] * (1 - item.get('sale', 0) / 100)) * item['quantity']
+    for item in cart_items.values())
     return render_template('cart.html', cart=cart_items, total_price=total_price)
 @app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_id):
@@ -309,6 +311,7 @@ def add_to_cart(product_id):
             'name': product.name,
             'description': product.description,
             'price': product.price,
+            'sale': product.sale,
             'quantity': 1,
             'image_url': product.image_url
         }
