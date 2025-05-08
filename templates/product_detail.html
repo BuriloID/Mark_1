@@ -27,7 +27,20 @@
             <p class="full-description">{{ details.full_description }}</p>
             <h2>Состав</h2>
             <p class="full-description">{{ details.composition }}</p>
-            <strong class="product-price">{{ product.price | int}} ₽</strong>
+            <div class="product-price-wrapper">
+                {% if product.sale %}
+                    <div class="price-with-badge">
+                        <div class="discount-badge">-{{ product.sale }}%</div>
+                        <div class="old-price">{{ product.price | int }} ₽</div>
+                    </div>
+                    <div class="new-price">
+                        {{ (product.price * (1 - product.sale / 100)) | round(0, 'floor') | int }} ₽
+                    </div>
+                {% else %}
+                    <div class="new-price">{{ product.price | int }} ₽</div>
+                {% endif %}
+            </div>
+            
             <div class="btn-group">
                 <button class="buy-button" id="open_pop_up">Купить</button>
                 <a href="{{ url_for('add_to_cart', product_id=product.id) }}">
