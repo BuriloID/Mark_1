@@ -43,24 +43,22 @@
     <input type="text" name="search" placeholder="Поиск по названию или описанию..." value="{{ request.args.get('search', '') }}">
     <button type="submit"><i class="fa fa-search"></i> Найти</button>
 </form>
-<div class="catalog">
-    {% for product in products %}
-        <a href="{{ url_for('product_detail', product_id=product.id, product_type='product') }}" class="product-link">
+    <div class="catalog">
+        {% for product in products %}
             <div class="product">
-                {% if product.image_url %}
-                    <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
-                    <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
-                {% else %}
-                    <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
-                {% endif %}
-                <h2>{{ product.description }}</h2>
-                <p>{{ product.name }}</p>
-                <p><strong>{{ product.price | int }} ₽</strong></p>
-            </div>
+    {% if product.image_url %}
+        <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
+        <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
+    {% else %}
+        <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
+    {% endif %}
+    <h2>{{ product.description }}</h2>
+    <p>{{ product.name }}</p>
+    <p><strong>{{ product.price | int }} ₽</strong></p>
+        <a href="{{ url_for('product_detail', product_id=product.id, product_type='product') }}">
+        <button class="btn">Перейти</button>
         </a>
-    {% endfor %}
-</div>
-
+    </div>
         {% else %}
             <p>Товары не найдены</p>
         {% endfor %}
