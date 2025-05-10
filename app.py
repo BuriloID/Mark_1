@@ -264,20 +264,15 @@ def collection_table():
 @app.route('/index')
 @app.route('/')
 def index():
-    products = NewProduct.query.all()  # <-- Именно NewProduct
-    collections = CollectionTable.query.all()
-    return render_template('index.html', products=products, collections=collections)
-def index():
     try:
-        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()  # Получаем 5 товаров из базы данных NewProduct
-        if not products:  # Если список пустой
-            message = "Товары не найдены"
-        else:
-            message = None  # Если товары есть, не передаем сообщение
+        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()
+        collections = CollectionTable.query.all()
+        message = None if products else "Товары не найдены"
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"
-        products = []  # В случае ошибки отправляем пустой список товаров
-    return render_template('index.html', products=products)
+        products = []
+        collections = []
+    return render_template('index.html', products=products, collections=collections, message=message)
 @app.route('/about')
 def about():
     return render_template('about.html')
