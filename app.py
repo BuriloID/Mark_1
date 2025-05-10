@@ -265,7 +265,7 @@ def collection_table():
 @app.route('/')
 def index():
     try:
-        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(5).all()
+        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(4).all()
         collections = CollectionTable.query.all()
         message = None if products else "Товары не найдены"
     except Exception as e:
