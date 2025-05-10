@@ -40,7 +40,6 @@
                     <div class="new-price">{{ product.price | int }} ₽</div>
                 {% endif %}
             </div>
-            
             <div class="btn-group">
                 <button class="buy-button" id="open_pop_up">Купить</button>
                 <a href="{{ url_for('add_to_cart', product_id=product.id) }}">

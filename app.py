@@ -74,18 +74,50 @@ def buy():
         keyboard = telegram.InlineKeyboardMarkup([[
     telegram.InlineKeyboardButton("✅ Начать выполнение", callback_data=f"start_{order_id}")
 ]])
+        order = Order(
+            order_id=str(order_id),
+            status='pending',
+            cart_data=json.dumps({
+                'items': list(zip(cart_items, cart_prices, cart_quantities, cart_descriptions))
+            }),
+            customer_info=json.dumps({
+                'first_name': first_name,
+                'last_name': last_name,
+                'middle_name': middle_name,
+                'phone': phone,
+                'email': email
+            })
+        )
+        db.session.add(order)
+        db.session.commit()  # Убедитесь, что данные сохраняются
     elif product_name:
         message += f"📦 Товар: {product_name} ({product_descriptions})\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
         message += f"\n🆔 Заказ ID: {order_id}\n"
         keyboard = telegram.InlineKeyboardMarkup([[
     telegram.InlineKeyboardButton("✅ Начать выполнение", callback_data=f"start_{order_id}")
 ]])
-    if size:
-        message += f"📏 Размер: {size}\n"
+        order = Order(
+            order_id=str(order_id),
+            status='pending',
+            cart_data=json.dumps({
+                'items': list(zip(cart_items, cart_prices, cart_quantities, cart_descriptions))
+            }),
+            customer_info=json.dumps({
+                'first_name': first_name,
+                'last_name': last_name,
+                'middle_name': middle_name,
+                'phone': phone,
+                'email': email
+            })
+        )
+        db.session.add(order)
+        db.session.commit()  # Убедитесь, что данные сохраняются
     try:
         # Отправка сообщения
         send_message_sync(CHAT_ID, message, reply_markup=keyboard)
-        return jsonify({'status': 'success', 'message': 'Заказ успешно отправлен!'}), 200
+        resp = make_response(jsonify({'status': 'success', 'message': 'Заказ успешно отправлен!'}), 200)
+        resp.set_cookie('cart', '{}', max_age=0)  # Очистить корзину в куках
+        return resp
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Ошибка при отправке сообщения: {str(e)}'}), 500
 # Настройки для базы данных
@@ -102,11 +134,25 @@ new_product_category = db.Table('new_product_category',
                                           primary_key=True),
                                 db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
                                 )
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.String(50), unique=True, nullable=False)
+    status = db.Column(db.String(20), default='pending')  # 'pending' или 'processing'
+    cart_data = db.Column(db.Text, nullable=False)  # JSON с товарами
+    customer_info = db.Column(db.Text, nullable=False)  # JSON с данными клиента
+    created_at = db.Column(db.DateTime, default=db.func.now())
+@app.route('/start_order/<int:order_id>', methods=['POST'])
+def start_order(order_id):
+    order = Order.query.filter_by(order_id=str(order_id)).first()
+    if order:
+        order.status = 'processing'
+        db.session.commit()
+        return jsonify({'status': 'ok'})
+    return jsonify({'status': 'not found'}), 404
 # Модель Категорий
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)  # 'men', 'women', 'acs'
-
     def __repr__(self):
         return f'<Category {self.name}>'
 # Основной товар
@@ -301,6 +347,13 @@ def cart():
     # Получаем куку с корзиной, если она есть
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
+    # Проверка: если заказ уже начат — очистить корзину
+    for order in Order.query.filter_by(status='processing').all():
+        saved_items = json.loads(order.cart_data).get('items', [])
+        # Пример сравнения: если все совпадают — очистить корзину
+        if all(str(item[0]) in cart_items for item in saved_items):
+            cart_items = {}
+            break
     total_price = sum(
     (item['price'] * (1 - item.get('sale', 0) / 100)) * item['quantity']
     for item in cart_items.values())

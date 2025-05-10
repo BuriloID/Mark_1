@@ -46,6 +46,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     lastClickTime = currentTime; // Обновляем время последнего клика
   }
+  const isSuccess = document.body.dataset.orderSuccess === "true";
+    if (isSuccess) {
+        setTimeout(function () {
+            location.reload();
+        }, 1000);
+    }
     // Обработка кнопки .fa-bars для меню
     const faBars = document.querySelector('.fa-bars ');
     if (faBars) {
