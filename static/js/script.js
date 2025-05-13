@@ -2,7 +2,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Бургер-меню для мобильной версии
     const burger = document.querySelector('.burger_media');
   const menu = document.getElementById('mobileMenu');
-
+  const toggleButton = document.querySelector('.chat-toggle');
+  const socialPanel = document.querySelector('.social');
+  
+    toggleButton.addEventListener('click', function () {
+    socialPanel.classList.toggle('active');
+      });
   burger.addEventListener('click', () => {
     menu.classList.toggle('open');
   });

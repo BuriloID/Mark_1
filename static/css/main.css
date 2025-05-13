@@ -144,26 +144,8 @@ body {
         .hor_menu ul li > a.toggle-sub {
             cursor: pointer;
         }
-        }      
-.content{
-    transition: .5s;
-    position: relative;
-    padding-bottom: 60px;
-}
-.content_active{
-    transform: translateX(10%);
-}
-.floter {
-    background-color: #DCDCDC;
-    height: 200px;
-    transition: .5s;
-    position: sticky;
-    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-}
-.floter_active {
-    transform: translateX(10%);
-}
-/* Подменю */
+        } 
+        /* Подменю */
 .hor_menu ul li ul {
     position: absolute;
     left: 0;
@@ -203,6 +185,24 @@ body {
 /* Показываем подменю при наведении */
 .hor_menu ul li:hover > ul {
     display: block;
+}     
+.content{
+    transition: .5s;
+    position: relative;
+    padding-bottom: 60px;
+}
+.content_active{
+    transform: translateX(10%);
+}
+.floter {
+    background-color: #DCDCDC;
+    height: 200px;
+    transition: .5s;
+    position: sticky;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+}
+.floter_active {
+    transform: translateX(10%);
 }
 /*Иконки социальных сетей */
 .social{
@@ -263,6 +263,56 @@ body {
 .social__icon:hover:after{
     transform: translate(0);
 }
+.chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  @media (max-width: 768px) {
+    .floter {
+      height: auto;
+      padding: 20px 10px;
+    }
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .col-md-4 {
+      justify-content: flex-start;
+    }
+    .footer-links {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      padding-left: 10px;
+      gap: 10px;
+    }
+    .footer-link {
+      font-size: 18px;
+    }
+    /* Важно: эти правила вынесены на тот же уровень */
+    .social {
+      display: none; /* скрыта по умолчанию */
+      position: fixed;
+      right: 20px;
+      bottom: 85px; /* над кнопкой */
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .social.active {
+      display: flex;
+    }
+  }  
 /* Слайдер */
 .slider{
     box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
@@ -691,7 +741,6 @@ input[name="r"] {
     font-size: 36px;
     font-weight: bold;
 }
-
 .size-options {
     display: flex;
     gap: 10px;
@@ -1072,12 +1121,10 @@ h1 {
     font-family: "Playfair", serif;
     font-weight: bold; 
 }
-
 .cookie-button:hover {
     background-color: #45a049;
     transform: scale(1.05);
 }
-
 .cookie-warning {
     background-color: #f8d7da;
     color: #721c24;
