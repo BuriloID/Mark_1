@@ -5,9 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const toggleButton = document.querySelector('.chat-toggle');
   const socialPanel = document.querySelector('.social');
   
-    toggleButton.addEventListener('click', function () {
-    socialPanel.classList.toggle('active');
-      });
+  toggleButton.addEventListener('click', function () {
+      // Переключаем отображение социальных иконок
+      socialPanel.classList.toggle('active');
+      
+      // Переключаем активное состояние кнопки, чтобы изменить её цвет
+      toggleButton.classList.toggle('active');
+  });
   burger.addEventListener('click', () => {
     menu.classList.toggle('open');
   });
