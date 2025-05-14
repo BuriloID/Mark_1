@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currentIndex = Math.max(currentIndex - 1, 0);
       updateIndex();
     }
+  });
   // Инициализируем индекс, если один из radio уже выбран
   radios.forEach((radio, i) => {
     if (radio.checked) currentIndex = i;
@@ -236,7 +237,6 @@ document.getElementById('cookie-settings').onclick = function() {
     document.getElementById('cookie-warning').style.display = 'none';
     this.style.display = 'none'; // прячем кнопку настроек
 };
-});
 function changeMainImage(newSrc) {
     let mainImage = document.getElementById("mainImage");
     if (mainImage && mainImage.src !== newSrc) {
