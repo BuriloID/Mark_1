@@ -1,20 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Бургер-меню для мобильной версии
     const burger = document.querySelector('.burger_media');
-  const menu = document.getElementById('mobileMenu');
-  const toggleButton = document.querySelector('.chat-toggle');
-  const socialPanel = document.querySelector('.social');
+    const menu = document.getElementById('mobileMenu');
+    const toggleButton = document.querySelector('.chat-toggle');
+    const socialPanel = document.querySelector('.social');
   
-  toggleButton.addEventListener('click', function () {
-      // Переключаем отображение социальных иконок
-      socialPanel.classList.toggle('active');
-      
-      // Переключаем активное состояние кнопки, чтобы изменить её цвет
-      toggleButton.classList.toggle('active');
-  });
-  burger.addEventListener('click', () => {
-    menu.classList.toggle('open');
-  });
+        toggleButton.addEventListener('click', function () {
+        // Переключаем отображение социальных иконок
+        socialPanel.classList.toggle('active');
+        // Переключаем активное состояние кнопки, чтобы изменить её цвет
+        toggleButton.classList.toggle('active');
+        });
+        burger.addEventListener('click', () => {
+        menu.classList.toggle('open');
+        });
   const catalogLink = document.querySelector("#catalogLink"); // Ссылка на "Каталог"
   let lastClickTime = 0; // Время последнего клика
   function isMobile() {
@@ -44,6 +43,34 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+  const slides = document.querySelector(".slides");
+  const radios = document.querySelectorAll('input[name="r"]');
+  let startX = 0;
+  let endX = 0;
+  let currentIndex = 0;
+  const updateIndex = () => {
+    radios[currentIndex].checked = true;
+  };
+  slides.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+  slides.addEventListener("touchend", (e) => {
+    endX = e.changedTouches[0].clientX;
+    if (startX - endX > 50) {
+      // swipe left
+      currentIndex = Math.min(currentIndex + 1, radios.length - 1);
+      updateIndex();
+    } else if (endX - startX > 50) {
+      // swipe right
+      currentIndex = Math.max(currentIndex - 1, 0);
+      updateIndex();
+    }
+  // Инициализируем индекс, если один из radio уже выбран
+  radios.forEach((radio, i) => {
+    if (radio.checked) currentIndex = i;
+    radio.addEventListener("change", () => (currentIndex = i));
+  });
+});
   function clickHandler(e) {
     const currentTime = new Date().getTime(); // Время текущего клика
     if (currentTime - lastClickTime < 1200) { // Если два клика происходят за 1200 мс
@@ -140,15 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
          if (popup) popup.classList.add('active');
      });
  }
-    // Инициализация виджета СДЭК
-    new window.CDEKWidget({
-        root: 'cdek-map',
-        apiKey: 'твой-ключ-яндекс-карт',
-        from: 'Москва',
-        servicePath: 'http://localhost:5000/service',
-        defaultLocation: 'Москва'
-      });
-// Проверка наличия куки для согласия
+    // Проверка наличия куки для согласия
 if (!getCookie('cookies_accepted')) {
     console.log('Cookie not found, showing banner.');
     document.getElementById('cookie-banner').style.display = 'block';  // Показываем баннер

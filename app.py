@@ -10,29 +10,6 @@ import requests
 from sqlalchemy import or_
 app = Flask(__name__)
 CORS(app)
-#CDEK_ACCOUNT = 'твой_account'
-#CDEK_SECURE = 'твой_secure_key'
-#@app.route('/service', methods=['POST'])
-#def cdek_service():
-#    req_data = request.get_json()
- #   # Генерация security hash
- #   secure = hashlib.md5(f"{CDEK_ACCOUNT}&{CDEK_SECURE}".encode()).hexdigest()
- #   headers = {
- #       "Content-Type": "application/json"
- #   }
-  #  payload = {
-  #      "account": CDEK_ACCOUNT,
-  #      "secure": secure,
-  #      "date": time.strftime("%Y-%m-%d %H:%M:%S"),
-   #     **req_data
-   # }
-   # # Запрос к СДЭК
-   # response = requests.post(
-    #    "https://widget.cdek.ru/widget/scripts/service.php",
-    #   headers=headers,
-     #   data=json.dumps(payload)
-   # )
-   # return jsonify(response.json())
 # Подставьте ваш токен
 TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
 # Замените на ваш чат ID
