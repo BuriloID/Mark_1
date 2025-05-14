@@ -380,6 +380,12 @@ def inject_cart_item_count():
     except Exception:
         count = 0
     return dict(cart_item_count=count)
+def inject_cart_item_count():
+    try:
+        count = get_cart_item_count()
+    except Exception:
+        count = 0
+    return dict(cart_item_count=count)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Создаём все таблицы
