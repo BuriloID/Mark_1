@@ -787,34 +787,6 @@ input[name="r"] {
     font-size: 36px;
     font-weight: bold;
 }
-.size-options {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-.size-options button {
-    width: 50px;           /* фиксированная ширина */
-    height: 50px;          /* фиксированная высота */
-    background: white;
-    border: 2px solid black;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 6px;    /* скругление углов (по желанию) */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;            /* убираем внутренние отступы */
-}
-.size-options button:hover {
-    background: black;
-    color: white;
-}
-.size-options button.selected {
-    background: black;
-    color: white;
-}
 .btn-group {
     display: flex;
     gap: 10px;
@@ -878,6 +850,71 @@ input[name="r"] {
     transform: scale(1.1); /* Скалируем элемент на 10% при наведении */
     color: black; /* Цвет текста при наведении */
 }
+@media (max-width: 768px) {
+    .product-container {
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      align-items: center;
+    }
+    .product-image {
+      width: 100%;
+      height: auto;
+    }
+    .product-image img {
+      height: auto;
+      max-height: 400px;
+    }
+    .thumbnails {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+      margin: 10px 0;
+    }
+    .thumbnails img {
+      width: 55px;
+      height: 55px;
+    }
+    .product-info {
+        margin-top: -20px;
+      position: static;
+      left: 0;
+      padding: 5px;
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+    .product-info h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    .product-description,
+    .full-description,
+    .product-size {
+      font-size: 16px;
+      max-width: 100%;
+      margin-bottom: 5px;
+    }
+    .btn-group {
+      flex-direction: row;
+      gap: 5px;
+      justify-content: space-between;
+      margin-top: 10px;
+      width: 100%;
+    }
+    .buy-button {
+      flex: 1;
+      font-size: 16px;
+      padding: 10px;
+    }
+    .back-button {
+      position: static;
+      margin-bottom: 10px;
+      font-size: 16px;
+      align-self: flex-start;
+    }
+  }  
 /* Общие стили для контейнера */
 .directory {
     margin: 20px;
