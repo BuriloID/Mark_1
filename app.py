@@ -332,7 +332,12 @@ def cart():
     return render_template('cart.html', cart=cart_items, total_price=total_price)
 @app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_id):
-    product = Product.query.get_or_404(product_id)
+    product = Product.query.get(product_id)
+    if not product:
+        product = NewProduct.query.get(product_id)
+
+    if not product:
+        return "Товар не найден", 404
     # Получаем куку с корзиной, если она есть
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
