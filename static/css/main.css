@@ -404,7 +404,7 @@ input[name="r"] {
       height: 215px; /* уменьшенная высота */
     }
     .navigation {
-      top: 300px; /* ближе к низу */
+      top: 290px; /* ближе к низу */
     }
     .bar {
         height: 8px;
