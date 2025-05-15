@@ -461,6 +461,28 @@ input[name="r"] {
     transition:all .4s ease;
     opacity: .6;
 }
+@media (max-width: 480px) {
+    .image__url {
+        margin: 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .picture_url {
+        flex: 1 1 100%;
+        max-width: 100%;
+        aspect-ratio: 1 / 1; /* 👈 делает квадрат */
+    }
+    .picture_url img {
+        max-height: none;
+        height: 100%;
+    }
+    .image-text {
+        font-size: 36px;
+        padding: 3px 6px;
+        top: 8px;
+        right: 8px;
+    }
+}
 /* БОКОВОЕ МЕНЮ */
 .menu {
     border-bottom-right-radius: 20px;
