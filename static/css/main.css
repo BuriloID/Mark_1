@@ -350,7 +350,7 @@ body {
 .navigation {
     z-index: 300;
     position: absolute;
-    top: 550px;
+    top: 720px;
     left: 50%;
     transform:translateX(-50%);
     display: flex;
@@ -404,7 +404,7 @@ input[name="r"] {
       height: 215px; /* уменьшенная высота */
     }
     .navigation {
-      top: 200px; /* ближе к низу */
+      top: 300px; /* ближе к низу */
     }
     .bar {
         height: 8px;
@@ -1255,6 +1255,13 @@ h1 {
     font-weight: bold;
     text-align: left;
     margin: 30px 0 30px 30px;
+}
+@media (max-width: 768px) {
+    .new-arrivals {
+        font-size: 24px;
+        margin: 20px 15px;
+        text-align: left;
+    }
 }
 .new-arrivals.visible {
     opacity: 1; /* Делает элемент видимым */
