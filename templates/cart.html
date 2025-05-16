@@ -38,6 +38,23 @@
     {% else %}
         <p style="margin-left: 20px">Корзина пуста</p>
     {% endif %}
-    <button class="continue-shopping" id="open_pop_up">Купить</button>
+    <form method="POST" action="{{ url_for('make_order') }}">
+    <button class="continue-shopping" type="submit">Купить</button>
+</form>
     <a href="/" class="continue-shopping">Продолжить покупки</a>
+<h2>Ожидание принятия заказа</h2>
+{% for order in pending_orders %}
+    <div>
+        <p>Заказ #{{ order.order_id }}</p>
+        <!-- покажи содержимое из order.cart_data -->
+    </div>
+{% endfor %}
+
+<h2>Выполняются</h2>
+{% for order in processing_orders %}
+    <div>
+        <p>Заказ #{{ order.order_id }} — В обработке</p>
+        <!-- показать содержимое -->
+    </div>
+{% endfor %}
 {% endblock %}

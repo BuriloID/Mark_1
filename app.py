@@ -19,6 +19,17 @@ def send_message_sync(chat_id, text, reply_markup=None):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup))
+@bot.callback_query_handler(func=lambda call: call.data.startswith("start_"))
+def handle_order_accept(call):
+    order_id = call.data.split("_")[1]
+    try:
+        response = requests.post(f"https://mark-1-4z1g.onrender.com/start_order/{order_id}")
+        if response.status_code == 200:
+            bot.send_message(call.message.chat.id, f"✅ Заказ {order_id} принят в работу.")
+        else:
+            bot.send_message(call.message.chat.id, f"❌ Ошибка: заказ не найден.")
+    except Exception as e:
+        bot.send_message(call.message.chat.id, f"Ошибка при обработке: {str(e)}")
 @app.route('/buy', methods=['POST'])
 def buy():
     size = request.form.get('selectedSize')  # Новый параметр
@@ -316,20 +327,54 @@ def client():
     return render_template('client.html')
 @app.route('/cart')
 def cart():
-    # Получаем куку с корзиной, если она есть
     cart_cookie = request.cookies.get('cart', '{}')
-    cart_items = json.loads(cart_cookie)  # Преобразуем строку обратно в словарь
-    # Проверка: если заказ уже начат — очистить корзину
-    for order in Order.query.filter_by(status='processing').all():
-        saved_items = json.loads(order.cart_data).get('items', [])
-        # Пример сравнения: если все совпадают — очистить корзину
-        if all(str(item[0]) in cart_items for item in saved_items):
-            cart_items = {}
-            break
+    cart_items = json.loads(cart_cookie)
+
     total_price = sum(
-    (item['price'] * (1 - item.get('sale', 0) / 100)) * item['quantity']
-    for item in cart_items.values())
-    return render_template('cart.html', cart=cart_items, total_price=total_price)
+        (item['price'] * (1 - item.get('sale', 0) / 100)) * item['quantity']
+        for item in cart_items.values()
+    )
+
+    pending_orders = Order.query.filter_by(status='pending').order_by(Order.created_at.desc()).all()
+    processing_orders = Order.query.filter_by(status='processing').order_by(Order.created_at.desc()).all()
+
+    return render_template('cart.html',
+                           cart=cart_items,
+                           total_price=total_price,
+                           pending_orders=pending_orders,
+                           processing_orders=processing_orders)
+@app.route('/make_order', methods=['POST'])
+def make_order():
+    cart_cookie = request.cookies.get('cart', '{}')
+    cart_items = json.loads(cart_cookie)
+
+    if not cart_items:
+        return redirect(url_for('cart'))
+
+    first_name = request.form.get('firstName')
+    last_name = request.form.get('lastName')
+    middle_name = request.form.get('middleName')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
+
+    order = Order(
+        cart_data=json.dumps({'items': list(cart_items.items())}),
+        status='pending',
+        customer_info=json.dumps({
+            'first_name': first_name,
+            'last_name': last_name,
+            'middle_name': middle_name,
+            'phone': phone,
+            'email': email
+        })
+    )
+    db.session.add(order)
+    db.session.commit()
+
+    response = redirect(url_for('cart'))
+    response.set_cookie('cart', '{}', max_age=0)
+    return response
+
 @app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_id):
     product = Product.query.get(product_id)
