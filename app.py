@@ -7,6 +7,7 @@ import asyncio
 import hashlib
 import json
 import requests
+import threading
 from sqlalchemy import or_
 app = Flask(__name__)
 CORS(app)
@@ -14,6 +15,15 @@ CORS(app)
 TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
 # Замените на ваш чат ID
 CHAT_ID = 5208308918
+orders = {1: {"status": "new"}, 2: {"status": "new"}}
+@app.route('/start_order/<int:order_id>', methods=['POST'])
+def start_order(order_id):
+    order = Order.query.filter_by(order_id=str(order_id)).first()
+    if order:
+        order.status = 'processing'
+        db.session.commit()
+        return jsonify({'status': 'ok'})
+    return jsonify({'status': 'not found'}), 404
 bot = telegram.Bot(token=TOKEN)
 def send_message_sync(chat_id, text, reply_markup=None):
     loop = asyncio.new_event_loop()
@@ -23,7 +33,7 @@ def send_message_sync(chat_id, text, reply_markup=None):
 def handle_order_accept(call):
     order_id = call.data.split("_")[1]
     try:
-        response = requests.post(f"https://mark-1-4z1g.onrender.com/start_order/{order_id}")
+        response = requests.post(f"http://127.0.0.1:5000/start_order/{order_id}")
         if response.status_code == 200:
             bot.send_message(call.message.chat.id, f"✅ Заказ {order_id} принят в работу.")
         else:
@@ -129,14 +139,6 @@ class Order(db.Model):
     cart_data = db.Column(db.Text, nullable=False)  # JSON с товарами
     customer_info = db.Column(db.Text, nullable=False)  # JSON с данными клиента
     created_at = db.Column(db.DateTime, default=db.func.now())
-@app.route('/start_order/<int:order_id>', methods=['POST'])
-def start_order(order_id):
-    order = Order.query.filter_by(order_id=str(order_id)).first()
-    if order:
-        order.status = 'processing'
-        db.session.commit()
-        return jsonify({'status': 'ok'})
-    return jsonify({'status': 'not found'}), 404
 # Модель Категорий
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
