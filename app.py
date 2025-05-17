@@ -29,8 +29,8 @@ def send_message_sync(chat_id, text, reply_markup=None):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop.run_until_complete(bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup))
-@bot.callback_query_handler(func=lambda call: call.data.startswith("start_"))
-def handle_order_accept(call):
+#@bot.callback_query_handler(func=lambda call: call.data.startswith("start_"))
+#def handle_order_accept(call):
     order_id = call.data.split("_")[1]
     try:
         response = requests.post(f"http://127.0.0.1:5000/start_order/{order_id}")
