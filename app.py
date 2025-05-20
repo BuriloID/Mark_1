@@ -261,12 +261,17 @@ def about():
 
 @app.route('/catalog')
 def catalog():
-    name = request.args.get('name')
-    category_name = request.args.get('category')
-    search_query = request.args.get('search')
+    page = request.args.get('page', 1, type=int)
+    per_page = 12  # Сколько товаров на одной странице
+
+    # Обычные товары
     query_product = Product.query
+    category_name = request.args.get('category')
+    name = request.args.get('name')
+    search_query = request.args.get('search')
+
     if category_name:
-        query_product = query_product.join(Product.categories).filter(Category.name == category_name)
+        query_product = query_product.filter(Product.category == category_name)
     if name:
         query_product = query_product.filter(Product.name == name)
     if search_query:
@@ -276,9 +281,38 @@ def catalog():
                 Product.description.ilike(f"%{search_query}%")
             )
         )
-    products = query_product.all()
-    return render_template('catalog.html', products=products, product_type='catalog')
 
+    # Новинки
+    query_new = NewProduct.query
+    if category_name:
+        query_new = query_new.filter(NewProduct.category == category_name)
+    if name:
+        query_new = query_new.filter(NewProduct.name == name)
+    if search_query:
+        query_new = query_new.filter(
+            or_(
+                NewProduct.name.ilike(f"%{search_query}%"),
+                NewProduct.description.ilike(f"%{search_query}%")
+            )
+        )
+    all_products = query_new.all() + query_product.all()
+    # Пагинация руками (т.к. объединённый список)
+    total = len(all_products)
+    start = (page - 1) * per_page
+    end = start + per_page
+    products = all_products[start:end]
+    pages = (total + per_page - 1) // per_page  # Количество страниц
+# Удаляем 'page' из аргументов запроса для пагинации
+    args = request.args.to_dict(flat=True)
+    args.pop('page', None)
+    return render_template(
+        'catalog.html',
+        products=products,
+        page=page,
+        pages=pages,
+        args=args,  # передаём исправленный словарь!
+        request=request
+    )
 @app.route('/new')
 def new():
     try:

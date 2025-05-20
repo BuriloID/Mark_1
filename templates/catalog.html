@@ -46,6 +46,9 @@
     <div class="catalog">
         {% for product in products %}
             <div class="product">
+                {% if product.__class__.__name__ == 'NewProduct' %}
+            <div class="new-label">New</div>
+        {% endif %}
     {% if product.image_url %}
         <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
         <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
@@ -63,4 +66,21 @@
             <p>Товары не найдены</p>
         {% endfor %}
     </div>
+    {% if pages > 1 %}
+<nav class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('catalog', page=page-1, **args) }}">&laquo;</a>
+    {% endif %}
+    {% for p in range(1, pages+1) %}
+        {% if p == page %}
+            <span class="current">{{ p }}</span>
+        {% else %}
+            <a href="{{ url_for('catalog', page=p, **args) }}">{{ p }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page < pages %}
+        <a href="{{ url_for('catalog', page=page+1, **args) }}">&raquo;</a>
+    {% endif %}
+</nav>
+{% endif %}
 {% endblock %}
