@@ -39,14 +39,22 @@
         <p style="margin-left: 20px">Корзина пуста</p>
     {% endif %}
     <form method="POST" action="{{ url_for('make_order') }}">
-    <button class="continue-shopping" type="submit">Купить</button>
+    <button class="continue-shopping" id="open_pop_up">Купить</button>
 </form>
     <a href="/" class="continue-shopping">Продолжить покупки</a>
 <h2>Ожидание принятия заказа</h2>
 {% for order in pending_orders %}
-    <div>
+    <div class="order-block">
         <p>Заказ #{{ order.order_id }}</p>
-        <!-- покажи содержимое из order.cart_data -->
+        <ul>
+            {% set cart = order.cart_data | from_json %}
+            {% for item in cart.items %}
+                <li>
+                  <b>{{ item[1].name }}</b> — {{ item[1].description }}<br>
+                  Цена: {{ item[1].price }} ₽ × {{ item[1].quantity }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endfor %}
 

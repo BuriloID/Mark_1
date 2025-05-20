@@ -814,22 +814,6 @@ input[name="r"] {
     gap: 10px;
     margin-top: 10px;
 }
-.buy-button {
-    width: 200px;
-    background: black;
-    color: white;
-    padding: 12px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.buy-button:hover {
-    background: #dddddd;
-    color: black;
-}
 .product-description {
     font-size: 24px;
     color: #333;
@@ -1071,10 +1055,11 @@ h1 {
     color: #333;
 }
 .continue-shopping {
-    margin-left: 20px;
+    margin-left: 10px;
+    font-family:"Playfair", serif;
     display: inline-block;
     margin-top: 20px;
-    font-size: 16px;
+    font-size: 24px;
     background-color: #555555;
     color: white;
     text-decoration: none;
