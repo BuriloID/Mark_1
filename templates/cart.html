@@ -42,22 +42,46 @@
     <button class="continue-shopping" id="open_pop_up">Купить</button>
 </form>
     <a href="/" class="continue-shopping">Продолжить покупки</a>
-<h2>Ожидание принятия заказа</h2>
+<h2>Ожидают подтверждения</h2>
+<div class="pending-orders">
 {% for order in pending_orders %}
-    <div class="order-block">
+    <div class="order-block faded">
         <p>Заказ #{{ order.order_id }}</p>
-        <ul>
-            {% set cart = order.cart_data | from_json %}
-            {% for item in cart.items %}
-                <li>
-                  <b>{{ item[1].name }}</b> — {{ item[1].description }}<br>
-                  Цена: {{ item[1].price }} ₽ × {{ item[1].quantity }}
-                </li>
-            {% endfor %}
-        </ul>
+        <div class="pending-cart-items">
+        {% for item in order.cart_data_parsed["items"] %}
+            {% if item[1] is mapping %}
+                <div class="cart-item faded">
+                    <img src="{{ url_for('static', filename=item[1]['image_url']) if item[1].get('image_url') else url_for('static', filename='img/default.png') }}"
+                         class="cart-item-img"
+                         alt="{{ item[1]['name'] }}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">{{ item[1]['name'] }}</div>
+                        <div class="cart-item-desc">{{ item[1]['description'] }}</div>
+                        <div class="cart-item-price">
+                            Цена: {{ item[1]['price'] }} ₽ × {{ item[1]['quantity'] }}
+                            {% if item[1]['sale'] and item[1]['sale'] > 0 %}
+                                <span class="cart-item-sale">-{{ item[1]['sale'] }}%</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="cart-item faded">
+                    <img src="{{ item[4] or url_for('static', filename='img/default.png') }}" class="cart-item-img" alt="{{ item[0] }}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">{{ item[0] }}</div>
+                        <div class="cart-item-desc">{{ item[3] }}</div>
+                        <div class="cart-item-price">
+                            Цена: {{ item[1] }} ₽ × {{ item[2] }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
     </div>
 {% endfor %}
-
+</div>
 <h2>Выполняются</h2>
 {% for order in processing_orders %}
     <div>

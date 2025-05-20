@@ -1528,7 +1528,58 @@ h1 {
     font-family: 'Montserrat', sans-serif;
     color: #000;
 }
-
+.pending-orders {
+    margin-bottom: 2em;
+}
+.order-block.faded {
+    opacity: 0.5;
+    background: #f8f8f8;
+    border-radius: 8px;
+    filter: grayscale(40%);
+    padding: 1em;
+    margin-bottom: 1.5em;
+}
+.pending-cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px 0;
+}
+.cart-item-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 16px;
+    background: #eee;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.cart-item-name {
+    font-weight: bold;
+}
+.cart-item-desc {
+    font-size: 0.9em;
+    color: #555;
+}
+.cart-item-price {
+    font-size: 1em;
+    color: #333;
+}
+.cart-item-sale {
+    color: #d33;
+    margin-left: 8px;
+    font-weight: bold;
+}
   
 
 

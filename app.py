@@ -318,6 +318,7 @@ def client():
 
 @app.route('/cart')
 def cart():
+    import json
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)
 
@@ -326,21 +327,23 @@ def cart():
         for item in cart_items.values()
     )
 
-    try:
-        pending_orders = Order.query.filter_by(status='pending').order_by(Order.created_at.desc()).all()
-        processing_orders = Order.query.filter_by(status='processing').order_by(Order.created_at.desc()).all()
-    except Exception:
-        pending_orders = []
-        processing_orders = []
-    finally:
-        db.session.close()
+    pending_orders = Order.query.filter_by(status='pending').order_by(Order.created_at.desc()).all()
+    processing_orders = Order.query.filter_by(status='processing').order_by(Order.created_at.desc()).all()
+
+    # Вот этот цикл обязателен!
+    for order in pending_orders:
+        try:
+            order.cart_data_parsed = json.loads(order.cart_data)
+            if not isinstance(order.cart_data_parsed, dict) or "items" not in order.cart_data_parsed:
+                order.cart_data_parsed = {"items": []}
+        except Exception:
+            order.cart_data_parsed = {"items": []}
 
     return render_template('cart.html',
                            cart=cart_items,
                            total_price=total_price,
                            pending_orders=pending_orders,
                            processing_orders=processing_orders)
-
 @app.route('/make_order', methods=['POST'])
 def make_order():
     cart_cookie = request.cookies.get('cart', '{}')
