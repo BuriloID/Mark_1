@@ -82,11 +82,4 @@
     </div>
 {% endfor %}
 </div>
-<h2>Выполняются</h2>
-{% for order in processing_orders %}
-    <div>
-        <p>Заказ #{{ order.order_id }} — В обработке</p>
-        <!-- показать содержимое -->
-    </div>
-{% endfor %}
 {% endblock %}
