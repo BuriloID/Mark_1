@@ -262,14 +262,13 @@ def about():
 @app.route('/catalog')
 def catalog():
     page = request.args.get('page', 1, type=int)
-    per_page = 12  # Сколько товаров на одной странице
-
-    # Обычные товары
+    per_page = 12  
+    
     query_product = Product.query
     category_name = request.args.get('category')
     name = request.args.get('name')
     search_query = request.args.get('search')
-
+    
     if category_name:
         query_product = query_product.filter(Product.category == category_name)
     if name:
@@ -281,8 +280,7 @@ def catalog():
                 Product.description.ilike(f"%{search_query}%")
             )
         )
-
-    # Новинки
+    
     query_new = NewProduct.query
     if category_name:
         query_new = query_new.filter(NewProduct.category == category_name)
@@ -296,13 +294,13 @@ def catalog():
             )
         )
     all_products = query_new.all() + query_product.all()
-    # Пагинация руками (т.к. объединённый список)
+    
     total = len(all_products)
     start = (page - 1) * per_page
     end = start + per_page
     products = all_products[start:end]
-    pages = (total + per_page - 1) // per_page  # Количество страниц
-# Удаляем 'page' из аргументов запроса для пагинации
+    pages = (total + per_page - 1) // per_page  
+
     args = request.args.to_dict(flat=True)
     args.pop('page', None)
     return render_template(
@@ -310,7 +308,7 @@ def catalog():
         products=products,
         page=page,
         pages=pages,
-        args=args,  # передаём исправленный словарь!
+        args=args,  
         request=request
     )
 @app.route('/new')
@@ -364,7 +362,6 @@ def cart():
     pending_orders = Order.query.filter_by(status='pending').order_by(Order.created_at.desc()).all()
     processing_orders = Order.query.filter_by(status='processing').order_by(Order.created_at.desc()).all()
 
-    # Вот этот цикл обязателен!
     for order in pending_orders:
         try:
             order.cart_data_parsed = json.loads(order.cart_data)
