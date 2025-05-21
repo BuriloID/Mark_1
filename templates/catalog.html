@@ -58,8 +58,8 @@
     <h2>{{ product.description }}</h2>
     <p>{{ product.name }}</p>
     <p><strong>{{ product.price | int }} ₽</strong></p>
-        <a href="{{ url_for('product_detail', product_id=product.id, product_type='product') }}">
-        <button class="btn">Перейти</button>
+        <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product' if product.__class__.__name__ == 'NewProduct' else 'product') }}">
+            <button class="btn">Перейти</button>
         </a>
     </div>
         {% else %}
