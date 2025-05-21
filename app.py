@@ -412,41 +412,44 @@ def make_order():
     finally:
         db.session.close()
 
-@app.route('/add_to_cart/<int:product_id>')
-def add_to_cart(product_id):
-    product = Product.query.get(product_id)
-    if not product:
+@app.route('/add_to_cart/<product_type>/<int:product_id>')
+def add_to_cart(product_type, product_id):
+    if product_type == "new":
         product = NewProduct.query.get(product_id)
+        sale = 0  # У NewProduct нет поля sale
+    else:
+        product = Product.query.get(product_id)
+        sale = getattr(product, 'sale', 0)
     if not product:
         return "Товар не найден", 404
 
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)
-    if str(product_id) in cart_items:
-        cart_items[str(product_id)]['quantity'] += 1
+    cart_key = f"{product_type}_{product_id}"
+
+    if cart_key in cart_items:
+        cart_items[cart_key]['quantity'] += 1
     else:
-        cart_items[str(product_id)] = {
+        cart_items[cart_key] = {
             'name': product.name,
             'description': product.description,
             'price': product.price,
-            'sale': product.sale,
+            'sale': sale,
             'quantity': 1,
-            'image_url': product.image_url
+            'image_url': product.image_url,
+            'product_type': product_type,
+            'product_id': product_id
         }
     resp = make_response(redirect(url_for('cart')))
     resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)
     return resp
 
-@app.route('/remove_from_cart/<product_id>')
-def remove_from_cart(product_id):
-    try:
-        product_id = int(product_id)
-    except ValueError:
-        return "Invalid product ID", 400
+@app.route('/remove_from_cart/<product_key>')
+def remove_from_cart(product_key):
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)
-    if str(product_id) in cart_items:
-        del cart_items[str(product_id)]
+    if product_key in cart_items:
+        del cart_items[product_key]
     resp = make_response(redirect(url_for('cart')))
     resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)
     return resp

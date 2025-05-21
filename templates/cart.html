@@ -11,26 +11,26 @@
     <h1>Ваша корзина</h1>
     {% if cart %}
         <ul class="cart-items">
-            {% for product_id, item in cart.items() %}
-                <li class="cart-item">
-                    <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-image">
-                    <div class="cart-item-details">
-                        <p class="cart-item-name">{{ item.name }} "{{ item.description }}"</p>
-                        {% if item.sale %}
-                        <p class="cart-item-price">
-                        <span class="old-price">{{ item.price | int }} ₽</span> →
-                        <span class="new-price">
-                        {{ (item.price * (1 - item.sale / 100)) | round(0, 'floor') | int }} ₽
-                        </span>
-                        x {{ item.quantity }}
-                        </p>
-                        {% else %}
-                        <p class="cart-item-price">{{ item.price | int }} ₽ x {{ item.quantity }}</p>
-                        {% endif %}
-                    </div>
-                    <a href="{{ url_for('remove_from_cart', product_id=product_id) }}" class="remove-item">Удалить</a>
-                </li>
-            {% endfor %}
+            {% for product_key, item in cart.items() %}
+    <li class="cart-item">
+        <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-image">
+        <div class="cart-item-details">
+            <p class="cart-item-name">{{ item.name }} "{{ item.description }}"</p>
+            {% if item.sale %}
+            <p class="cart-item-price">
+            <span class="old-price">{{ item.price | int }} ₽</span> →
+            <span class="new-price">
+            {{ (item.price * (1 - item.sale / 100)) | round(0, 'floor') | int }} ₽
+            </span>
+            x {{ item.quantity }}
+            </p>
+            {% else %}
+            <p class="cart-item-price">{{ item.price | int }} ₽ x {{ item.quantity }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('remove_from_cart', product_key=product_key) }}" class="remove-item">Удалить</a>
+    </li>
+{% endfor %}
         </ul>
         <div class="cart-total">
             <p><strong>Итого: {{ total_price | int}} ₽</strong></p>
