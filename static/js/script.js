@@ -128,16 +128,16 @@ document.addEventListener("DOMContentLoaded", function () {
  const openPopUp = document.getElementById('open_pop_up');
 
  if (form) {
-     form.addEventListener("submit", function (e) {
-         e.preventDefault();
-         const formData = new FormData(form);
-         fetch("/buy", {
-             method: "POST",
-             body: formData
-         })
-         .then(response => response.json())
-         .then(data => {
-             if (data.status === 'success') {
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        fetch("/buy", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
                 if (popup) popup.classList.remove("active");
                 if (toast) {
                     toast.classList.add("show"); // Показываем тост
@@ -145,18 +145,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         toast.classList.remove("show"); 
                     }, 4000); 
                 }
-                 form.reset();
-             } else {
-                 if (toast) toast.classList.add("hidden");
-                 console.log("Ошибка при отправке заказа: ", data.message);
-             }
-         })
-         .catch(error => {
-             console.error("Ошибка:", error);
-             if (toast) toast.classList.add("hidden");
-         });
-     });
- }
+                form.reset();
+
+                if (window.location.pathname === "/cart") {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 400);
+                }
+
+            } else {
+                if (toast) toast.classList.add("hidden");
+                console.log("Ошибка при отправке заказа: ", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка:", error);
+            if (toast) toast.classList.add("hidden");
+        });
+    });
+}
  if (popUpClose) {
      popUpClose.addEventListener("click", () => {
          if (popup) popup.classList.remove("active");
