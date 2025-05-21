@@ -921,7 +921,6 @@ input[name="r"] {
       align-self: flex-start;
     }
   }  
-/* Общие стили для контейнера */
 .directory {
     margin: 20px;
     display: flex;
@@ -933,37 +932,53 @@ input[name="r"] {
     font-family: "Playfair", serif;
     max-height: 33vh;
     display: flex;
-    flex-direction: column; /* Элементы располагаются вертикально */
-    align-items: flex-start; /* Выравнивание по левому краю */
+    flex-direction: column; 
+    align-items: flex-start; 
     font-size: 18px;
     flex: 1;
     min-width: 250px;
 }
-/* Контейнер для иконки и заголовка */
 .block_dir .title {
     display: flex;
-    align-items: center; /* Выравниваем иконку и заголовок по центру */
-    gap: 10px; /* Отступ между иконкой и заголовком */
+    align-items: center; 
+    gap: 10px; 
 }
-/* Стили для иконок */
 .block_dir i {
     margin-right: 10px;
     font-size: 36px;
 }
-/* Стили для текста в заголовке */
 .block_dir span {
     font-size: 36px;
-    font-weight: bold; /* Сделаем текст жирным */
+    font-weight: bold; 
 }
-/* Стили для текста в <p> */
 .block_dir p {
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow-wrap: break-word; /* Гарантированный перенос слов */
-    white-space: normal; /* Позволяет тексту переноситься */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    white-space: normal; 
     font-size: 24px;
     color: #777;
-    margin-top: 15px; /* Отступ между заголовком и абзацем */
-    max-width: 100%; /* Ограничиваем ширину, чтобы текст переносился */
+    margin-top: 15px; 
+    max-width: 100%; 
+}
+@media (max-width: 768px) {
+    .directory {
+        flex-direction: column;
+        gap: 18px;
+        margin: 10px;
+    }
+    .block_dir {
+        width: 100%;
+        max-width: 100%;
+        align-items: flex-start;
+        padding: 16px 10px 14px 10px;
+    }
+    .block_dir .title {
+        font-size: 1.1em;
+    }
+    .block_dir p {
+        margin-right: 20px;
+        font-size: 1em;
+    }
 }
 .footer-links {
     font-family: "Cormorant Garamond", serif;
