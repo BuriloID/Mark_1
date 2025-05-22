@@ -270,7 +270,7 @@ def catalog():
     search_query = request.args.get('search')
     
     if category_name:
-        query_product = query_product.filter(Product.categories.any(Category.name == category_name))
+        query_product = query_product.filter(Product.category == category_name)
     if name:
         query_product = query_product.filter(Product.name == name)
     if search_query:
@@ -283,7 +283,7 @@ def catalog():
     
     query_new = NewProduct.query
     if category_name:
-        query_new = query_new.filter(NewProduct.categories.any(Category.name == category_name))
+        query_new = query_new.filter(NewProduct.category == category_name)
     if name:
         query_new = query_new.filter(NewProduct.name == name)
     if search_query:
