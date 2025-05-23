@@ -3,181 +3,88 @@
 body {
     background-color: whitesmoke;
 }
-    /* HEADER */
-    header{
-        display: flex;
-        position: relative;
-        align-items: center; /* Выравниваем элементы по вертикали */
-        justify-content: space-between; /* Логотип слева, меню по центру */
-        top: 0;
-        padding: 20px;
-        z-index: 1000;
-        background: white;
-        box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
-    }
-    .header__img {
-        position: relative;
-        margin: 5px;
-        height: 70px;
-        width: 70px;
-        object-fit: contain;
-    }
-    .burger_media {
-        font-size: 22px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        display: none;  /* по умолчанию скрыта, включаем ниже */
-        align-self: center;
-    }
-    .hor_menu{
-        flex-grow: 1; /* Меню занимает оставшееся пространство */
+   header {
     display: flex;
-    justify-content: center; /* Центрируем меню */
-    }
-    .hor_menu ul {
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+    top: 0;
+    padding: 20px;
+    z-index: 1000;
+    background: white;
+    box-shadow: -1px 0px 26px 8px rgba(0, 0, 0, 0.3);
+}
+.header__img {
+    position: relative;
+    margin: 5px;
+    height: 70px;
+    width: 70px;
+    object-fit: contain;
+}
+.burger_media {
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-self: center;
+}
+.hor_menu {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+.hor_menu ul {
     display: flex;
     list-style: none;
     padding-left: 0;
     margin: 0;
-    }
-    .hor_menu ul li {
-    justify-content: left;
+}
+.hor_menu ul li {
     font-size: 30px;
     font-family: "Cormorant Garamond", serif;
     font-weight: 500;
-    list-style: none;
     position: relative;
-    float: left;
     display: block;
-    width: 180px; /* Фиксированная ширина для ровных блоков */
+    width: 180px;
     text-align: center;
     box-sizing: border-box;
-    }
-    .hor_menu ul li a {
+}
+.hor_menu ul li a {
     text-decoration: none;
     padding: 12px;
     color: black;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%; /* Делаем ссылку равной li */
+    width: 100%;
     height: 100%;
     transition: .5s;
-    }
-    .hor_menu ul li a:hover {
+}
+.hor_menu ul li a:hover {
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
-    }
-    @media (max-width: 768px) {
-        header {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0px;
-            position: relative;
-          } 
-          .burger_media {
-            color: black;
-            font-weight: bold;
-            display: block;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-          }
-          .header__img {
-            width: 50px;
-            height: 50px;
-            margin: 0;
-          }
-          .col-md-3 {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-          }
-          .cart-icon {
-            margin-left: auto;
-          }
-          .hor_menu {
-            display: none;
-            flex-direction: column;
-            align-items: center;           /* Центрируем */
-            width: 100%;
-            background: white;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            z-index: 999;
-            padding: 20px;
-            text-align: center;
-          }
-          .hor_menu.open {
-            display: flex;
-          }
-          .hor_menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-            align-items: center;
-          }
-          .hor_menu ul li > ul {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 5px;
-            position: absolute;
-            top: 0;
-            background: white;
-            z-index: 1000; /* Убедитесь, что подменю перекрывает другие элементы */
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Тень для подменю */
-        }
-        /* Когда пункт меню открыт, подменю становится видимым */
-        .hor_menu ul li.open > ul {
-            display: flex;
-        }
-        /* Дополнительные стили для более удобного использования */
-        .hor_menu ul li > a.toggle-sub {
-            cursor: pointer;
-        }
-        } 
-        /* Подменю */
+}
+
+/* Подменю десктоп */
 .hor_menu ul li ul {
     position: absolute;
     left: 0;
     top: 100%;
     background-color: white;
     display: none;
-    width: 180px; /* Делаем ширину такой же, как у li */
+    width: 180px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
 }
 .hor_menu ul li ul li {
     font-size: 20px;
-    width: 100%; /* Делаем блок подменю на всю ширину */
+    width: 100%;
 }
 .hor_menu ul li ul li a {
-    display: block; /* Делаем ссылку блочной */
-    width: 100%; /* Растягиваем на всю ширину блока */
-    padding: 10px 15px; /* Добавляем отступы для удобства */
-    text-align: left; /* Выравниваем текст */
-}
-.hor_menu ul li ul li ul {
-    column-count: 2; /* Делим список на 2 колонки */
-    border-bottom-right-radius:10px ;
-    border-top-right-radius:10px ;
-    position: absolute;
-    left: 100%;
-    top: 0; /* Выравниваем по строке */
-    background-color: #FFFAFA;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    display: none;
-    width: 400px; /* Делаем ширину такой же, как у основного меню */
-    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
 }
 .hor_menu ul li ul li:last-child {
     border-bottom: none;
@@ -185,7 +92,130 @@ body {
 /* Показываем подменю при наведении */
 .hor_menu ul li:hover > ul {
     display: block;
-}     
+}
+
+/* Вложенное подменю десктоп */
+.hor_menu ul li ul li ul {
+    column-count: 2;
+    border-bottom-right-radius:10px ;
+    border-top-right-radius:10px ;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #FFFAFA;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: none;
+    width: 400px;
+    box-sizing: border-box;
+}
+
+/* Показываем вложенное подменю при наведении */
+.hor_menu ul li ul li:hover > ul {
+    display: block;
+}
+
+/* Адаптивное меню и подменю */
+@media (max-width: 768px) {
+    header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0px;
+        position: relative;
+    }
+    .burger_media {
+        color: black;
+        font-weight: bold;
+        display: block;
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+    }
+    .header__img {
+        width: 50px;
+        height: 50px;
+        margin: 0;
+    }
+    .col-md-3 {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+    }
+    .cart-icon {
+        margin-left: auto;
+    }
+    .hor_menu {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        background: white;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 999;
+        padding: 20px;
+        text-align: center;
+    }
+    .hor_menu.open {
+        display: flex;
+    }
+    .hor_menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        align-items: center;
+    }
+
+    /* Подменю первого и второго уровня раскрываются прямо под пунктом */
+    .hor_menu ul li ul,
+    .hor_menu ul li ul li ul {
+        position: static;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff;
+        border: none;
+        box-shadow: none;
+        border-radius: 0 0 14px 14px;
+        display: none;
+        padding: 0;
+        margin: 0;
+    }
+    .hor_menu ul li.open > ul,
+    .hor_menu ul li ul li.open > ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    .hor_menu ul li ul li {
+        width: 100%;
+        font-size: 20px;
+        border-bottom: 1px solid #ececec;
+        background: transparent;
+        padding: 0;
+    }
+    .hor_menu ul li ul li a {
+        display: block;
+        padding: 14px 20px;
+        font-family: "Cormorant Garamond", serif;
+        background: transparent;
+        color: #222;
+        text-align: left;
+        border-radius: 0;
+        font-size: 20px;
+        transition: background 0.2s;
+    }
+    .hor_menu ul li ul li a:hover {
+        background: #f5f5f5;
+        color: #000;
+    }
+}
 .content{
     transition: .5s;
     position: relative;
@@ -847,14 +877,14 @@ input[name="r"] {
     padding-bottom: 5px;
     transition: transform 0.3s ease; /* Добавляем плавное изменение масштаба */
 }
-/* Иконка слева от текста */
+
 .back-button i {
-    margin-right: 8px; /* Отступ между иконкой и текстом */
+    margin-right: 8px; 
 }
-/* Псевдо-элемент для подчеркивания */
+
 .back-button:hover {
-    transform: scale(1.1); /* Скалируем элемент на 10% при наведении */
-    color: black; /* Цвет текста при наведении */
+    transform: scale(1.1); 
+    color: black; 
 }
 @media (max-width: 768px) {
     .product-container {

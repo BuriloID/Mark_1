@@ -14,10 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
         burger.addEventListener('click', () => {
         menu.classList.toggle('open');
         });
-  const catalogLink = document.querySelector("#catalogLink"); // Ссылка на "Каталог"
-  let lastClickTime = 0; // Время последнего клика
+  const catalogLink = document.querySelector("#catalogLink"); 
+  let lastClickTime = 0; 
   function isMobile() {
-    return window.innerWidth <= 768; // Если ширина экрана меньше или равна 768px
+    return window.innerWidth <= 768; 
   }
   if (catalogLink && isMobile()) {
     catalogLink.addEventListener("click", function(e) {
