@@ -106,7 +106,6 @@
   </footer>
         </div>
 </div>
-  <!-- Баннер для согласия с куками -->
   <div id="cookie-banner" class="cookie-banner">
     <div class="cookie-content">
       <p>Мы используем Сookie для улучшения работы сайта. Нажмите "Принять", чтобы согласиться с их использованием. Если вы отклоните Сookie, корзина не будет сохраняться между сессиями.</p>
@@ -117,7 +116,6 @@
     </div>
   </div>
   <button id="cookie-settings" style="display: none;">Настройки Сookie</button>
-  <!-- Предупреждение для пользователя, если куки отклонены -->
   <div id="cookie-warning" class="cookie-warning" style="display: none;">
     <p>Внимание: Для сохранения корзины в вашем браузере необходимо включить Сookie. Пожалуйста, включите Сookie для корректной работы корзины.</p>
   </div>
@@ -135,7 +133,6 @@
               <input type="text" name="middleName" placeholder="Отчество (при наличии)">
               <input type="text" name="phone" placeholder="Номер телефона">
               <input type="text" name="email" placeholder="Электронная почта">
-              <!-- Скрытые поля с данными о товаре -->
               {% if product %}
                   <input type="hidden" name="product_name" value="{{ product.name }}">
                   <input type="hidden" name="product_price" value="{{ product.price }}">
