@@ -1,9 +1,51 @@
 {% extends 'base.html' %}
 
-
-{% block title%}
-Страница о Нас
+{% block title %}
+О нас
 {% endblock %}
+
 {% block content %}
-<h1>Страница о Нас</h1>
+<section class="about-section">
+    <div class="about-header">
+        <div class="about-image-placeholder"></div>
+        <div class="about-header-text">
+            <h1>Добро пожаловать в Cardiga Nick!</h1>
+            <p class="about-lead">
+                Вязание — это не просто ремесло, а способ делиться теплом.<br>
+                Мы — команда <b>Cardiga Nick</b>, и вот уже несколько лет создаём вещи, которые становятся частью ваших любимых моментов.
+            </p>
+        </div>
+    </div>
+    <div class="about-cards">
+        <div class="about-card">
+            <div class="about-card-image"></div>
+            <div class="about-card-text">
+                <h2>Сердце бренда: вязать историю</h2>
+                <p>
+                    Каждая вещь у нас — это не просто свитер или шарф. Это характер, настроение и воплощение заботы.
+                </p>
+            </div>
+        </div>
+        <div class="about-card reverse">
+            <div class="about-card-image"></div>
+            <div class="about-card-text">
+                <h2>Семейная мастерская</h2>
+                <p>
+                    Мы создаём одежду в нашей небольшой семейной мастерской — и это наша гордость!<br>
+                    Вязальные машины здесь лишь мудрые помощники: они создают сложные жаккардовые узоры, но душа изделия — в руках мастера.
+                </p>
+            </div>
+        </div>
+        <div class="about-card">
+            <div class="about-card-image"></div>
+            <div class="about-card-text">
+                <h2>Лучшие материалы</h2>
+                <p>
+                    Как художники смешивают краски, здесь соединяется благородная шерсть мериноса, шелковистое сияние итальянского шёлка и мягкость хлопка высшей пробы.
+                    Мы гарантируем полный контроль над каждым этапом — от выбора пряжи до последнего стежка.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

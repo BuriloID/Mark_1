@@ -1660,23 +1660,121 @@ h1 {
     display: inline-block;
     padding: 6px 14px;
     margin: 0 3px;
-    background: #ededed;      /* Светло-серый фон */
-    color: #555;              /* Тёмно-серый текст */
+    background: #ededed;      
+    color: #555;             
     border-radius: 4px;
     text-decoration: none;
     font-weight: bold;
     transition: background 0.2s, color 0.2s;
 }
 .pagination span.current {
-    background: #cccccc;      /* Немного темнее для текущей страницы */
-    color: #333;              /* Чуть темнее текст */
+    background: #cccccc;      
+    color: #333;              
     font-weight: bold;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Едва заметная тень */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
 }
 .pagination a:hover {
-    background: #bbbbbb;      /* Ещё чуть темнее при наведении */
+    background: #bbbbbb;      
     color: #222;
 }
-  
+.about-section {
+    max-width: 1000px;
+    margin: 48px auto 32px auto;
+    padding: 0 18px;
+}
+
+
+.about-image-placeholder {
+    width: 340px;
+    height: 340px;
+    background: #f9e7c6 url('') center/cover no-repeat;
+    border-radius: 18px;
+    box-shadow: 0 2px 18px rgba(0,0,0,0.10);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-header {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+}
+.about-header-text {
+    flex: 1;
+    min-width: 260px;
+    text-align: left;              
+}
+.about-header-text h1 {
+    font-size: 2.4em;
+    margin-bottom: 18px;
+    text-align: left;              
+}
+.about-lead {
+    font-size: 1.15em;
+    color: #444;
+    margin-bottom: 0;
+    text-align: left;             
+}
+
+.about-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+}
+
+.about-card {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: #fffdfa;
+    border-radius: 16px;
+    box-shadow: 0 1px 8px rgba(206,187,153,0.05);
+    padding: 36px 32px;
+    flex-wrap: wrap;
+}
+.about-card.reverse {
+    flex-direction: row-reverse;
+}
+.about-card-image {
+    width: 250px;
+    height: 250px;
+    background: #f3f3f3 url('') center/cover no-repeat;
+    border-radius: 16px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.about-card-text h2 {
+    margin-top: 0;
+    font-size: 1.4em;
+    color: #23232e;
+    text-align: left;              
+}
+.about-card-text p {
+    font-size: 1.08em;
+    color: #555;
+    margin-bottom: 0;
+    text-align: left;             
+}
+
+@media (max-width: 768px) {
+    .about-header, .about-card, .about-card.reverse {
+        flex-direction: column;
+        gap: 18px;
+    }
+    .about-image-placeholder, .about-card-image {
+        margin: 0 auto;
+    }
+    .about-header-text, .about-card-text {
+        text-align: left;      
+        width: 100%;
+    }
+}
 
 
