@@ -1,14 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Бургер-меню для мобильной версии
     const burger = document.querySelector('.burger_media');
     const menu = document.getElementById('mobileMenu');
     const toggleButton = document.querySelector('.chat-toggle');
     const socialPanel = document.querySelector('.social');
   
         toggleButton.addEventListener('click', function () {
-        // Переключаем отображение социальных иконок
         socialPanel.classList.toggle('active');
-        // Переключаем активное состояние кнопки, чтобы изменить её цвет
         toggleButton.classList.toggle('active');
         });
         burger.addEventListener('click', () => {
@@ -21,15 +18,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   if (catalogLink && isMobile()) {
     catalogLink.addEventListener("click", function(e) {
-      const currentTime = new Date().getTime(); // Время текущего клика
-      if (currentTime - lastClickTime < 1200) { // Если два клика происходят за 1200 мс
-        // Переход по ссылке
+      const currentTime = new Date().getTime(); 
+      if (currentTime - lastClickTime < 1200) { 
+
         window.location.href = catalogLink.href;
       } else {
-        // Ожидание второго клика
+  
         e.preventDefault();
       }
-      lastClickTime = currentTime; // Обновляем время последнего клика
+      lastClickTime = currentTime; 
     });
   }
   // Если пользователь изменяет размер окна (например, с мобильного на десктоп), нужно отключать/включать обработчик
@@ -305,27 +302,31 @@ function selectSize(size, el) {
           counter = 1;
       }
   }, 10000); // 15000 мс = 15 секунд
-// Основной заголовок "Часто задаваемые вопросы"
-const faqToggleBtn = document.querySelector('.faq-toggle');
-const faqSection = document.querySelector('.faq-section');
-faqToggleBtn.addEventListener('click', () => {
-  faqSection.classList.toggle('open');
-  faqToggleBtn.classList.toggle('open'); // для поворота стрелки
-});
-// Все вопросы
-const faqQuestions = document.querySelectorAll('.faq-question');
-faqQuestions.forEach(question => {
-  question.addEventListener('click', () => {
-    const answer = question.nextElementSibling;
-    // Закрыть все ответы и сбросить стрелки
-    document.querySelectorAll('.faq-answer').forEach(a => {
-      if (a !== answer) a.classList.remove('open');
+// FAQ toggle logic
+document.addEventListener('DOMContentLoaded', function() {
+  // Для секции ухода (если есть faq-toggle)
+  document.querySelectorAll('.faq-toggle').forEach(faqToggleBtn => {
+    const faqSection = faqToggleBtn.nextElementSibling;
+    faqToggleBtn.addEventListener('click', () => {
+      faqSection.classList.toggle('open');
+      faqToggleBtn.classList.toggle('open');
     });
-    document.querySelectorAll('.faq-question').forEach(q => {
-      if (q !== question) q.classList.remove('open');
+  });
+
+  // Для всех вопросов
+  document.querySelectorAll('.faq-question').forEach(question => {
+    question.addEventListener('click', () => {
+      const answer = question.nextElementSibling;
+      const parentContainer = question.closest('.faq-container');
+      // Закрываем только в пределах одного блока .faq-container
+      parentContainer.querySelectorAll('.faq-answer').forEach(a => {
+        if (a !== answer) a.classList.remove('open');
+      });
+      parentContainer.querySelectorAll('.faq-question').forEach(q => {
+        if (q !== question) q.classList.remove('open');
+      });
+      answer.classList.toggle('open');
+      question.classList.toggle('open');
     });
-    // Переключить выбранный
-    answer.classList.toggle('open');
-    question.classList.toggle('open');
   });
 });

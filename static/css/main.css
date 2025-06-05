@@ -1485,8 +1485,8 @@ h1 {
 .faq-container {
     width: 80%;
     margin: 20px auto;
-  }
-  .faq-toggle {
+}
+.faq-toggle {
     width: 100%;
     padding: 15px;
     font-size: 20px;
@@ -1495,24 +1495,24 @@ h1 {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-  }
-  .faq-toggle:hover {
+}
+.faq-toggle:hover {
     text-decoration-line: underline;
-  }
-  .faq-section {
+}
+.faq-section {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease, padding 0.3s;
     padding: 0;
-  }
-  .faq-section.open {
+}
+.faq-section.open {
     max-height: 1000px; /* достаточно большое значение */
     padding-top: 15px;
-  }
-  .faq-item {
+}
+.faq-item {
     margin-bottom: 10px;
-  }
-  .faq-question {
+}
+.faq-question {
     width: 100%;
     padding: 12px;
     background-color: #f2f2f2;
@@ -1522,11 +1522,11 @@ h1 {
     font-size: 16px;
     text-align: left;
     transition: background-color 0.3s;
-  }
-  .faq-question:hover {
+}
+.faq-question:hover {
     background-color: #e0e0e0;
-  }
-  .faq-answer {
+}
+.faq-answer {
     max-height: 0;
     overflow: hidden;
     background-color: #f9f9f9;
@@ -1534,15 +1534,33 @@ h1 {
     border-left: 3px solid black;
     padding: 0 10px;
     transition: max-height 0.5s ease, padding 0.3s;
-  }
-  .faq-answer.open {
-    max-height: 200px;
+}
+.faq-answer.open {
+    max-height: 400px;
     padding: 10px;
-  }
-  .faq-answer p {
+}
+.faq-answer p, .faq-answer ul {
     margin: 0;
     font-size: 14px;
-  }
+}
+.faq-answer ul {
+    padding-left: 16px;
+}
+.faq-big-title {
+  font-size: 1.8em;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  margin: 0 0 15px 0;
+  padding: 30px 30px 0 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center; 
+  text-align: center;      
+}
+.faq-big-title .fa-solid {
+  font-size: 1.25em;
+}
   .product-price-wrapper {
     display: flex;
     align-items: flex-end;
@@ -1682,7 +1700,6 @@ h1 {
     margin: 48px auto 32px auto;
     padding: 0 18px;
 }
-
 
 .about-image-placeholder {
     width: 340px;
