@@ -1,7 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:wght@586&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap');
+
+* {
+    box-sizing: border-box;
+}
 body {
     background-color: whitesmoke;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
 }
    header {
     display: flex;
@@ -252,6 +259,8 @@ body {
     height: 200px;
     transition: .5s;
     position: sticky;
+    width: 100%;
+    max-width: 100vw;
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
 .floter_active {
@@ -323,14 +332,14 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #f2f2f2; /* Светлый фон */
+    background-color: #f2f2f2; 
     border-radius: 50%;
     width: 60px;
     height: 60px;
     box-shadow: 0px 0px 5px #00000080;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 1000; /* Убедитесь, что кнопка будет выше других элементов */
+    z-index: 1000; 
 }
 /* Стили для иконки внутри кнопки */
 .chat-toggle i {
@@ -342,12 +351,12 @@ body {
 }
 /* При наведении */
 .chat-toggle:hover {
-    transform: translateY(-4px); /* Лёгкое поднятие кнопки */
-    box-shadow: 0px 0px 15px #00000080; /* Увеличение тени при наведении */
+    transform: translateY(-4px); 
+    box-shadow: 0px 0px 15px #00000080; 
 }
 .chat-toggle.active {
-    background-color: #a8a8a8; /* Более темный фон */
-    box-shadow: 0px 0px 10px #00000090; /* Более сильная тень */
+    background-color: #a8a8a8; 
+    box-shadow: 0px 0px 10px #00000090; 
 }
   @media (max-width: 768px) {
     .chat-toggle {
@@ -399,11 +408,12 @@ body {
     width: 100%;
     height: 600px;
     overflow: hidden;
+    position: relative;
 }
 .navigation {
     z-index: 300;
     position: absolute;
-    top: 720px;
+    bottom: 20px;
     left: 50%;
     transform:translateX(-50%);
     display: flex;
@@ -452,25 +462,66 @@ input[name="r"] {
 #r4:checked ~ .s1 {
     margin-left: -75%;
 }
+.new-arrivals {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    font-size: 48px;
+    font-family: "Playfair", serif;
+    font-weight: bold;
+    letter-spacing: -1.5px;
+    text-align: left;
+    margin: 20px 0 20px 20px;
+    line-height: 1.1;
+    letter-spacing: -1.5px; 
+    background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.new-arrivals.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 @media (max-width: 768px) {
     .slider {
-      height: 215px; /* уменьшенная высота */
+        height: 215px;
     }
+    
     .navigation {
-      top: 290px; /* ближе к низу */
+        display: none;
     }
+    
     .bar {
         height: 8px;
         width: 8px;
-      margin: 2px;
     }
+    
     .slide img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Заполняет блок, не искажая пропорции */
-        object-position: center; /* Центрирует изображение */
-      }
-  }
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .new-arrivals {
+        font-size: 32px; 
+        margin: 20px 15px;
+        text-align: left;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+    }
+}
+
+@media (max-width: 480px) {
+    .new-arrivals {
+        font-size: 24px;
+        margin: 15px 10px;
+        text-align: center;
+    }
+}
 .image__url {
     margin: 20px;
     display: flex;
@@ -1321,27 +1372,7 @@ h1 {
 #cookie-settings:hover {
     background-color: #45a049;
 }
-.new-arrivals {
-    opacity: 0; /* Изначально скрыта */
-    transform: translateY(50px); /* Сдвиг по оси Y */
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Плавное появление */
-    font-size: 56px;
-    font-family: "Playfair", serif;
-    font-weight: bold;
-    text-align: left;
-    margin: 30px 0 30px 30px;
-}
-@media (max-width: 768px) {
-    .new-arrivals {
-        font-size: 24px;
-        margin: 7px 7px;
-        text-align: left;
-    }
-}
-.new-arrivals.visible {
-    opacity: 1; /* Делает элемент видимым */
-    transform: translateY(0); /* Возвращает элемент в исходное положение */
-}
+
 .btn {
     background-color: white; 
     border: 2px solid black; 
