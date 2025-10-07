@@ -149,6 +149,10 @@
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
+              <label class="container">
+              <input checked="checked" type="checkbox">
+              <div class="checkmark"></div>
+              </label>
               <button id="open_pop_up" type="submit"> Купить </button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
