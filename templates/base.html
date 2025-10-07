@@ -125,14 +125,15 @@
 <div class="pop_up" id="pop_up">
   <div class="pop_up_container">
       <div class="pop_up_body" id="pop_up_body">
-          <p>Заполнить форму</p>
+          <p>Заполнитe форму</p>
           <form id="form" action="/buy" method="post">
               <input type="hidden" id="selectedSize" name="selectedSize" value="">
-              <input type="text" name="firstName" placeholder="Имя">
-              <input type="text" name="lastName" placeholder="Фамилия">
+              <input type="text" name="firstName" placeholder="Имя" required>
+              <input type="text" name="lastName" placeholder="Фамилия" required>
               <input type="text" name="middleName" placeholder="Отчество (при наличии)">
-              <input type="text" name="phone" placeholder="Номер телефона">
-              <input type="text" name="email" placeholder="Электронная почта">
+              <input type="text" name="phone" placeholder="Номер телефона" required>
+              <input type="text" name="email" placeholder="Электронная почта" required>
+              
               {% if product %}
                   <input type="hidden" name="product_name" value="{{ product.name }}">
                   <input type="hidden" name="product_price" value="{{ product.price }}">
@@ -140,6 +141,7 @@
                   <input type="hidden" name="product_id" value="{{ product.id }}">
                   <input type="hidden" name="product_url" value="{{ request.url }}">
               {% endif %}
+              
               {% if cart %}
                   {% for product_id, item in cart.items() %}
                       <input type="hidden" name="cart_items" value="{{ item.name }}">
@@ -149,15 +151,24 @@
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
-              <label class="container">
-              <input checked="checked" type="checkbox">
-              <div class="checkmark"></div>
-              </label>
-              <button id="open_pop_up" type="submit"> Купить </button>
+
+              <div class="agreement-block">
+                  <label class="checkbox-wrapper">
+                      <input type="checkbox" name="agreement" id="agreementCheckbox" required>
+                      <span class="checkmark"></span>
+                  </label>
+                  <span class="agreement-text">
+                      Я даю свое согласие на обработку персональных данных и принимаю 
+                      <a href="#" target="_blank">условия соглашения</a>
+                  </span>
+              </div>
+
+              <button id="open_pop_up" type="submit">Купить</button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
       </div>
   </div>
+</div>
 </body>
 <script src="{{url_for('static', filename='js/script.js')}}"></script>
 </html>
