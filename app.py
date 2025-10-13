@@ -10,6 +10,8 @@ import threading
 from sqlalchemy import or_
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
 
 # Токен и чат

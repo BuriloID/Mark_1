@@ -125,6 +125,9 @@
 <div class="pop_up" id="pop_up">
   <div class="pop_up_container">
       <div class="pop_up_body" id="pop_up_body">
+        <div class="form-image">
+              <img src="{{url_for('static', filename='img/icon.png')}}" alt="Форма заказа">
+          </div>
           <p>Заполнитe форму</p>
           <form id="form" action="/buy" method="post">
               <input type="hidden" id="selectedSize" name="selectedSize" value="">
@@ -151,19 +154,15 @@
                       <input type="hidden" name="cart_item_quantity" value="{{ item.quantity }}">
                   {% endfor %}
               {% endif %}
-
-              <div class="agreement-block">
                   <label class="checkbox-wrapper">
-                      <input type="checkbox" name="agreement" id="agreementCheckbox" required>
-                      <span class="checkmark"></span>
-                  </label>
+                  <input type="checkbox" name="agreement" id="agreementCheckbox" required>
+                  <span class="checkmark"></span>
                   <span class="agreement-text">
-                      Я даю свое согласие на обработку персональных данных и принимаю 
-                      <a href="#" target="_blank">условия соглашения</a>
+                  Я даю свое согласие на обработку персональных данных и принимаю 
+                  <a href="#" target="_blank">условия соглашения</a>
                   </span>
-              </div>
-
-              <button id="open_pop_up" type="submit">Купить</button>
+                  </label>
+              <button class="continue-shopping" id="open_pop_up" type="submit">Купить</button>
           </form>
           <div class="pop_up_close" id="pop_up_close">&#65794</div>
       </div>
