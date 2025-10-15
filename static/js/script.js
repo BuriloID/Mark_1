@@ -4,42 +4,144 @@ document.addEventListener("DOMContentLoaded", function () {
     const toggleButton = document.querySelector('.chat-toggle');
     const socialPanel = document.querySelector('.social');
   
-        toggleButton.addEventListener('click', function () {
-        socialPanel.classList.toggle('active');
-        toggleButton.classList.toggle('active');
+      toggleButton.addEventListener('click', function () {
+      socialPanel.classList.toggle('active');
+      toggleButton.classList.toggle('active');
+      });
+      burger.addEventListener('click', () => {
+      menu.classList.toggle('open');
+      document.querySelectorAll('.hor_menu [data-menu-level]').forEach(el => {
+            el.classList.remove('active', 'prev');
         });
-        burger.addEventListener('click', () => {
-        menu.classList.toggle('open');
-        });
+  });
   const catalogLink = document.querySelector("#catalogLink"); 
-  let lastClickTime = 0; 
+    let lastCatalogClickTime = 0; 
+    let catalogClickTimeout = null; 
   function isMobile() {
     return window.innerWidth <= 768; 
   }
-  if (catalogLink && isMobile()) {
-    catalogLink.addEventListener("click", function(e) {
-      const currentTime = new Date().getTime(); 
-      if (currentTime - lastClickTime < 1200) { 
-
-        window.location.href = catalogLink.href;
-      } else {
-  
-        e.preventDefault();
-      }
-      lastClickTime = currentTime; 
+function setupSlideMenu() {
+        let currentLevel = 0;
+        const menuStack = [];   
+// Обработчик для всех пунктов с подменю (КРОМЕ КАТАЛОГА - у него своя логика)
+  document.querySelectorAll('.hor_menu li:has(ul) > a').forEach(link => {
+if (link !== catalogLink) {
+    link.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.stopPropagation();
+            const li = this.parentElement;
+            const currentUl = li.closest('ul');
+            const nextUl = li.querySelector('ul');
+            if (nextUl) {
+                menuStack.push({
+                    ul: currentUl,
+                    level: currentLevel
+                });
+                currentLevel++;
+                currentUl.setAttribute('data-menu-level', currentLevel - 1);
+                nextUl.setAttribute('data-menu-level', currentLevel);
+                setTimeout(() => {
+                    currentUl.classList.add('prev');
+                    nextUl.classList.add('active');
+                }, 10);
+            }
+        }
     });
+}
+});  
+// ОСОБАЯ ЛОГИКА ДЛЯ КАТАЛОГА - двойной клик
+if (catalogLink && isMobile()) {
+    catalogLink.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            const currentTime = new Date().getTime();
+            const timeSinceLastClick = currentTime - lastCatalogClickTime;
+            // Если второй клик в течение 500ms - переходим по ссылке
+            if (timeSinceLastClick < 500) {
+                // Отменяем таймаут и переходим
+                if (catalogClickTimeout) {
+                    clearTimeout(catalogClickTimeout);
+                    catalogClickTimeout = null;
+                }
+                window.location.href = catalogLink.href;
+                return;
+            }
+            // Первый клик - открываем подменю
+            e.preventDefault();
+            e.stopPropagation();
+            const li = this.parentElement;
+            const currentUl = li.closest('ul');
+            const nextUl = li.querySelector('ul');
+            if (nextUl) {
+                menuStack.push({
+                    ul: currentUl,
+                    level: currentLevel
+                });
+                currentLevel++;
+                currentUl.setAttribute('data-menu-level', currentLevel - 1);
+                nextUl.setAttribute('data-menu-level', currentLevel);
+                
+                setTimeout(() => {
+                    currentUl.classList.add('prev');
+                    nextUl.classList.add('active');
+                }, 10);
+            } 
+            lastCatalogClickTime = currentTime;
+            // Устанавливаем таймаут для сброса
+            catalogClickTimeout = setTimeout(() => {
+                lastCatalogClickTime = 0;
+            }, 500);
+        }
+    });
+} 
+// Добавляем кнопки "Назад" динамически
+function addBackButtons() {
+    document.querySelectorAll('.hor_menu ul ul').forEach(ul => {
+        if (!ul.querySelector('.menu-back')) {
+            const backLi = document.createElement('li');
+            backLi.className = 'menu-back';
+            backLi.innerHTML = '<a href="javascript:void(0)">‹ Назад</a>';
+            backLi.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (menuStack.length > 0) {
+                    const prev = menuStack.pop();
+                    const currentUl = this.parentElement;
+                    currentUl.classList.remove('active');
+                    prev.ul.classList.remove('prev');
+                    currentLevel--;
+                    setTimeout(() => {
+                        currentUl.removeAttribute('data-menu-level');
+                    }, 300);
+                }
+            });
+            ul.insertBefore(backLi, ul.firstChild);
+        }
+    });
+}
+  // Инициализируем кнопки "Назад"
+  addBackButtons();
+  // Обновляем кнопки при изменении DOM
+  const observer = new MutationObserver(addBackButtons);
+  if (menu) {
+      observer.observe(menu, { childList: true, subtree: true });
   }
-  // Если пользователь изменяет размер окна (например, с мобильного на десктоп), нужно отключать/включать обработчик
-  window.addEventListener("resize", function() {
-    if (catalogLink) {
-      // Если экран стал мобильным
-      if (isMobile()) {
-        catalogLink.addEventListener("click", clickHandler);
-      } else {
-        catalogLink.removeEventListener("click", clickHandler);
-      }
+}
+// Инициализируем систему слайдов
+if (isMobile()) {
+    setupSlideMenu();
+}
+// Если пользователь изменяет размер окна (например, с мобильного на десктоп), нужно отключать/включать обработчик
+window.addEventListener("resize", function() {
+    if (isMobile()) {
+        setupSlideMenu();
+    } else {
+        document.querySelectorAll('.hor_menu [data-menu-level]').forEach(el => {
+            el.classList.remove('active', 'prev');
+            el.removeAttribute('data-menu-level');
+        });
     }
-  });
+});
   const slides = document.querySelector(".slides");
   const radios = document.querySelectorAll('input[name="r"]');
   let startX = 0;
@@ -69,17 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
     radio.addEventListener("change", () => (currentIndex = i));
   });
 });
-  function clickHandler(e) {
-    const currentTime = new Date().getTime(); // Время текущего клика
-    if (currentTime - lastClickTime < 1200) { // Если два клика происходят за 1200 мс
-      // Переход по ссылке
-      window.location.href = catalogLink.href;
-    } else {
-      // Ожидание второго клика
-      e.preventDefault();
-    }
-    lastClickTime = currentTime; // Обновляем время последнего клика
-  }
   const isSuccess = document.body.dataset.orderSuccess === "true";
     if (isSuccess) {
         setTimeout(function () {
@@ -219,8 +310,8 @@ if (getCookie('cookies_accepted') === 'false') {
 if (!getCookie('cookies_accepted')) {
     console.log('Cookie not found, showing banner.');
     var banner = document.getElementById('cookie-banner');
-    banner.classList.add('show');  // плавное появление
-    banner.style.display = 'block';  // чтобы баннер вообще был видимым
+    banner.classList.add('show');  
+    banner.style.display = 'block'; 
 } else {
     console.log('Cookie found:', getCookie('cookies_accepted'));
 }
@@ -244,11 +335,11 @@ document.getElementById('cookie-settings').onclick = function() {
 function changeMainImage(newSrc) {
     let mainImage = document.getElementById("mainImage");
     if (mainImage && mainImage.src !== newSrc) {
-        mainImage.classList.add("fade-out"); // Начинаем анимацию исчезновения
+        mainImage.classList.add("fade-out"); 
         setTimeout(() => {
             mainImage.src = newSrc;
-            mainImage.classList.remove("fade-out"); // Возвращаем нормальное состояние
-        }, 200); // Время должно совпадать с CSS-анимацией
+            mainImage.classList.remove("fade-out"); 
+        }, 200); 
     }
 }
 function isElementInViewport(el) {
@@ -294,14 +385,14 @@ function selectSize(size, el) {
     }
 }   
   let counter = 1;
-  const slideCount = 4; // у тебя 4 слайда
+  const slideCount = 4; 
   setInterval(() => {
       document.getElementById('r' + counter).checked = true;
       counter++;
       if (counter > slideCount) {
           counter = 1;
       }
-  }, 10000); // 15000 мс = 15 секунд
+  }, 10000); 
 // FAQ toggle logic
 document.addEventListener('DOMContentLoaded', function() {
   // Для секции ухода (если есть faq-toggle)
