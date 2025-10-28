@@ -3,17 +3,139 @@ document.addEventListener("DOMContentLoaded", function () {
     const menu = document.getElementById('mobileMenu');
     const toggleButton = document.querySelector('.chat-toggle');
     const socialPanel = document.querySelector('.social');
-  
+    const overlay = document.querySelector('.menu-overlay');
+// Бургер меню
+    burger.addEventListener('click', () => {
+        menu.classList.toggle('open');
+        if (overlay) overlay.classList.toggle('active');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        
+        // Сбрасываем подменю при открытии
+        if (menu.classList.contains('open')) {
+            resetAllSubmenus();
+        }
+    });
+
+    // Оверлей
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            menu.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            resetAllSubmenus();
+        });
+    }
+
+    // Обработчики для пунктов меню
+    document.querySelectorAll('#mobileMenu li a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const submenu = this.nextElementSibling;
+            
+            // Если есть подменю и мы на мобильном
+            if (submenu && submenu.tagName === 'UL' && window.innerWidth <= 768) {
+                e.preventDefault();
+                
+                // Сдвигаем основное меню
+                menu.querySelector('ul').style.transform = 'translateX(-100%)';
+                menu.classList.add('has-active-submenu');
+                
+                // Показываем подменю
+                submenu.style.left = '0';
+                submenu.classList.add('active');
+                
+                // Добавляем кнопку "Назад" если её нет
+                if (!submenu.querySelector('.backBtn')) {
+                    const backBtn = document.createElement('li');
+                    backBtn.innerHTML = '<a href="#" class="backBtn">← Назад</a>';
+                    submenu.insertBefore(backBtn, submenu.firstChild);
+                    
+                    // Обработчик для кнопки "Назад"
+                    backBtn.querySelector('a').addEventListener('click', function(ev) {
+                        ev.preventDefault();
+                        
+                        // Возвращаем подменю обратно
+                        submenu.style.left = '100%';
+                        submenu.classList.remove('active');
+                        
+                        // Возвращаем основное меню
+                        menu.querySelector('ul').style.transform = 'translateX(0)';
+                        menu.classList.remove('has-active-submenu');
+                        
+                        // Удаляем кнопку "Назад"
+                        backBtn.remove();
+                    });
+                }
+            }
+        });
+    });
+
+    // Обычные ссылки (без подменю)
+    document.querySelectorAll('#mobileMenu li:not(:has(ul)) > a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                menu.classList.remove('open');
+                if (overlay) overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                resetAllSubmenus();
+            }
+        });
+    });
+
+    // Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+            menu.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            resetAllSubmenus();
+        }
+    });
+
+    // Функция сброса всех подменю
+    function resetAllSubmenus() {
+        // Возвращаем основное меню
+        const mainMenu = menu.querySelector('ul');
+        if (mainMenu) {
+            mainMenu.style.transform = 'translateX(0)';
+        }
+        
+        // Сбрасываем все подменю
+        document.querySelectorAll('#mobileMenu li ul').forEach(submenu => {
+            submenu.style.left = '100%';
+            submenu.classList.remove('active');
+            
+            // Удаляем кнопки "Назад"
+            const backBtn = submenu.querySelector('.backBtn');
+            if (backBtn) {
+                backBtn.remove();
+            }
+        });
+        
+        menu.classList.remove('has-active-submenu');
+    }
+
+    // Реинициализация при ресайзе
+    window.addEventListener("resize", function() {
+        if (window.innerWidth > 768) {
+            resetAllSubmenus();
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+    // ===== ОСТАЛЬНОЙ ВАШ КОД ОСТАЕТСЯ БЕЗ ИЗМЕНЕНИЙ =====
       toggleButton.addEventListener('click', function () {
       socialPanel.classList.toggle('active');
       toggleButton.classList.toggle('active');
       });
-      burger.addEventListener('click', () => {
-      menu.classList.toggle('open');
-      document.querySelectorAll('.hor_menu [data-menu-level]').forEach(el => {
-            el.classList.remove('active', 'prev');
-        });
-  });
   const catalogLink = document.querySelector("#catalogLink"); 
     let lastCatalogClickTime = 0; 
     let catalogClickTimeout = null; 

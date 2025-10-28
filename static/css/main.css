@@ -116,8 +116,7 @@ body {
     display: block;
 }
 @media (max-width: 768px) {
-    /* Шапка */
-    header {
+     header {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
@@ -152,164 +151,143 @@ body {
         margin-left: auto;
         z-index: 1002;
     }
-
     /* Основное мобильное меню */
     .hor_menu {
-        display: none;
         position: fixed;
         top: 0;
-        left: 0;
-        width: 100vw;
+        left: -100%;
+        width: 100%;
         height: 100vh;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        z-index: 1001;
-        padding: 80px 20px 20px;
-        overflow-y: auto;
-        transition: transform 0.3s ease-in-out;
-        width: 100%;
+        background: #fff;
+        transition: transform 0.4s ease;
+        z-index: 1000;
+        overflow: hidden;
+        transform: translateX(-100%);
+        opacity: 0.9;
     }
-    
+
     .hor_menu.open {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    /* Основной уровень меню */
+    .hor_menu > ul {
         display: flex;
-    }
-
-    .hor_menu ul {
         flex-direction: column;
-        gap: 0;
         width: 100%;
+        height: 100%;
+        padding: 80px 0 20px 0;
+        margin: 0;
+        position: absolute;
+        transition: transform 0.4s ease;
+        background: #fff;
     }
 
-    /* Пункты основного меню */
+    /* Пункты меню */
     .hor_menu ul li {
         width: 100%;
-        font-size: 24px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid #e0e0e0;
+        list-style: none;
     }
 
     .hor_menu ul li a {
-        padding: 20px 15px;
+        width: 100%;
+        padding: 16px 20px;
+        font-size: 1.1em;
         text-align: left;
-        justify-content: flex-start;
-        font-size: 22px;
-        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: none;
+        border: none;
+        color: #5e5e5e;
+        text-decoration: none;
+        cursor: pointer;
     }
 
     /* Стрелки для пунктов с подменю */
     .hor_menu ul li:has(> ul) > a::after {
-        content: "›";
+        content: '›';
+        font-size: 1.2em;
+        margin-left: 8px;
+    }
+
+    /* Подменю */
+    .hor_menu ul ul {
         position: absolute;
-        right: 15px;
-        transition: transform 0.3s;
-    }
-
-    .hor_menu ul li.open > a::after {
-        transform: rotate(90deg);
-    }
-
-    /* Подменю 2-го уровня */
-    .hor_menu ul li ul {
-        position: static;
+        top: 0;
+        left: 0;
         width: 100%;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        display: none;
-        border: none;
+        height: 100%;
+        transform: translateX(100%);
+       display: flex !important;
+        flex-direction: column;
+        background: #fff;
+        z-index: 1001;
+        padding: 80px 0 20px 0;
         margin: 0;
-        padding: 0;
+        transition: transform 0.4s ease;
+        visibility: visible !important; /* Принудительно видимый */
+        opacity: 1 !important;
     }
 
-    .hor_menu ul li ul li {
-        font-size: 20px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    /* Когда открыто подменю */
+    .hor_menu.submenu-open > ul {
+        transform: translateX(-100%);
     }
 
-    .hor_menu ul li ul li a {
-        padding: 18px 25px;
-        font-size: 20px;
-        background: transparent;
+    .hor_menu ul ul.active {
+        transform: translateX(0);
+    }
+
+    /* Кнопка "Назад" в подменю */
+    .hor_menu .menu-back {
+        border-bottom: 1px solid #e0e0e0;
+        flex-shrink: 0;
+        display: block;
+        position: sticky;
+    }
+
+    .hor_menu .menu-back a {
+        padding: 16px 20px;
+        font-size: 1.1em;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .hor_menu .menu-back a::before {
+        content: "←";
+        margin-right: 8px;
+    }
+
+    /* Пункты подменю */
+    .hor_menu ul ul li a {
+        padding: 16px 20px;
+        font-size: 1.1em;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .hor_menu ul ul li:last-child a {
+        border-bottom: none;
     }
 
     /* Стрелки для подменю 2-го уровня */
-    .hor_menu ul li ul li:has(> ul) > a::after {
-        content: "›";
-        position: absolute;
-        right: 15px;
-        transition: transform 0.3s;
-    }
-
-    .hor_menu ul li ul li.open > a::after {
-        transform: rotate(90deg);
-    }
-
-    /* Подменю 3-го уровня */
-    .hor_menu ul li ul li ul {
-        position: static;
-        width: 100%;
-        background: rgba(248, 248, 248, 0.85);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        display: none;
-        border: none;
-        column-count: 1;
-        margin: 0;
-        padding: 0;
-    }
-
-    .hor_menu ul li ul li ul li {
-        font-size: 18px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .hor_menu ul li ul li ul li a {
-        padding: 16px 35px;
-        font-size: 18px;
-    }
-
-    /* Показ открытых подменю */
-    .hor_menu ul li.open > ul {
-        display: block;
-    }
-
-    .hor_menu ul li ul li.open > ul {
-        display: block;
-    }
-
-    /* Анимации */
-    .hor_menu ul li ul,
-    .hor_menu ul li ul li ul {
-        animation: slideDown 0.3s ease-out;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Ховер-эффекты для мобильных */
-    .hor_menu ul li a:hover {
-        background: rgba(0, 0, 0, 0.05);
-        box-shadow: none;
-    }
-
-    .hor_menu ul li ul li a:hover {
-        background: rgba(0, 0, 0, 0.03);
-    }
-
-    .hor_menu ul li ul li ul li a:hover {
-        background: rgba(0, 0, 0, 0.02);
+    .hor_menu ul ul li:has(> ul) > a::after {
+        content: '›';
+        font-size: 1.2em;
+        margin-left: 8px;
     }
 }
 
-/* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ЗАКРЫТИЯ МЕНЮ ===== */
+/* ===== ОВЕРЛЕЙ ===== */
 .menu-overlay {
     display: none;
     position: fixed;
@@ -318,12 +296,13 @@ body {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 999;
 }
 
 .menu-overlay.active {
     display: block;
 }
+
 .content{
     transition: .5s;
     position: relative;
