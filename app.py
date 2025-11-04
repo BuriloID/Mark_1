@@ -461,6 +461,9 @@ def get_cart_item_count():
     cart_items = json.loads(cart_cookie)
     return sum(item['quantity'] for item in cart_items.values())
 
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
 @app.context_processor
 def inject_cart_item_count():
     try:
