@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static', filename='css/font-awesome.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}">
@@ -15,6 +16,40 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@cdek-it/widget@3" charset="utf-8"></script>
 </head>
 <body data-order-success="{{ 'true' if order_success else 'false' }}">
+    <div id="preloader">
+    <div class="container">
+      <svg
+        class="heart"
+        viewBox="-5 -5 278 56"
+        version="1.1"
+        id="svg5"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <filter id="blur">
+            <feGaussianBlur stdDeviation="1.6"></feGaussianBlur>
+          </filter>
+        </defs>
+        <g transform="translate(29.1 -127.42)" id="layer1">
+          <path
+            pathLength="1"
+            d="M-28.73 167.2c26.43 9.21 68.46-9.46 85.45-12.03 18.45-2.78 32.82 4.86 28.75 9.83-3.82 4.66-25.77-21.18-14.81-31.5 9.54-8.98 17.64 10.64 16.42 17.06-1.51-6.2 2.95-26.6 14.74-22.11 11.7 4.46-4.33 49.03-15.44 44.08-6.97-3.1 15.44-16.26 26.1-16 23.03.56 55.6 27.51 126.63 3.36"
+            id="line"
+          ></path>
+        </g>
+        <g transform="translate(29.1 -127.42)" id="layer2">
+          <path
+            pathLength="1"
+            d="M-28.73 167.2c26.43 9.21 68.46-9.46 85.45-12.03 18.45-2.78 32.82 4.86 28.75 9.83-3.82 4.66-25.77-21.18-14.81-31.5 9.54-8.98 17.64 10.64 16.42 17.06-1.51-6.2 2.95-26.6 14.74-22.11 11.7 4.46-4.33 49.03-15.44 44.08-6.97-3.1 15.44-16.26 26.1-16 23.03.56 55.6 27.51 126.63 3.36"
+            id="point"
+            filter="url(#blur)"
+          ></path>
+        </g>
+      </svg>
+      <div class="loading-text">Вяжем для вас...</div>
+      <div class="brand">CARDIGA NICK</div>
+    </div>
+  </div>
 <div class="page">
    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
     <button class="burger_media" aria-label="Открыть меню">☰</button>

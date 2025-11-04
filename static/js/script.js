@@ -1,5 +1,18 @@
 document.addEventListener("DOMContentLoaded", function () {
     // ==============================
+    // ПРЕЛОАДЕР
+    // ==============================
+    
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Скрываем прелоадер когда DOM готов + небольшая задержка для плавности
+        setTimeout(function() {
+            preloader.classList.add('hidden');
+            setTimeout(() => preloader.remove(), 500);
+        }, 2000); 
+    }
+
+    // ==============================
     // МОБИЛЬНОЕ МЕНЮ - ОСНОВНОЙ ФУНКЦИОНАЛ
     // ==============================
     
