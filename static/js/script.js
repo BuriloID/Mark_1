@@ -11,7 +11,31 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => preloader.remove(), 500);
         }, 2000); 
     }
-
+      // ==============================
+    // ПРОГРЕСС
+    // ==============================
+    
+    const progressBar = document.getElementById('progressBar');
+    let rafId = null;
+    
+    function updateProgressBar() {
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+        }
+        
+        rafId = requestAnimationFrame(function() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrollPosition = window.scrollY;
+            const scrollPercentage = (scrollPosition / documentHeight) * 100;
+            
+            progressBar.style.width = Math.min(100, Math.max(0, scrollPercentage)) + '%';
+        });
+    }
+    
+    window.addEventListener('scroll', updateProgressBar, { passive: true });
+    window.addEventListener('resize', updateProgressBar);
+    updateProgressBar();
     // ==============================
     // МОБИЛЬНОЕ МЕНЮ - ОСНОВНОЙ ФУНКЦИОНАЛ
     // ==============================
