@@ -732,7 +732,8 @@ body {
     width: 100%;
     height: 600px;
     overflow: hidden;
-    position: relative;
+    position: relative; 
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
 }
 .navigation {
     z-index: 300;
@@ -774,6 +775,91 @@ input[name="r"] {
     width: 100%;
     height: 100%;
 }
+
+.multi-image-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.image-item:nth-child(1),
+.image-item:nth-child(2),
+.image-item:nth-child(3) {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 120px) 110%, 0 100%);
+    margin-right: -110px; 
+    z-index: 1; 
+    flex: 1.3;
+}
+.image-item:nth-child(1) { z-index: 4; }
+.image-item:nth-child(2) { z-index: 3; }  
+.image-item:nth-child(3) { z-index: 2; }  
+.image-item:nth-child(4) { z-index: 1; }  
+.image-item:nth-child(4) {
+    clip-path: none;
+    margin-right: 0;
+}
+.image-item:nth-child(2)::before,
+.image-item:nth-child(3)::before,
+.image-item:nth-child(4)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 100%;
+background: linear-gradient(
+    100deg,
+    rgba(0, 0, 0, 0.45) 0px,
+    rgba(0, 0, 0, 0.35) 40px,
+    rgba(0, 0, 0, 0.2) 80px,
+    rgba(0, 0, 0, 0.08) 120px,
+    rgba(0, 0, 0, 0) 150px
+);
+    pointer-events: none;
+    z-index: 999;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 120px) 110%, 0 100%);
+}
+.image-item {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s ease;
+}
+
+.image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+#r2:checked ~ .s2 .image-item:nth-child(1) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.2s;
+}
+
+#r2:checked ~ .s2 .image-item:nth-child(2) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.7s;
+}
+
+#r2:checked ~ .s2 .image-item:nth-child(3) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 1.2s;
+}
+
+#r2:checked ~ .s2 .image-item:nth-child(4) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 1.7s;
+}
+
 #r1:checked ~ .s1 {
     margin-left: 0;
 }
@@ -811,34 +897,140 @@ input[name="r"] {
 
 @media (max-width: 768px) {
     .slider {
-        height: 215px;
+        height: 350px; 
+        margin: 0 auto;
+        max-width: 100rw;
     }
     
-    .navigation {
-        display: none;
-    }
-    
-    .bar {
-        height: 8px;
-        width: 8px;
+    .slides {
+        height: 100%;
     }
     
     .slide img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .navigation {
+        display: none;
+    }
+    .s1 img {
+        object-position: 90% center; 
+        scale: (1.1);
+        transform-origin: left center; 
+    }
+    .s2 .multi-image-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    
+    .s2 .image-item {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        opacity: 0; 
+        transform: translateX(-30px); 
+        transition: all 0.5s ease; 
+    }
+    .s2 .image-item:nth-child(1),
+    .s2 .image-item:nth-child(2),
+    .s2 .image-item:nth-child(3) {
+        clip-path: polygon(0 0, 100% 0, calc(100% - 40px) 110%, 0 100%);
+        margin-right: -35px; 
+        z-index: 1; 
+        flex: 1.3;
+    }
+    
+    .s2 .image-item:nth-child(1) { z-index: 4; }
+    .s2 .image-item:nth-child(2) { z-index: 3; }  
+    .s2 .image-item:nth-child(3) { z-index: 2; }  
+    .s2 .image-item:nth-child(4) { z-index: 1; }  
+    
+    .s2 .image-item:nth-child(4) {
+        clip-path: none;
+        margin-right: 0;
+    }
+    .s2 .image-item:nth-child(2)::before,
+    .s2 .image-item:nth-child(3)::before,
+    .s2 .image-item:nth-child(4)::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 60px;
+        height: 100%;
+        background: linear-gradient(
+            95deg,
+            rgba(0, 0, 0, 0.4) 0px,
+            rgba(0, 0, 0, 0.25) 15px,
+            rgba(0, 0, 0, 0.1) 30px,
+            rgba(0, 0, 0, 0) 45px
+        );
+        pointer-events: none;
+        z-index: 999;
+        clip-path: polygon(0 0, 100% 0, calc(100% - 40px) 110%, 0 100%);
+    }
+    
+    .s2 .image-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center;
+    }
+    #r2:checked ~ .s2 .image-item:nth-child(1) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: 0.1s; 
     }
     
-    .new-arrivals {
-        font-size: 32px; 
-        margin: 20px 15px;
-        text-align: left;
-        letter-spacing: -0.5px;
-        line-height: 1.2;
+    #r2:checked ~ .s2 .image-item:nth-child(2) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: 0.5s; 
+    }
+    
+    #r2:checked ~ .s2 .image-item:nth-child(3) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: 0.9s; 
+    }
+    
+    #r2:checked ~ .s2 .image-item:nth-child(4) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: 1.3s; 
     }
 }
 
+/* ПЛАНШЕТНАЯ АДАПТАЦИЯ */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .slider {
+        height: 500px;
+    }
+    
+    .image-item:nth-child(1),
+    .image-item:nth-child(2),
+    .image-item:nth-child(3) {
+        clip-path: polygon(0 0, 100% 0, calc(100% - 60px) 110%, 0 100%);
+        margin-right: -50px;
+        flex: 1.2;
+    }
+    
+    .image-item:nth-child(2)::before,
+    .image-item:nth-child(3)::before,
+    .image-item:nth-child(4)::before {
+        width: 80px;
+        background: linear-gradient(
+            100deg,
+            rgba(0, 0, 0, 0.4) 0px,
+            rgba(0, 0, 0, 0.25) 20px,
+            rgba(0, 0, 0, 0.1) 40px,
+            rgba(0, 0, 0, 0) 60px
+        );
+    }
+}
 @media (max-width: 480px) {
     .new-arrivals {
         font-size: 24px;
