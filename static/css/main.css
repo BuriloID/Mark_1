@@ -980,28 +980,53 @@ html { scroll-behavior: smooth; }
     font-family: 'Sverdlovsk', fantasy;
 }
 .btn-cta {
+    position: relative;
+    font-size: 17px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.4em 1em;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 6em;
+    transition: all 0.2s;
+    border: none;
     font-family: 'Sverdlovsk', fantasy;
-  display: inline-block;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(120,80,40,0.95), rgba(100,60,30,0.95));
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 6px 18px rgba(80,40,10,0.25);
-  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
-  -webkit-tap-highlight-color: transparent;
+    font-weight: 600;
+    color: black;
+    background-color: white;
+    box-shadow: 0 6px 18px rgba(80, 40, 10, 0.25);
+    -webkit-tap-highlight-color: transparent;
 }
-.btn-cta:hover,
-.btn-cta:focus {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(80,40,10,0.32);
-  outline: none;
+
+.btn-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
-.btn-cta:focus {
-  box-shadow: 0 0 0 4px rgba(180,130,80,0.18);
+
+.btn-cta:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
+
+.btn-cta::after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    border-radius: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    transition: all 0.4s;
+    background-color: #fff;
+}
+
+.btn-cta:hover::after {
+    transform: scaleX(1.4) scaleY(1.6);
+    opacity: 0;
+}
+
 #r2:checked ~ .s2 .slide-cta {
   opacity: 1;
   transition-delay: .4s;
@@ -1018,12 +1043,12 @@ html { scroll-behavior: smooth; }
   }
   .cta-title { font-size: 1.1rem; }
   .cta-sub { font-size: 0.9rem; margin-bottom:10px; }
-  .btn-cta { padding: 10px 14px; font-size: .95rem; border-radius: 8px; }
+  .btn-cta { padding: 5px 4px; font-size: 0.95rem; border-radius: 8px; }
 }
 @media (max-width: 420px) {
   .cta-title { font-size: 1rem; }
   .cta-sub { font-size: 0.85rem; }
-  .btn-cta { width: 100%; text-align: center; }
+  .btn-cta { padding: 5px 4px; width: 100%; text-align: center; }
 }
 
 .new-arrivals {
@@ -1193,6 +1218,7 @@ html { scroll-behavior: smooth; }
     }
 }
 .image__url {
+     position: relative;
     margin: 20px auto;
     display: flex;
     justify-content: center;

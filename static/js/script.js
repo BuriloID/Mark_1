@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => preloader.remove(), 500);
         }, 2000); 
     }
+
+
+    document.querySelectorAll('.tile').forEach(tile => observer.observe(tile));
       // ==============================
     // ПРОГРЕСС
     // ==============================
