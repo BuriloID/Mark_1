@@ -24,18 +24,25 @@ CARDIGA NICK
                 <div class="slide s2">
             <div class="multi-image-container">
                 <div class="image-item">
-                    <img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="Изделие 1">
+                    <img src="{{url_for('static', filename='img_collection/col1.jpg')}}" alt="Изделие 1">
                 </div>
                 <div class="image-item">
-                    <img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="Изделие 2">
+                    <img src="{{url_for('static', filename='img_collection/col2.jpg')}}" alt="Изделие 2">
                 </div>
                 <div class="image-item">
-                    <img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="Изделие 3">
+                    <img src="{{url_for('static', filename='img_collection/col3.jpg')}}" alt="Изделие 3">
                 </div>
                 <div class="image-item">
-                    <img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="Изделие 4">
+                    <img src="{{url_for('static', filename='img_collection/col4.jpg')}}" alt="Изделие 4">
                 </div>
             </div>
+            <div class="slide-cta" role="region" aria-label="Перейти к коллекциям">
+  <div class="cta-content">
+    <h2 class="cta-title">Откройте коллекции</h2>
+    <p class="cta-sub">Тёплые вязаные вещи — уют и стиль в каждом изделии</p>
+    <a class="btn-cta" href="#collections">Перейти к коллекциям</a>
+  </div>
+</div>
         </div>
         <div class="slide"><img src="{{url_for('static', filename='img/slide3.jpg')}}" alt="law"></div>
         <div class="slide"><img src="{{url_for('static', filename='img/slide4.jpg')}}" alt="law"></div>
@@ -105,7 +112,7 @@ CARDIGA NICK
     <a href="{{ url_for('new') }}" class="btn">Все новинки</a>
 </div>
 <h2 class="new-arrivals">Коллекции</h2>
-<div class="collections">
+<div class="collections" id="collections">
     {% for collection in collections %}
     <a href="{{ url_for('show_collection', collection_id=collection.id) }}" class="collection-card-link">
         <div class="collection-card">

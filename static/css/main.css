@@ -15,6 +15,13 @@
     font-style: normal;
     font-display: swap;
 }
+@font-face {
+    font-family: 'Sverdlovsk';
+    src: url('../fonts/Sverdlovsk.woff') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 * {
     box-sizing: border-box;
 }
@@ -794,7 +801,7 @@ input[name="r"] {
 
 .typing-animation h1,
 .typing-animation p {
-    font-family: 'AdventureIndianaJones', fantasy;
+    font-family: 'Sverdlovsk', fantasy;
     color: rgb(255, 250, 240); 
   display: inline-block;      
   box-sizing: border-box;
@@ -869,9 +876,9 @@ input[name="r"] {
     height: 100%;
 background: linear-gradient(
     100deg,
-    rgba(0, 0, 0, 0.45) 0px,
-    rgba(0, 0, 0, 0.35) 40px,
-    rgba(0, 0, 0, 0.2) 80px,
+    rgba(0, 0, 0, 1) 0px,
+    rgba(0, 0, 0, 0.9) 40px,
+    rgba(0, 0, 0, 0.7) 80px,
     rgba(0, 0, 0, 0.08) 120px,
     rgba(0, 0, 0, 0) 150px
 );
@@ -886,6 +893,7 @@ background: linear-gradient(
     opacity: 0;
     transform: translateX(-50px);
     transition: all 0.8s ease;
+    filter: brightness(1.15) contrast(0.9) saturate(0.85);
 }
 
 .image-item img {
@@ -931,6 +939,93 @@ background: linear-gradient(
 #r4:checked ~ .s1 {
     margin-left: -75%;
 }
+
+html { scroll-behavior: smooth; }
+
+.slide.s2 { position: relative; }
+.slide-cta {
+  position: absolute;
+  left: 8%;
+  bottom: 12%;
+  z-index: 40; 
+  max-width: 360px;
+  width: clamp(240px, 35vw, 360px);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  backdrop-filter: blur(8px) saturate(1.05);
+  -webkit-backdrop-filter: blur(8px) saturate(1.05);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  box-shadow: 0 8px 30px rgba(10,10,10,0.25);
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform .6s cubic-bezier(.2,.9,.2,1), opacity .6s ease;
+}
+
+
+.cta-content { width: 100%; }
+.cta-title {
+  margin: 0 0 6px 0;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: rgb(255,250,240); 
+    font-family: 'Sverdlovsk', fantasy;
+  font-weight: 600;
+}
+.cta-sub {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  color: rgba(255,250,240,0.9);
+    font-family: 'Sverdlovsk', fantasy;
+}
+.btn-cta {
+    font-family: 'Sverdlovsk', fantasy;
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(120,80,40,0.95), rgba(100,60,30,0.95));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 18px rgba(80,40,10,0.25);
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-cta:hover,
+.btn-cta:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(80,40,10,0.32);
+  outline: none;
+}
+.btn-cta:focus {
+  box-shadow: 0 0 0 4px rgba(180,130,80,0.18);
+}
+#r2:checked ~ .s2 .slide-cta {
+  opacity: 1;
+  transition-delay: .4s;
+}
+@media (max-width: 768px) {
+  .slide-cta {
+    left: 50%;
+    right: auto;
+    bottom: 8%;
+    transform: translate(-50%, 12px);
+    text-align: center;
+    width: min(86%, 420px);
+    padding: 16px;
+  }
+  .cta-title { font-size: 1.1rem; }
+  .cta-sub { font-size: 0.9rem; margin-bottom:10px; }
+  .btn-cta { padding: 10px 14px; font-size: .95rem; border-radius: 8px; }
+}
+@media (max-width: 420px) {
+  .cta-title { font-size: 1rem; }
+  .cta-sub { font-size: 0.85rem; }
+  .btn-cta { width: 100%; text-align: center; }
+}
+
 .new-arrivals {
     opacity: 0;
     transform: translateY(50px);
@@ -2872,8 +2967,6 @@ h1 {
   z-index: 9999;
   transition: opacity 0.5s ease;
 }
-
-/* Исчезновение */
 #preloader.hidden {
   opacity: 0;
   pointer-events: none;
@@ -2936,7 +3029,7 @@ h1 {
             letter-spacing: 2px;
         }
 .brand {
-    font-family: 'AdventureIndianaJones', fantasy;
+    font-family: 'Sverdlovsk', fantasy;
     margin-top: 10px;
     color: #6b5332d2;
     font-size: 24px;
