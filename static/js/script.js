@@ -162,60 +162,62 @@ document.addEventListener("DOMContentLoaded", function () {
     // СЛАЙДЕР ИЗОБРАЖЕНИЙ
     // ==============================
     
-    const slides = document.querySelector(".slides");
-    const radios = document.querySelectorAll('input[name="r"]');
-    
-    if (slides && radios.length > 0) {
-        let startX = 0;
-        let endX = 0;
-        let currentIndex = 0;
+   const slides = document.querySelector(".slides");
+const radios = document.querySelectorAll('input[name="r"]');
 
-        const updateIndex = () => {
-            if (radios[currentIndex]) {
-                radios[currentIndex].checked = true;
-            }
-        };
+if (slides && radios.length > 0) {
+    let startX = 0;
+    let endX = 0;
+    let currentIndex = 0;
+    let counter = 1; // Выносим counter в общую область видимости
+    const slideCount = 4;
 
-        // Обработка свайпов
-        slides.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
+    const updateIndex = () => {
+        if (radios[currentIndex]) {
+            radios[currentIndex].checked = true;
+            counter = currentIndex + 1; // Синхронизируем counter с currentIndex
+        }
+    };
+
+    // Обработка свайпов
+    slides.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    slides.addEventListener("touchend", (e) => {
+        endX = e.changedTouches[0].clientX;
+        if (startX - endX > 50) {
+            // swipe left
+            currentIndex = Math.min(currentIndex + 1, radios.length - 1);
+            updateIndex();
+        } else if (endX - startX > 50) {
+            // swipe right
+            currentIndex = Math.max(currentIndex - 1, 0);
+            updateIndex();
+        }
+    });
+
+    // Синхронизация текущего индекса
+    radios.forEach((radio, i) => {
+        if (radio.checked) {
+            currentIndex = i;
+            counter = i + 1; // Синхронизируем при загрузке страницы
+        }
+        radio.addEventListener("change", () => {
+            currentIndex = i;
+            counter = i + 1; // Синхронизируем при ручном переключении
         });
+    });
 
-        slides.addEventListener("touchend", (e) => {
-            endX = e.changedTouches[0].clientX;
-            if (startX - endX > 50) {
-                // swipe left
-                currentIndex = Math.min(currentIndex + 1, radios.length - 1);
-                updateIndex();
-            } else if (endX - startX > 50) {
-                // swipe right
-                currentIndex = Math.max(currentIndex - 1, 0);
-                updateIndex();
-            }
-        });
-
-        // Синхронизация текущего индекса
-        radios.forEach((radio, i) => {
-            if (radio.checked) currentIndex = i;
-            radio.addEventListener("change", () => (currentIndex = i));
-        });
-
-        // Автопереключение слайдов
-        let counter = 1;
-        const slideCount = 4; 
-        setInterval(() => {
-            const radio = document.getElementById('r' + counter);
-            if (radio) {
-                radio.checked = true;
-                currentIndex = counter - 1;
-                counter++;
-                if (counter > slideCount) {
-                    counter = 1;
-                }
-            }
-        }, 10000);
-    }
-
+    // Автопереключение слайдов
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % slideCount; // Используем currentIndex вместо counter
+        if (radios[currentIndex]) {
+            radios[currentIndex].checked = true;
+            counter = currentIndex + 1; // Поддерживаем синхронизацию
+        }
+    }, 10000);
+}
     // ==============================
     // ОБРАБОТКА УСПЕШНОГО ЗАКАЗА
     // ==============================

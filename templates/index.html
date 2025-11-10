@@ -44,7 +44,12 @@ CARDIGA NICK
   </div>
 </div>
         </div>
-        <div class="slide"><img src="{{url_for('static', filename='img/slide3.jpg')}}" alt="law"></div>
+        <div class="slide s3">
+        <video autoplay loop muted playsinline>
+            <source src="{{url_for('static', filename='videos/slide3.mp4')}}" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
         <div class="slide"><img src="{{url_for('static', filename='img/slide4.jpg')}}" alt="law"></div>
         <div class="navigation">
             <label for="r1" class="bar"></label>
