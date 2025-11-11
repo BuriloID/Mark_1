@@ -218,6 +218,61 @@ if (slides && radios.length > 0) {
         }
     }, 10000);
 }
+// ==============================
+// БЛОК ФИЛЬТР (шторка)
+// ==============================
+
+const drawer = document.getElementById('filterDrawer');
+const handle = document.getElementById('filterHandle');
+
+// Клик по ручке — открыть/закрыть
+handle.addEventListener('click', () => {
+  drawer.classList.toggle('open');
+});
+
+// ====== Свайпы (только по handle) ======
+let startY = null;
+let isSwiping = false;
+
+// Начало касания
+handle.addEventListener('touchstart', (e) => {
+  startY = e.touches[0].clientY;
+  isSwiping = true;
+  e.preventDefault(); // Предотвращаем скролл страницы
+}, { passive: false }); // Важно: passive: false для возможности preventDefault
+
+// Движение пальцем
+handle.addEventListener('touchmove', (e) => {
+  if (!isSwiping || startY === null) return;
+
+  const currentY = e.touches[0].clientY;
+  const diff = currentY - startY;
+
+  // Если свайпаем по handle - предотвращаем скролл страницы
+  if (Math.abs(diff) > 10) {
+    e.preventDefault();
+  }
+
+  // Свайп вниз — открыть
+  if (diff > 50) {
+    drawer.classList.add('open');
+    isSwiping = false;
+    startY = null;
+  }
+
+  // Свайп вверх — закрыть
+  if (diff < -50) {
+    drawer.classList.remove('open');
+    isSwiping = false;
+    startY = null;
+  }
+}, { passive: false }); // passive: false для touchmove тоже
+
+// Конец касания
+handle.addEventListener('touchend', () => {
+  isSwiping = false;
+  startY = null;
+});
     // ==============================
     // ОБРАБОТКА УСПЕШНОГО ЗАКАЗА
     // ==============================

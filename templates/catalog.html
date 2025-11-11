@@ -43,6 +43,17 @@
     <input type="text" name="search" placeholder="Поиск по названию или описанию..." value="{{ request.args.get('search', '') }}">
     <button type="submit"><i class="fa fa-search"></i> Найти</button>
 </form>
+<div class="filter-drawer" id="filterDrawer">
+        <div class="filter-content">
+            <!-- Пока пусто, позже сюда добавим фильтры -->
+            <p style="text-align:center; color:#777; margin-top:10px;">(Здесь появятся фильтры)</p>
+        </div>
+    </div>
+    <div class="filter-handle" id="filterHandle">
+        <div class="handle-container">
+            <div class="handle-bar"></div>
+        </div>
+    </div>
     <div class="catalog">
         {% for product in products %}
             <div class="product">
