@@ -226,7 +226,113 @@ def buy():
         return jsonify({'status': 'error', 'message': f'Ошибка: {str(e)}'}), 500
     finally:
         db.session.close()
-
+@app.route('/catalog/filter', methods=['POST'])
+def catalog_filter():
+    import traceback
+    print("DEBUG: Entering catalog_filter")
+    try:
+        data = request.get_json()
+        print(f"DEBUG: Received data: {data}")
+        
+        min_price = data.get('min_price')
+        max_price = data.get('max_price')
+        
+        # Базовые запросы
+        query_product = Product.query
+        query_new = NewProduct.query
+        
+        # Применяем фильтры по цене
+        if min_price:
+            query_product = query_product.filter(Product.price >= float(min_price))
+            query_new = query_new.filter(NewProduct.price >= float(min_price))
+        
+        if max_price:
+            query_product = query_product.filter(Product.price <= float(max_price))
+            query_new = query_new.filter(NewProduct.price <= float(max_price))
+        
+        # Получаем отфильтрованные товары
+        all_products = query_new.all() + query_product.all()
+        
+        # Формируем HTML для товаров с БЕЗОПАСНОЙ проверкой sale
+        products_html = ""
+        for product in all_products:
+            # Безопасная проверка скидки
+            sale_value = 0
+            if hasattr(product, 'sale'):
+                sale_value = product.sale if product.sale is not None else 0
+            
+            # Вычисляем финальную цену
+            final_price = product.price
+            if sale_value and sale_value > 0:
+                final_price = product.price * (1 - sale_value / 100)
+            
+            # Формируем HTML ТОЧНО как в шаблоне catalog.html
+        products_html = ""
+        for product in all_products:
+            # Определяем тип товара
+            is_new_product = isinstance(product, NewProduct)
+            
+            # Изображения (ТОЧНО как в шаблоне)
+            image_html = ''
+            if product.image_url:
+                image_html = f'<img src="{url_for("static", filename=product.image_url)}" alt="{product.name}" class="main-img">'
+                if product.image_url_back:
+                    image_html += f'<img src="{url_for("static", filename=product.image_url_back)}" alt="{product.name}" class="hover-img">'
+            else:
+                image_html = f'<img src="https://via.placeholder.com/150" alt="{product.name}">'
+            
+            # Цена (без учета скидки, как в шаблоне)
+            price_display = int(product.price)
+            
+            # Формируем карточку товара ТОЧНО как в шаблоне
+                   # Формируем HTML ТОЧНО как в шаблоне catalog.html
+        products_html = ""
+        for product in all_products:
+            # Определяем тип товара
+            is_new_product = isinstance(product, NewProduct)
+            product_type_str = 'new_product' if is_new_product else 'product'
+            
+            # Изображения (ТОЧНО как в шаблоне)
+            image_html = ''
+            if product.image_url:
+                # Правильный путь для изображений
+                main_img = f'/static/{product.image_url}'
+                image_html = f'<img src="{main_img}" alt="{product.name}" class="main-img">'
+                
+                if product.image_url_back:
+                    back_img = f'/static/{product.image_url_back}'
+                    image_html += f'<img src="{back_img}" alt="{product.name}" class="hover-img">'
+            else:
+                image_html = f'<img src="https://via.placeholder.com/150" alt="{product.name}">'
+            
+            # Цена (без учета скидки, как в шаблоне)
+            price_display = int(product.price)
+            
+            # Формируем карточку товара ТОЧНО как в шаблоне
+            products_html += f'''<div class="product">
+{f'<div class="new-label">New</div>' if is_new_product else ''}
+{image_html}
+<h2>{product.description if product.description else ""}</h2>
+<p>{product.name}</p>
+<p><strong>{price_display} ₽</strong></p>
+<a href="/product/{product.id}?product_type={product_type_str}">
+    <button class="btn">Перейти</button>
+</a>
+</div>
+'''
+        
+        # Если товаров нет
+        if not products_html:
+            products_html = '<p class="no-products">Товары не найдены</p>'
+        
+        return jsonify({
+            'success': True,
+            'products_html': products_html,
+            'products_count': len(all_products)
+        })
+    except Exception as e:
+        print(f"ERROR: {traceback.format_exc()}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 @app.route('/collection/<int:collection_id>')
 def show_collection(collection_id):
     collection = Collection.query.get_or_404(collection_id)
@@ -265,16 +371,45 @@ def about():
 def catalog():
     page = request.args.get('page', 1, type=int)
     per_page = 12  
-    
-    query_product = Product.query
+
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
     category_name = request.args.get('category')
-    name = request.args.get('name')
     search_query = request.args.get('search')
-    
+    categories = Category.query.all()
+
+    # Получаем минимумы и максимумы по таблицам с безопасной обработкой
+    min_product_price = db.session.query(db.func.min(Product.price)).scalar() or 0
+    max_product_price = db.session.query(db.func.max(Product.price)).scalar() or 0
+    min_new_price = db.session.query(db.func.min(NewProduct.price)).scalar() or 0
+    max_new_price = db.session.query(db.func.max(NewProduct.price)).scalar() or 0
+
+    print(f"Min Product Price: {min_product_price}, Max Product Price: {max_product_price}")
+    print(f"Min NewProduct Price: {min_new_price}, Max NewProduct Price: {max_new_price}")
+
+    # Собираем все найденные значения в список (только те, что не None)
+    all_min_prices = [p for p in [min_product_price, min_new_price] if p > 0]
+    all_max_prices = [p for p in [max_product_price, max_new_price] if p > 0]
+
+    # Определяем реальные минимальные и максимальные
+    real_min_price = int(min(all_min_prices)) if all_min_prices else min(min_product_price, min_new_price) or 0
+    real_max_price = int(max(all_max_prices)) + 100 if all_max_prices else max(max_product_price, max_new_price) or 10000
+
+    print(f"Real Min Price: {real_min_price}, Real Max Price: {real_max_price}")
+
+    # Запросы
+    query_product = Product.query
+    query_new = NewProduct.query
+
+    if min_price is not None:
+        query_product = query_product.filter(Product.price >= min_price)
+        query_new = query_new.filter(NewProduct.price >= min_price)
+    if max_price is not None:
+        query_product = query_product.filter(Product.price <= max_price)
+        query_new = query_new.filter(NewProduct.price <= max_price)
     if category_name:
         query_product = query_product.filter(Product.categories.any(name=category_name))
-    if name:
-        query_product = query_product.filter(Product.name == name)
+        query_new = query_new.filter(NewProduct.categories.any(name=category_name))
     if search_query:
         query_product = query_product.filter(
             or_(
@@ -282,26 +417,19 @@ def catalog():
                 Product.description.ilike(f"%{search_query}%")
             )
         )
-    
-    query_new = NewProduct.query
-    if category_name:
-        query_new = query_new.filter(NewProduct.categories.any(name=category_name))
-    if name:
-        query_new = query_new.filter(NewProduct.name == name)
-    if search_query:
         query_new = query_new.filter(
             or_(
                 NewProduct.name.ilike(f"%{search_query}%"),
                 NewProduct.description.ilike(f"%{search_query}%")
             )
         )
+
     all_products = query_new.all() + query_product.all()
-    
     total = len(all_products)
     start = (page - 1) * per_page
     end = start + per_page
     products = all_products[start:end]
-    pages = (total + per_page - 1) // per_page  
+    pages = (total + per_page - 1) // per_page
 
     args = request.args.to_dict(flat=True)
     args.pop('page', None)
@@ -310,8 +438,25 @@ def catalog():
         products=products,
         page=page,
         pages=pages,
-        args=args,  
-        request=request
+        args=args,
+        request=request,
+        categories=categories,
+        real_min_price=real_min_price,
+        real_max_price=real_max_price
+    )
+@app.route('/test_catalog')
+def test_catalog():
+    """Тестовый маршрут чтобы проверить передачу переменных"""
+    return render_template(
+        'catalog.html',
+        products=[],
+        page=1,
+        pages=1,
+        args={},
+        request=request,
+        categories=[],
+        real_min_price=7777,
+        real_max_price=8888
     )
 @app.route('/new')
 def new():

@@ -39,13 +39,44 @@
     </div>
 {% endblock %}
 {% block content %}
+
 <form action="{{ url_for('catalog') }}" method="get" class="search-form">
     <input type="text" name="search" placeholder="Поиск по названию или описанию..." value="{{ request.args.get('search', '') }}">
     <button type="submit"><i class="fa fa-search"></i> Найти</button>
 </form>
 <div class="filter-drawer" id="filterDrawer">
         <div class="filter-content">
-            <!-- Пока пусто, позже сюда добавим фильтры -->
+        <div class="filter-header">
+            <h3>Фильтры</h3>
+            <button class="close-filter" id="closeFilter">&times;</button>
+        </div>
+        
+        <div class="filter-section">
+            <h4>Цена, ₽</h4>
+            <div class="price-inputs">
+                <div class="price-input-group">
+                    <label>От</label>
+                    <input type="number" id="minPrice" placeholder="{{ real_min_price }}" min="{{ real_min_price }}" max="{{ real_max_price }}">
+                </div>
+                <div class="price-input-group">
+                    <label>До</label>
+                    <input type="number" id="maxPrice" placeholder="{{ real_max_price }}" min="{{ real_min_price }}" max="{{ real_max_price }}">
+                </div>
+            </div>
+            <div class="price-slider-container">
+                <div class="price-slider">
+                    <div class="slider-track">
+                        <div class="slider-range" id="sliderRange"></div>
+                    </div>
+                    <input type="range" id="minRange" min="{{ real_min_price }}" max="{{ real_max_price }}" value="{{ real_min_price }}" class="range-min">
+                    <input type="range" id="maxRange" min="{{ real_min_price }}" max="{{ real_max_price }}" value="{{ real_max_price }}" class="range-max">
+                </div>
+            </div>
+        </div>
+         <div class="filter-actions">
+            <button class="apply-filter" id="applyFilter">Применить фильтры</button>
+            <button class="reset-filter" id="resetFilter">Сбросить</button>
+        </div>
             <p style="text-align:center; color:#777; margin-top:10px;">(Здесь появятся фильтры)</p>
         </div>
     </div>
@@ -54,7 +85,12 @@
             <div class="handle-bar"></div>
         </div>
     </div>
-    <div class="catalog">
+    <div class="catalog-wrapper">
+    <div id="productsCount" class="products-count">
+        Найдено товаров: {{ products|length }}
+    </div>
+    </div>
+    <div id="productsContainer" class="catalog">
         {% for product in products %}
             <div class="product">
                 {% if product.__class__.__name__ == 'NewProduct' %}

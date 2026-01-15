@@ -219,60 +219,388 @@ if (slides && radios.length > 0) {
     }, 10000);
 }
 // ==============================
-// БЛОК ФИЛЬТР (шторка)
+// БЛОК ФИЛЬТР (шторка) - ИСПРАВЛЕННАЯ ВЕРСИЯ
 // ==============================
 
 const drawer = document.getElementById('filterDrawer');
 const handle = document.getElementById('filterHandle');
+const closeFilter = document.getElementById('closeFilter');
+const applyFilter = document.getElementById('applyFilter');
+const resetFilter = document.getElementById('resetFilter');
+const minPriceInput = document.getElementById('minPrice');
+const maxPriceInput = document.getElementById('maxPrice');
+const minRange = document.getElementById('minRange');
+const maxRange = document.getElementById('maxRange');
+const sliderRange = document.getElementById('sliderRange');
+const productsContainer = document.getElementById('productsContainer');
+const productsCount = document.getElementById('productsCount');
+// Получаем реальные цены
+function getRealPriceRange() {
+    const realMinPrice = parseInt(minRange?.getAttribute('min')) || 0;
+    const realMaxPrice = parseInt(maxRange?.getAttribute('max')) || 50000;
+    
+    return {
+        min: realMinPrice,
+        max: realMaxPrice
+    };
+}
+// Обновление визуальной полосы
+function updateSliderRange() {
+    if (!sliderRange) return;
+    
+    const priceRange = getRealPriceRange();
+    const minVal = parseInt(minRange.value);
+    const maxVal = parseInt(maxRange.value);
+    const totalRange = priceRange.max - priceRange.min;
+    
+    // Защита от деления на ноль
+    if (totalRange === 0) {
+        sliderRange.style.left = "0%";
+        sliderRange.style.width = "100%";
+        return;
+    }
+    
+    // Расчет в процентах
+    const minPercent = ((minVal - priceRange.min) / totalRange) * 100;
+    const maxPercent = ((maxVal - priceRange.min) / totalRange) * 100;
+    
+    // Устанавливаем позицию и ширину
+    sliderRange.style.left = minPercent + "%";
+    sliderRange.style.width = (maxPercent - minPercent) + "%";
+    
+    console.log(`Slider range: left=${minPercent}%, width=${maxPercent - minPercent}%`);
+}
+// Обновление минимального значения
+function updateMinPrice() {
+    const priceRange = getRealPriceRange();
+    let minVal = parseInt(minRange.value);
+    let maxVal = parseInt(maxRange.value);
+    
+    // Ограничения
+    minVal = Math.max(priceRange.min, minVal);
+    minVal = Math.min(maxVal, minVal);
+    
+    minRange.value = minVal;
+    minPriceInput.value = minVal;
+    updateSliderRange();
+}
+// Обновление максимального значения
+function updateMaxPrice() {
+    const priceRange = getRealPriceRange();
+    let minVal = parseInt(minRange.value);
+    let maxVal = parseInt(maxRange.value);
+    
+    // Ограничения
+    maxVal = Math.min(priceRange.max, maxVal);
+    maxVal = Math.max(minVal, maxVal);
+    
+    maxRange.value = maxVal;
+    maxPriceInput.value = maxVal;
+    updateSliderRange();
+}
 
-// Клик по ручке — открыть/закрыть
-handle.addEventListener('click', () => {
-  drawer.classList.toggle('open');
-});
+// Обновление при вводе в поле "От"
+function updateMinRange() {
+    const priceRange = getRealPriceRange();
+    let minVal = parseInt(minPriceInput.value) || priceRange.min;
+    const maxVal = parseInt(maxRange.value);
+    
+    // Валидация
+    if (isNaN(minVal)) minVal = priceRange.min;
+    minVal = Math.max(priceRange.min, minVal);
+    minVal = Math.min(priceRange.max, minVal);
+    minVal = Math.min(maxVal, minVal);
+    
+    minRange.value = minVal;
+    minPriceInput.value = minVal;
+    updateSliderRange();
+}
 
-// ====== Свайпы (только по handle) ======
-let startY = null;
-let isSwiping = false;
+// Обновление при вводе в поле "До"
+function updateMaxRange() {
+    const priceRange = getRealPriceRange();
+    const minVal = parseInt(minRange.value);
+    let maxVal = parseInt(maxPriceInput.value) || priceRange.max;
+    
+    // Валидация
+    if (isNaN(maxVal)) maxVal = priceRange.max;
+    maxVal = Math.min(priceRange.max, maxVal);
+    maxVal = Math.max(priceRange.min, maxVal);
+    maxVal = Math.max(minVal, maxVal);
+    
+    maxRange.value = maxVal;
+    maxPriceInput.value = maxVal;
+    updateSliderRange();
+}
+// ====================
+// ФИЛЬТРАЦИЯ
+// ====================
 
-// Начало касания
-handle.addEventListener('touchstart', (e) => {
-  startY = e.touches[0].clientY;
-  isSwiping = true;
-  e.preventDefault(); // Предотвращаем скролл страницы
-}, { passive: false }); // Важно: passive: false для возможности preventDefault
+function applyPriceFilters(e) {
+    if (e) e.preventDefault();
+    
+    const minPrice = minPriceInput.value || minRange.min;
+    const maxPrice = maxPriceInput.value || maxRange.max;
+    
+    // Проверка значений
+    if (parseInt(minPrice) > parseInt(maxPrice)) {
+        alert('Минимальная цена не может быть больше максимальной');
+        return;
+    }
+    
+    // Показываем индикатор загрузки
+    if (productsContainer) {
+        productsContainer.classList.add('loading');
+        productsContainer.innerHTML = '<div class="loading-spinner">Загрузка...</div>';
+    }
+    
+    // Собираем ВСЕ параметры фильтрации (не только цену)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterData = {};
+    
+    // 1. Цена
+    if (minPrice && parseInt(minPrice) > parseInt(minRange.min)) {
+        filterData.min_price = minPrice;
+        urlParams.set('min_price', minPrice);
+    } else {
+        urlParams.delete('min_price');
+    }
+    
+    if (maxPrice && parseInt(maxPrice) < parseInt(maxRange.max)) {
+        filterData.max_price = maxPrice;
+        urlParams.set('max_price', maxPrice);
+    } else {
+        urlParams.delete('max_price');
+    }
+    
+    // 2. Категория (если есть)
+    const category = urlParams.get('category') || 
+                    document.querySelector('[name="category"]')?.value;
+    if (category) filterData.category = category;
+    
+    // 3. Поиск (если есть)
+    const searchQuery = urlParams.get('search') || 
+                       document.querySelector('[name="search"]')?.value;
+    if (searchQuery) filterData.search = searchQuery;
+    
+    // 4. Название товара (если есть)
+    const name = urlParams.get('name');
+    if (name) filterData.name = name;
+    
+    // Обновляем URL без перезагрузки (history API)
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    history.pushState({}, '', newUrl);
+    
+    // AJAX запрос
+    fetch('/catalog/filter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest' // Для Flask можно проверить request.is_xhr
+        },
+        body: JSON.stringify(filterData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success && productsContainer) {
+            // Обновляем товары
+            productsContainer.innerHTML = data.products_html || '<p>Товары не найдены</p>';
+            
+            // Обновляем счетчик
+            if (productsCount) {
+                productsCount.textContent = 'Найдено товаров: ' + (data.products_count || 0);
+            }
+            
+            // Обновляем заголовок страницы (опционально)
+            if (data.products_count !== undefined) {
+                document.title = `Каталог (${data.products_count} товаров)`;
+            }
+        } else {
+            console.error('Filter error:', data.message || 'Unknown error');
+            if (productsContainer) {
+                productsContainer.innerHTML = '<p class="error">Ошибка при загрузке товаров</p>';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Filter fetch error:', error);
+        
+        // Fallback: показываем сообщение и предлагаем перезагрузить
+        if (productsContainer) {
+            productsContainer.innerHTML = `
+                <div class="error-message">
+                    <p>Произошла ошибка при фильтрации</p>
+                    <button onclick="location.reload()" class="reload-btn">Обновить страницу</button>
+                </div>
+            `;
+        }
+    })
+    .finally(() => {
+        // Убираем индикатор загрузки
+        if (productsContainer) {
+            productsContainer.classList.remove('loading');
+        }
+    });
+}
 
-// Движение пальцем
-handle.addEventListener('touchmove', (e) => {
-  if (!isSwiping || startY === null) return;
+// Сброс фильтров (тоже без перезагрузки)
+function resetFilters() {
+    const priceRange = getRealPriceRange();
+    
+    // Сбрасываем значения
+    minPriceInput.value = '';
+    maxPriceInput.value = '';
+    minRange.value = priceRange.min;
+    maxRange.value = priceRange.max;
+    updateSliderRange();
+    
+    // Очищаем URL параметры
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('min_price');
+    urlParams.delete('max_price');
+    urlParams.delete('page');
+    
+    // Обновляем URL
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    history.pushState({}, '', newUrl);
+    
+    // Вызываем фильтрацию с пустыми параметрами
+    applyPriceFilters();
+}
+// ====================
+// УПРАВЛЕНИЕ ШТОРКОЙ
+// ====================
 
-  const currentY = e.touches[0].clientY;
-  const diff = currentY - startY;
-
-  // Если свайпаем по handle - предотвращаем скролл страницы
-  if (Math.abs(diff) > 10) {
-    e.preventDefault();
-  }
-
-  // Свайп вниз — открыть
-  if (diff > 50) {
+function openFilter() {
     drawer.classList.add('open');
-    isSwiping = false;
-    startY = null;
-  }
+    handle.classList.add('open');
+}
 
-  // Свайп вверх — закрыть
-  if (diff < -50) {
+function closeFilterDrawer() {
     drawer.classList.remove('open');
-    isSwiping = false;
-    startY = null;
-  }
-}, { passive: false }); // passive: false для touchmove тоже
+    handle.classList.remove('open');
+}
 
-// Конец касания
-handle.addEventListener('touchend', () => {
-  isSwiping = false;
-  startY = null;
-});
+// ====================
+// ИНИЦИАЛИЗАЦИЯ
+// ====================
+
+function initPriceFilter() {
+    const priceRange = getRealPriceRange();
+    
+    // Значения из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const minPriceFromUrl = urlParams.get('min_price');
+    const maxPriceFromUrl = urlParams.get('max_price');
+    
+    // Минимальная цена
+    let minVal = priceRange.min;
+    if (minPriceFromUrl) {
+        minVal = Math.max(priceRange.min, Math.min(priceRange.max, parseInt(minPriceFromUrl)));
+    }
+    minPriceInput.value = minVal;
+    minRange.value = minVal;
+    
+    // Максимальная цена
+    let maxVal = priceRange.max;
+    if (maxPriceFromUrl) {
+        maxVal = Math.max(priceRange.min, Math.min(priceRange.max, parseInt(maxPriceFromUrl)));
+        maxVal = Math.max(minVal, maxVal); // Не меньше минимума
+    }
+    maxPriceInput.value = maxVal;
+    maxRange.value = maxVal;
+    
+    updateSliderRange();
+}
+
+function initFilter() {
+    if (!drawer) return;
+    
+    initPriceFilter();
+    
+    // Обработчики для ползунков
+    minRange.addEventListener('input', updateMinPrice);
+    maxRange.addEventListener('input', updateMaxPrice);
+    minRange.addEventListener('change', applyPriceFilters);
+    maxRange.addEventListener('change', applyPriceFilters);
+    
+    // Обработчики для полей ввода
+    minPriceInput.addEventListener('change', updateMinRange);
+    maxPriceInput.addEventListener('change', updateMaxRange);
+    minPriceInput.addEventListener('blur', updateMinRange);
+    maxPriceInput.addEventListener('blur', updateMaxRange);
+    
+    // Кнопки
+    applyFilter.addEventListener('click', applyPriceFilters);
+    resetFilter.addEventListener('click', resetFilters);
+    handle.addEventListener('click', openFilter);
+    closeFilter.addEventListener('click', closeFilterDrawer);
+    
+    // Закрытие по клику вне области
+    document.addEventListener('click', (e) => {
+        if (drawer.classList.contains('open') && 
+            !drawer.contains(e.target) && 
+            !handle.contains(e.target)) {
+            closeFilterDrawer();
+        }
+    });
+}
+
+// Свайпы для фильтра
+function initFilterSwipe() {
+    if (!handle) return;
+    
+    let startY = null;
+    let isSwiping = false;
+
+    // Начало касания
+    handle.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        isSwiping = true;
+        e.preventDefault();
+    }, { passive: false });
+
+    // Движение пальцем
+    handle.addEventListener('touchmove', (e) => {
+        if (!isSwiping || startY === null) return;
+
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+
+        // Если свайпаем по handle - предотвращаем скролл страницы
+        if (Math.abs(diff) > 10) {
+            e.preventDefault();
+        }
+
+        // Свайп вниз — открыть
+        if (diff > 50) {
+            openFilter();
+            isSwiping = false;
+            startY = null;
+        }
+
+        // Свайп вверх — закрыть
+        if (diff < -50) {
+            closeFilterDrawer();
+            isSwiping = false;
+            startY = null;
+        }
+    }, { passive: false });
+
+    // Конец касания
+    handle.addEventListener('touchend', () => {
+        isSwiping = false;
+        startY = null;
+    });
+}
+// Вызов инициализации фильтра
+initFilter();
+initFilterSwipe();
     // ==============================
     // ОБРАБОТКА УСПЕШНОГО ЗАКАЗА
     // ==============================
