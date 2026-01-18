@@ -73,6 +73,27 @@
                 </div>
             </div>
         </div>
+
+<div class="filter-section">
+    <h4>Состав</h4>
+    <div class="composition-filter" id="compositionFilter">
+        {% for composition in compositions %}
+        <div class="composition-option">
+            <input type="checkbox" 
+                   id="composition_{{ loop.index }}" 
+                   name="composition" 
+                   value="{{ composition }}"
+                   class="composition-checkbox">
+            <label for="composition_{{ loop.index }}" class="composition-label">
+                <span class="checkbox-custom"></span>
+                <span class="composition-name">{{ composition }}</span>
+            </label>
+        </div>
+        {% else %}
+        <p class="no-compositions">Состав не указан</p>
+        {% endfor %}
+    </div>
+</div>
          <div class="filter-actions">
             <button class="apply-filter" id="applyFilter">Применить фильтры</button>
             <button class="reset-filter" id="resetFilter">Сбросить</button>

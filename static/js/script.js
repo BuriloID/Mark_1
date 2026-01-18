@@ -336,11 +336,68 @@ function updateMaxRange() {
 // ФИЛЬТРАЦИЯ
 // ====================
 
+
+// Сброс фильтров (тоже без перезагрузки)
+function resetFilters() {
+    const priceRange = getRealPriceRange();
+    
+    // Сбрасываем значения
+    minPriceInput.value = '';
+    maxPriceInput.value = '';
+    minRange.value = priceRange.min;
+    maxRange.value = priceRange.max;
+    updateSliderRange();
+    
+    // Очищаем URL параметры
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.delete('min_price');
+    urlParams.delete('max_price');
+    urlParams.delete('page');
+    
+    // Обновляем URL
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    history.pushState({}, '', newUrl);
+    
+    // Вызываем фильтрацию с пустыми параметрами
+    applyPriceFilters();
+}
+// ====================
+// ФИЛЬТР ПО СОСТАВУ (МАТЕРИАЛУ)
+// ====================
+
+// Функция для поиска по составу
+function initCompositionSearch() {
+    const compositionSearch = document.getElementById('compositionSearch');
+    const compositionOptions = document.querySelectorAll('.composition-option');
+    
+    if (!compositionSearch || !compositionOptions.length) return;
+    
+    compositionSearch.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        compositionOptions.forEach(option => {
+            const compositionName = option.querySelector('.composition-name').textContent.toLowerCase();
+            if (compositionName.includes(searchTerm)) {
+                option.style.display = 'flex';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    });
+}
+
+// В функции applyPriceFilters обновляем сбор данных:
+// НАЙДИТЕ функцию applyPriceFilters и ОБНОВИТЕ её:
+
 function applyPriceFilters(e) {
     if (e) e.preventDefault();
     
     const minPrice = minPriceInput.value || minRange.min;
     const maxPrice = maxPriceInput.value || maxRange.max;
+    
+    // Собираем выбранные составы (ДОБАВЛЯЕМ ЭТО)
+    const selectedCompositions = Array.from(document.querySelectorAll('.composition-checkbox:checked'))
+        .map(cb => cb.value);
     
     // Проверка значений
     if (parseInt(minPrice) > parseInt(maxPrice)) {
@@ -373,17 +430,29 @@ function applyPriceFilters(e) {
         urlParams.delete('max_price');
     }
     
-    // 2. Категория (если есть)
+    // 2. Составы (ДОБАВЛЯЕМ ЭТО)
+    if (selectedCompositions.length > 0) {
+        filterData.compositions = selectedCompositions;
+        urlParams.delete('composition');
+        selectedCompositions.forEach(comp => {
+            urlParams.append('composition', comp);
+        });
+    } else {
+        urlParams.delete('composition');
+        delete filterData.compositions;
+    }
+    
+    // 3. Категория (если есть)
     const category = urlParams.get('category') || 
                     document.querySelector('[name="category"]')?.value;
     if (category) filterData.category = category;
     
-    // 3. Поиск (если есть)
+    // 4. Поиск (если есть)
     const searchQuery = urlParams.get('search') || 
                        document.querySelector('[name="search"]')?.value;
     if (searchQuery) filterData.search = searchQuery;
     
-    // 4. Название товара (если есть)
+    // 5. Название товара (если есть)
     const name = urlParams.get('name');
     if (name) filterData.name = name;
     
@@ -396,7 +465,7 @@ function applyPriceFilters(e) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest' // Для Flask можно проверить request.is_xhr
+            'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify(filterData)
     })
@@ -414,6 +483,11 @@ function applyPriceFilters(e) {
             // Обновляем счетчик
             if (productsCount) {
                 productsCount.textContent = 'Найдено товаров: ' + (data.products_count || 0);
+            }
+            
+            // Обновляем список составов, если он пришел с сервера
+            if (data.compositions && data.compositions.length > 0) {
+                updateCompositionFilter(data.compositions);
             }
             
             // Обновляем заголовок страницы (опционально)
@@ -448,21 +522,72 @@ function applyPriceFilters(e) {
     });
 }
 
-// Сброс фильтров (тоже без перезагрузки)
+// Функция обновления фильтра составов (если список изменился)
+function updateCompositionFilter(compositions) {
+    const compositionFilter = document.getElementById('compositionFilter');
+    if (!compositionFilter) return;
+    
+    // Сохраняем выбранные элементы
+    const selectedCompositions = Array.from(document.querySelectorAll('.composition-checkbox:checked'))
+        .map(cb => cb.value);
+    
+    // Очищаем текущий список
+    compositionFilter.innerHTML = '';
+    
+    // Добавляем новые элементы
+    if (compositions.length === 0) {
+        compositionFilter.innerHTML = '<p class="no-compositions">Состав не указан</p>';
+        return;
+    }
+    
+    compositions.forEach((comp, index) => {
+        const isChecked = selectedCompositions.includes(comp.name || comp);
+        const compName = comp.name || comp;
+        
+        const option = document.createElement('div');
+        option.className = 'composition-option';
+        option.innerHTML = `
+            <input type="checkbox" 
+                   id="composition_${index}" 
+                   name="composition" 
+                   value="${compName}"
+                   class="composition-checkbox" ${isChecked ? 'checked' : ''}>
+            <label for="composition_${index}" class="composition-label">
+                <span class="checkbox-custom"></span>
+                <span class="composition-name">${compName}</span>
+            </label>
+        `;
+        compositionFilter.appendChild(option);
+    });
+    
+    // Переинициализируем поиск
+    initCompositionSearch();
+}
+
+// В функции resetFilters добавляем сброс составов:
+// НАЙДИТЕ функцию resetFilters и ДОБАВЬТЕ в неё:
+
 function resetFilters() {
     const priceRange = getRealPriceRange();
     
-    // Сбрасываем значения
+    // Сбрасываем значения цены
     minPriceInput.value = '';
     maxPriceInput.value = '';
     minRange.value = priceRange.min;
     maxRange.value = priceRange.max;
+    
+    // Сбрасываем составы (ДОБАВЛЯЕМ ЭТО)
+    document.querySelectorAll('.composition-checkbox').forEach(cb => {
+        cb.checked = false;
+    });
+    
     updateSliderRange();
     
     // Очищаем URL параметры
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.delete('min_price');
     urlParams.delete('max_price');
+    urlParams.delete('composition');
     urlParams.delete('page');
     
     // Обновляем URL
@@ -601,6 +726,7 @@ function initFilterSwipe() {
 // Вызов инициализации фильтра
 initFilter();
 initFilterSwipe();
+initCompositionSearch();
     // ==============================
     // ОБРАБОТКА УСПЕШНОГО ЗАКАЗА
     // ==============================

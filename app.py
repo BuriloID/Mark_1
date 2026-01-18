@@ -7,6 +7,7 @@ import hashlib
 import json
 import requests
 import threading
+import re
 from sqlalchemy import or_
 
 app = Flask(__name__)
@@ -236,10 +237,11 @@ def catalog_filter():
         
         min_price = data.get('min_price')
         max_price = data.get('max_price')
+        compositions = data.get('compositions', [])
         
         # Базовые запросы
-        query_product = Product.query
-        query_new = NewProduct.query
+        query_product =Product.query.join(Product.details)
+        query_new = NewProduct.query.join(NewProduct.details)
         
         # Применяем фильтры по цене
         if min_price:
@@ -249,78 +251,111 @@ def catalog_filter():
         if max_price:
             query_product = query_product.filter(Product.price <= float(max_price))
             query_new = query_new.filter(NewProduct.price <= float(max_price))
-        
+        # Фильтр по составу — ПРАВИЛЬНЫЙ
+        if compositions:
+            filtered_products = []
+
+            for product in query_product.all():
+                if not product.details or not product.details[0].composition:
+                    continue
+
+                materials = extract_composition_materials(
+                    product.details[0].composition
+                )
+
+                if any(comp in materials for comp in compositions):
+                    filtered_products.append(product)
+
+            filtered_new = []
+
+            for product in query_new.all():
+                if not product.details or not product.details[0].composition:
+                    continue
+
+                materials = extract_composition_materials(
+                    product.details[0].composition
+                )
+
+                if any(comp in materials for comp in compositions):
+                    filtered_new.append(product)
+
+            all_products = filtered_new + filtered_products
+        else:
+            all_products = query_new.all() + query_product.all()
         # Получаем отфильтрованные товары
         all_products = query_new.all() + query_product.all()
+        #  Извлекаем уникальные составы из всех товаров для отображения в фильтре
+        all_compositions_set = set()
+         # Для Product
+        product_details = ProductDetails.query.filter(
+            ProductDetails.product_id.isnot(None),
+            ProductDetails.composition.isnot(None),
+            ProductDetails.composition != ''
+            ).all()
+        
+        for detail in product_details:
+            if detail.composition:
+                # Извлекаем отдельные материалы из строки composition
+                extracted = extract_composition_materials(detail.composition)
+                all_compositions_set.update(extracted)
+        
+        # Для NewProduct
+        new_product_details = ProductDetails.query.filter(
+            ProductDetails.new_product_id.isnot(None),
+            ProductDetails.composition.isnot(None),
+            ProductDetails.composition != ''
+            ).all()
+        
+        for detail in new_product_details:
+            if detail.composition:
+                extracted = extract_composition_materials(detail.composition)
+                all_compositions_set.update(extracted)
+        
+        # Преобразуем в список словарей для отправки клиенту
+        all_compositions = [{'name': comp} for comp in sorted(all_compositions_set)]
         
         # Формируем HTML для товаров с БЕЗОПАСНОЙ проверкой sale
         products_html = ""
         for product in all_products:
-            # Безопасная проверка скидки
-            sale_value = 0
-            if hasattr(product, 'sale'):
-                sale_value = product.sale if product.sale is not None else 0
-            
-            # Вычисляем финальную цену
-            final_price = product.price
-            if sale_value and sale_value > 0:
-                final_price = product.price * (1 - sale_value / 100)
-            
-            # Формируем HTML ТОЧНО как в шаблоне catalog.html
-        products_html = ""
-        for product in all_products:
-            # Определяем тип товара
-            is_new_product = isinstance(product, NewProduct)
-            
-            # Изображения (ТОЧНО как в шаблоне)
-            image_html = ''
-            if product.image_url:
-                image_html = f'<img src="{url_for("static", filename=product.image_url)}" alt="{product.name}" class="main-img">'
-                if product.image_url_back:
-                    image_html += f'<img src="{url_for("static", filename=product.image_url_back)}" alt="{product.name}" class="hover-img">'
-            else:
-                image_html = f'<img src="https://via.placeholder.com/150" alt="{product.name}">'
-            
-            # Цена (без учета скидки, как в шаблоне)
-            price_display = int(product.price)
-            
-            # Формируем карточку товара ТОЧНО как в шаблоне
-                   # Формируем HTML ТОЧНО как в шаблоне catalog.html
-        products_html = ""
-        for product in all_products:
-            # Определяем тип товара
             is_new_product = isinstance(product, NewProduct)
             product_type_str = 'new_product' if is_new_product else 'product'
-            
-            # Изображения (ТОЧНО как в шаблоне)
-            image_html = ''
+
+            # Изображения
             if product.image_url:
-                # Правильный путь для изображений
                 main_img = f'/static/{product.image_url}'
                 image_html = f'<img src="{main_img}" alt="{product.name}" class="main-img">'
-                
                 if product.image_url_back:
                     back_img = f'/static/{product.image_url_back}'
                     image_html += f'<img src="{back_img}" alt="{product.name}" class="hover-img">'
             else:
-                image_html = f'<img src="https://via.placeholder.com/150" alt="{product.name}">'
-            
-            # Цена (без учета скидки, как в шаблоне)
+                image_html = '<img src="https://via.placeholder.com/150">'
+
+            # Цена
             price_display = int(product.price)
-            
-            # Формируем карточку товара ТОЧНО как в шаблоне
-            products_html += f'''<div class="product">
-{f'<div class="new-label">New</div>' if is_new_product else ''}
-{image_html}
-<h2>{product.description if product.description else ""}</h2>
-<p>{product.name}</p>
-<p><strong>{price_display} ₽</strong></p>
-<a href="/product/{product.id}?product_type={product_type_str}">
-    <button class="btn">Перейти</button>
-</a>
-</div>
-'''
-        
+
+            # ✅ СОСТАВ (КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ)
+            composition_html = ''
+            if product.details and product.details[0].composition:
+                composition_html = f'''
+                    <p class="product-composition">
+                        <small>{product.details[0].composition}</small>
+                    </p>
+                '''
+
+            # Карточка
+            products_html += f'''
+            <div class="product">
+                {f'<div class="new-label">New</div>' if is_new_product else ''}
+                {image_html}
+                <h2>{product.description or ""}</h2>
+                <p>{product.name}</p>
+                {composition_html}
+                <p><strong>{price_display} ₽</strong></p>
+                <a href="/product/{product.id}?product_type={product_type_str}">
+                    <button class="btn">Перейти</button>
+                </a>
+            </div>
+            '''
         # Если товаров нет
         if not products_html:
             products_html = '<p class="no-products">Товары не найдены</p>'
@@ -333,6 +368,39 @@ def catalog_filter():
     except Exception as e:
         print(f"ERROR: {traceback.format_exc()}")
         return jsonify({'success': False, 'error': str(e)}), 500
+    # ДОБАВЛЯЕМ новую функцию для извлечения материалов из composition
+def extract_composition_materials(composition_text):
+    if not composition_text:
+        return []
+
+    import re
+
+    text = composition_text.lower()
+
+    # Убираем проценты и цифры
+    text = re.sub(r'\d+(?:\.\d+)?\s*%?', '', text)
+
+    # Убираем служебные слова
+    text = re.sub(
+        r'\b(состав|материал|материалы|содержит)\b',
+        '',
+        text
+    )
+
+    # Нормализуем разделители
+    for sep in [',', ';', '/', '+']:
+        text = text.replace(sep, '|')
+
+    parts = [p.strip() for p in text.split('|') if p.strip()]
+
+    materials = []
+    for part in parts:
+        cleaned = re.sub(r'[^\w\s]', '', part).strip()
+        if len(cleaned) >= 3:
+            materials.append(cleaned.title())
+
+    return list(set(materials))
+
 @app.route('/collection/<int:collection_id>')
 def show_collection(collection_id):
     collection = Collection.query.get_or_404(collection_id)
@@ -376,16 +444,43 @@ def catalog():
     max_price = request.args.get('max_price', type=float)
     category_name = request.args.get('category')
     search_query = request.args.get('search')
+    composition_filters = request.args.getlist('composition') 
     categories = Category.query.all()
-
+# Извлекаем уникальные составы из базы данных
+    all_compositions_set = set()
+    
+    # Получаем составы из Product
+    product_details = ProductDetails.query.join(ProductDetails.product).filter(
+        ProductDetails.composition.isnot(None),
+        ProductDetails.composition != ''
+    ).all()
+    
+    for detail in product_details:
+        if detail.composition:
+            materials = extract_composition_materials(detail.composition)
+            all_compositions_set.update(materials)
+    
+    # Получаем составы из NewProduct
+    new_product_details = ProductDetails.query.join(ProductDetails.new_product).filter(
+        ProductDetails.composition.isnot(None),
+        ProductDetails.composition != '',
+        ProductDetails.new_product_id.isnot(None)
+    ).all()
+    
+    for detail in new_product_details:
+        if detail.composition:
+            materials = extract_composition_materials(detail.composition)
+            all_compositions_set.update(materials)
+    
+    # Преобразуем в отсортированный список
+    compositions = sorted(all_compositions_set)
     # Получаем минимумы и максимумы по таблицам с безопасной обработкой
     min_product_price = db.session.query(db.func.min(Product.price)).scalar() or 0
     max_product_price = db.session.query(db.func.max(Product.price)).scalar() or 0
     min_new_price = db.session.query(db.func.min(NewProduct.price)).scalar() or 0
     max_new_price = db.session.query(db.func.max(NewProduct.price)).scalar() or 0
 
-    print(f"Min Product Price: {min_product_price}, Max Product Price: {max_product_price}")
-    print(f"Min NewProduct Price: {min_new_price}, Max NewProduct Price: {max_new_price}")
+    print("COMPOSITIONS:", compositions)
 
     # Собираем все найденные значения в список (только те, что не None)
     all_min_prices = [p for p in [min_product_price, min_new_price] if p > 0]
@@ -395,11 +490,11 @@ def catalog():
     real_min_price = int(min(all_min_prices)) if all_min_prices else min(min_product_price, min_new_price) or 0
     real_max_price = int(max(all_max_prices)) + 100 if all_max_prices else max(max_product_price, max_new_price) or 10000
 
-    print(f"Real Min Price: {real_min_price}, Real Max Price: {real_max_price}")
+    
 
     # Запросы
-    query_product = Product.query
-    query_new = NewProduct.query
+    query_product = Product.query.join(Product.details)
+    query_new = NewProduct.query.join(NewProduct.details)
 
     if min_price is not None:
         query_product = query_product.filter(Product.price >= min_price)
@@ -423,6 +518,37 @@ def catalog():
                 NewProduct.description.ilike(f"%{search_query}%")
             )
         )
+# ДОБАВЛЯЕМ: Фильтр по составу (composition)
+        if composition_filters:
+            filtered_products = []
+
+            for product in query_product.all():
+                if not product.details or not product.details[0].composition:
+                    continue
+
+                materials = extract_composition_materials(
+                    product.details[0].composition
+                )
+
+                if any(comp in materials for comp in composition_filters):
+                    filtered_products.append(product)
+
+            filtered_new = []
+
+            for product in query_new.all():
+                if not product.details or not product.details[0].composition:
+                    continue
+
+                materials = extract_composition_materials(
+                    product.details[0].composition
+                )
+
+                if any(comp in materials for comp in composition_filters):
+                    filtered_new.append(product)
+
+            all_products = filtered_new + filtered_products
+        else:
+            all_products = query_new.all() + query_product.all()
 
     all_products = query_new.all() + query_product.all()
     total = len(all_products)
@@ -441,6 +567,7 @@ def catalog():
         args=args,
         request=request,
         categories=categories,
+        compositions=compositions, 
         real_min_price=real_min_price,
         real_max_price=real_max_price
     )
