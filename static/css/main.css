@@ -1407,6 +1407,41 @@ html { scroll-behavior: smooth; }
         width: 100%;
     }
 }
+.checkbox-wrapper input[type="checkbox"] {
+    display: none;
+}
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.checkbox-wrapper .label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-wrapper .label svg {
+    flex-shrink: 0;
+}
+.checkbox-wrapper .path1 {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: stroke-dashoffset 0.5s ease;
+    opacity: 0;
+}
+
+.checkbox-wrapper .check:checked + .label .path1 {
+    stroke-dashoffset: 0;
+    opacity: 1;
+}
+.composition-name {
+    font-size: 18px;
+    line-height: 1.2;
+    color: #000;
+}
 .new-arrivals {
     opacity: 0;
     transform: translateY(50px);
