@@ -674,6 +674,9 @@ function initFilter() {
             closeFilterDrawer();
         }
     });
+    document.querySelectorAll('.composition-checkbox').forEach(cb => {
+        cb.addEventListener('change', applyPriceFilters);
+    });
 }
 
 // Свайпы для фильтра

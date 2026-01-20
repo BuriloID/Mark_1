@@ -1169,16 +1169,8 @@ html { scroll-behavior: smooth; }
 .filter-content {
     padding: 15px;
     transition: opacity 0.3s ease;
-    opacity: 0;
-}
-
-.filter-drawer.open .filter-content {
     opacity: 1;
 }
-.filter-content {
-    padding: 20px;
-}
-
 .filter-header {
     display: flex;
     justify-content: space-between;
@@ -1200,15 +1192,32 @@ html { scroll-behavior: smooth; }
     cursor: pointer;
     color: #777;
 }
-
+.filters-container {
+    display: flex;
+    margin-bottom: 25px;
+    padding-left: 0;
+    margin-left: 0;
+}
+.filter-column {
+    flex: 1; 
+    min-width: 0; 
+    padding-right: 15px;
+}
+.filter-column:not(:last-child) {
+    border-right: 1px solid #e0e0e0; 
+    margin-right: 15px; 
+}
 .filter-section {
     margin-bottom: 25px;
+     padding-left: 0;
+    margin-left: 0;
 }
 
 .filter-section h4 {
     margin-bottom: 15px;
     color: #333;
     font-size: 16px;
+    
 }
 
 .price-inputs {
@@ -1302,7 +1311,6 @@ html { scroll-behavior: smooth; }
     align-items: center;
 }
 
-/* Серый фон */
 .slider-track {
     position: absolute;
     height: 4px;
@@ -1407,24 +1415,29 @@ html { scroll-behavior: smooth; }
         width: 100%;
     }
 }
+
 .checkbox-wrapper input[type="checkbox"] {
     display: none;
 }
 .checkbox-wrapper {
     display: flex;
-    align-items: center;
-    margin-bottom: 12px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    text-align: left;
 }
 
 .checkbox-wrapper .label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     cursor: pointer;
+    justify-content: flex-start;
 }
 
 .checkbox-wrapper .label svg {
     flex-shrink: 0;
+    width: 20px; 
+    height: 20px;
 }
 .checkbox-wrapper .path1 {
     stroke-dasharray: 400;
@@ -1438,10 +1451,12 @@ html { scroll-behavior: smooth; }
     opacity: 1;
 }
 .composition-name {
-    font-size: 18px;
+    text-align: left;
+    font-size: 14px;
     line-height: 1.2;
     color: #000;
 }
+
 .new-arrivals {
     opacity: 0;
     transform: translateY(50px);

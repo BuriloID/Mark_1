@@ -240,7 +240,7 @@ def catalog_filter():
         compositions = data.get('compositions', [])
         
         # Базовые запросы
-        query_product =Product.query.join(Product.details)
+        query_product = Product.query.join(Product.details)
         query_new = NewProduct.query.join(NewProduct.details)
         
         # Применяем фильтры по цене
@@ -251,70 +251,70 @@ def catalog_filter():
         if max_price:
             query_product = query_product.filter(Product.price <= float(max_price))
             query_new = query_new.filter(NewProduct.price <= float(max_price))
+        
         # Фильтр по составу — ПРАВИЛЬНЫЙ
         if compositions:
             filtered_products = []
-
+            
             for product in query_product.all():
                 if not product.details or not product.details[0].composition:
                     continue
-
-                materials = extract_composition_materials(
-                    product.details[0].composition
-                )
-
-                if any(comp in materials for comp in compositions):
+                
+                # Получаем полный состав товара
+                product_composition = product.details[0].composition
+                
+                # Проверяем, содержит ли состав товара любой из выбранных фильтров
+                if any(comp in product_composition for comp in compositions):
                     filtered_products.append(product)
-
+            
             filtered_new = []
-
+            
             for product in query_new.all():
                 if not product.details or not product.details[0].composition:
                     continue
-
-                materials = extract_composition_materials(
-                    product.details[0].composition
-                )
-
-                if any(comp in materials for comp in compositions):
+                
+                # Получаем полный состав товара
+                product_composition = product.details[0].composition
+                
+                # Проверяем, содержит ли состав товара любой из выбранных фильтров
+                if any(comp in product_composition for comp in compositions):
                     filtered_new.append(product)
-
+            
             all_products = filtered_new + filtered_products
         else:
             all_products = query_new.all() + query_product.all()
-        # Получаем отфильтрованные товары
-        all_products = query_new.all() + query_product.all()
-        #  Извлекаем уникальные составы из всех товаров для отображения в фильтре
+        
+        # Получаем ВСЕ уникальные составы для отображения в фильтре
         all_compositions_set = set()
-         # Для Product
+        
+        # Для Product
         product_details = ProductDetails.query.filter(
             ProductDetails.product_id.isnot(None),
             ProductDetails.composition.isnot(None),
             ProductDetails.composition != ''
-            ).all()
+        ).all()
         
         for detail in product_details:
             if detail.composition:
-                # Извлекаем отдельные материалы из строки composition
-                extracted = extract_composition_materials(detail.composition)
-                all_compositions_set.update(extracted)
+                # Добавляем полный состав как есть
+                all_compositions_set.add(detail.composition.strip())
         
         # Для NewProduct
         new_product_details = ProductDetails.query.filter(
             ProductDetails.new_product_id.isnot(None),
             ProductDetails.composition.isnot(None),
             ProductDetails.composition != ''
-            ).all()
+        ).all()
         
         for detail in new_product_details:
             if detail.composition:
-                extracted = extract_composition_materials(detail.composition)
-                all_compositions_set.update(extracted)
+                # Добавляем полный состав как есть
+                all_compositions_set.add(detail.composition.strip())
         
-        # Преобразуем в список словарей для отправки клиенту
-        all_compositions = [{'name': comp} for comp in sorted(all_compositions_set)]
+        # Сортируем
+        all_compositions = sorted(all_compositions_set)
         
-        # Формируем HTML для товаров с БЕЗОПАСНОЙ проверкой sale
+        # Формируем HTML для товаров
         products_html = ""
         for product in all_products:
             is_new_product = isinstance(product, NewProduct)
@@ -333,7 +333,7 @@ def catalog_filter():
             # Цена
             price_display = int(product.price)
 
-            # ✅ СОСТАВ (КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ)
+            # Состав
             composition_html = ''
             if product.details and product.details[0].composition:
                 composition_html = f'''
@@ -356,6 +356,7 @@ def catalog_filter():
                 </a>
             </div>
             '''
+        
         # Если товаров нет
         if not products_html:
             products_html = '<p class="no-products">Товары не найдены</p>'
@@ -363,11 +364,13 @@ def catalog_filter():
         return jsonify({
             'success': True,
             'products_html': products_html,
-            'products_count': len(all_products)
+            'products_count': len(all_products),
+            'compositions': all_compositions  # Возвращаем все составы
         })
     except Exception as e:
         print(f"ERROR: {traceback.format_exc()}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
     # ДОБАВЛЯЕМ новую функцию для извлечения материалов из composition
 def extract_composition_materials(composition_text):
     if not composition_text:
@@ -446,34 +449,19 @@ def catalog():
     search_query = request.args.get('search')
     composition_filters = request.args.getlist('composition') 
     categories = Category.query.all()
-# Извлекаем уникальные составы из базы данных
-    all_compositions_set = set()
-    
-    # Получаем составы из Product
-    product_details = ProductDetails.query.join(ProductDetails.product).filter(
-        ProductDetails.composition.isnot(None),
-        ProductDetails.composition != ''
-    ).all()
-    
-    for detail in product_details:
-        if detail.composition:
-            materials = extract_composition_materials(detail.composition)
-            all_compositions_set.update(materials)
-    
-    # Получаем составы из NewProduct
-    new_product_details = ProductDetails.query.join(ProductDetails.new_product).filter(
-        ProductDetails.composition.isnot(None),
-        ProductDetails.composition != '',
-        ProductDetails.new_product_id.isnot(None)
-    ).all()
-    
-    for detail in new_product_details:
-        if detail.composition:
-            materials = extract_composition_materials(detail.composition)
-            all_compositions_set.update(materials)
-    
-    # Преобразуем в отсортированный список
-    compositions = sorted(all_compositions_set)
+    compositions = (
+        db.session.query(ProductDetails.composition)
+        .filter(
+            ProductDetails.composition.isnot(None),
+            ProductDetails.composition != ''
+        )
+        .distinct()
+        .order_by(ProductDetails.composition)
+        .all()
+    )
+
+    # превращаем [('100% Хлопок',), ...] → ['100% Хлопок', ...]
+    compositions = [c[0] for c in compositions]
     # Получаем минимумы и максимумы по таблицам с безопасной обработкой
     min_product_price = db.session.query(db.func.min(Product.price)).scalar() or 0
     max_product_price = db.session.query(db.func.max(Product.price)).scalar() or 0
@@ -507,48 +495,26 @@ def catalog():
         query_new = query_new.filter(NewProduct.categories.any(name=category_name))
     if search_query:
         query_product = query_product.filter(
-            or_(
-                Product.name.ilike(f"%{search_query}%"),
-                Product.description.ilike(f"%{search_query}%")
-            )
+        or_(
+            Product.name.ilike(f"%{search_query}%"),
+            Product.description.ilike(f"%{search_query}%")
+        )
+    )
+        query_new = query_new.filter(
+        or_(
+            NewProduct.name.ilike(f"%{search_query}%"),
+            NewProduct.description.ilike(f"%{search_query}%")
+        )
+    )
+
+# ДОБАВЛЯЕМ: Фильтр по составу (composition)
+    if composition_filters:
+        query_product = query_product.filter(
+            ProductDetails.composition.in_(composition_filters)
         )
         query_new = query_new.filter(
-            or_(
-                NewProduct.name.ilike(f"%{search_query}%"),
-                NewProduct.description.ilike(f"%{search_query}%")
-            )
+            ProductDetails.composition.in_(composition_filters)
         )
-# ДОБАВЛЯЕМ: Фильтр по составу (composition)
-        if composition_filters:
-            filtered_products = []
-
-            for product in query_product.all():
-                if not product.details or not product.details[0].composition:
-                    continue
-
-                materials = extract_composition_materials(
-                    product.details[0].composition
-                )
-
-                if any(comp in materials for comp in composition_filters):
-                    filtered_products.append(product)
-
-            filtered_new = []
-
-            for product in query_new.all():
-                if not product.details or not product.details[0].composition:
-                    continue
-
-                materials = extract_composition_materials(
-                    product.details[0].composition
-                )
-
-                if any(comp in materials for comp in composition_filters):
-                    filtered_new.append(product)
-
-            all_products = filtered_new + filtered_products
-        else:
-            all_products = query_new.all() + query_product.all()
 
     all_products = query_new.all() + query_product.all()
     total = len(all_products)
