@@ -50,9 +50,12 @@ class Order(db.Model):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=False)   
+    title = db.Column(db.String(100), nullable=False)             
+
     def __repr__(self):
         return f'<Category {self.name}>'
+
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -238,6 +241,7 @@ def catalog_filter():
         min_price = data.get('min_price')
         max_price = data.get('max_price')
         compositions = data.get('compositions', [])
+        categories = data.get('categories', [])
         
         # Базовые запросы
         query_product = Product.query.join(Product.details)
@@ -251,7 +255,14 @@ def catalog_filter():
         if max_price:
             query_product = query_product.filter(Product.price <= float(max_price))
             query_new = query_new.filter(NewProduct.price <= float(max_price))
-        
+        if categories:
+            query_product = query_product.filter(
+                Product.categories.any(Category.name.in_(categories))
+            )
+
+            query_new = query_new.filter(
+                NewProduct.categories.any(Category.name.in_(categories))
+            )
         # Фильтр по составу — ПРАВИЛЬНЫЙ
         if compositions:
             filtered_products = []
@@ -459,8 +470,6 @@ def catalog():
         .order_by(ProductDetails.composition)
         .all()
     )
-
-    # превращаем [('100% Хлопок',), ...] → ['100% Хлопок', ...]
     compositions = [c[0] for c in compositions]
     # Получаем минимумы и максимумы по таблицам с безопасной обработкой
     min_product_price = db.session.query(db.func.min(Product.price)).scalar() or 0
@@ -469,7 +478,7 @@ def catalog():
     max_new_price = db.session.query(db.func.max(NewProduct.price)).scalar() or 0
 
     print("COMPOSITIONS:", compositions)
-
+    print("CATEGORIES:", [(c.id, c.title) for c in categories])
     # Собираем все найденные значения в список (только те, что не None)
     all_min_prices = [p for p in [min_product_price, min_new_price] if p > 0]
     all_max_prices = [p for p in [max_product_price, max_new_price] if p > 0]
@@ -536,20 +545,6 @@ def catalog():
         compositions=compositions, 
         real_min_price=real_min_price,
         real_max_price=real_max_price
-    )
-@app.route('/test_catalog')
-def test_catalog():
-    """Тестовый маршрут чтобы проверить передачу переменных"""
-    return render_template(
-        'catalog.html',
-        products=[],
-        page=1,
-        pages=1,
-        args={},
-        request=request,
-        categories=[],
-        real_min_price=7777,
-        real_max_price=8888
     )
 @app.route('/new')
 def new():

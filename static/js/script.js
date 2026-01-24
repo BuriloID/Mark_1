@@ -386,8 +386,6 @@ function initCompositionSearch() {
     });
 }
 
-// В функции applyPriceFilters обновляем сбор данных:
-// НАЙДИТЕ функцию applyPriceFilters и ОБНОВИТЕ её:
 
 function applyPriceFilters(e) {
     if (e) e.preventDefault();
@@ -442,10 +440,9 @@ function applyPriceFilters(e) {
         delete filterData.compositions;
     }
     
-    // 3. Категория (если есть)
-    const category = urlParams.get('category') || 
-                    document.querySelector('[name="category"]')?.value;
-    if (category) filterData.category = category;
+    const selectedCategories = Array.from(
+        document.querySelectorAll('.category-checkbox:checked')
+    ).map(cb => cb.value);
     
     // 4. Поиск (если есть)
     const searchQuery = urlParams.get('search') || 
