@@ -1,4 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
+const videos = document.querySelectorAll(".background-video");
+    
+    videos.forEach(video => {
+        video.playbackRate = 0.7;        // скорость видео
+        video.defaultPlaybackRate = 0.8;
+    });
+
+    const radioButtons = document.querySelectorAll('input[name="r"]');
+    
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.id === 'r3') {
+                videos.forEach(v => {
+                    v.play().catch(() => {});
+                });
+            } else {
+                videos.forEach(v => v.pause());
+            }
+        });
+    });
     // ==============================
     // ПРЕЛОАДЕР
     // ==============================
@@ -560,10 +580,6 @@ function updateCompositionFilter(compositions) {
     // Переинициализируем поиск
     initCompositionSearch();
 }
-
-// В функции resetFilters добавляем сброс составов:
-// НАЙДИТЕ функцию resetFilters и ДОБАВЬТЕ в неё:
-
 function resetFilters() {
     const priceRange = getRealPriceRange();
     

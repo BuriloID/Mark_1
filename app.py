@@ -9,7 +9,17 @@ import requests
 import threading
 import re
 from sqlalchemy import or_
+from dotenv import load_dotenv
+import os
+import cloudinary
 
+load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("CLOUD_API_KEY"),
+    api_secret=os.getenv("CLOUD_API_SECRET")
+)
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
@@ -35,10 +45,7 @@ product_category = db.Table('product_category',
     db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary_key=True),
     db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
 )
-new_product_category = db.Table('new_product_category',
-    db.Column('new_product_id', db.Integer, db.ForeignKey('new_product.id'), primary_key=True),
-    db.Column('category_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
-)
+
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,27 +72,19 @@ class Product(db.Model):
     image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
     sale = db.Column(db.Integer, default=0)
+
+    type = db.Column(db.String(20), default='regular')  # ← ВАЖНО
+
     categories = db.relationship('Category', secondary=product_category, backref='products')
     details = db.relationship('ProductDetails', backref='product', lazy=True)
+    variants = db.relationship('ProductVariant', backref='product', lazy=True)
+
     def __repr__(self):
         return f'<Product {self.name}>'
-
-class NewProduct(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500), nullable=True)
-    price = db.Column(db.Float, nullable=False)
-    image_url = db.Column(db.String(500), nullable=True)
-    image_url_back = db.Column(db.String(500), nullable=True)
-    categories = db.relationship('Category', secondary=new_product_category, backref='new_products')
-    details = db.relationship('ProductDetails', backref='new_product', lazy=True)
-    def __repr__(self):
-        return f'<NewProduct {self.name}>'
 
 class ProductDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    new_product_id = db.Column(db.Integer, db.ForeignKey('new_product.id'), nullable=True)
     full_description = db.Column(db.Text, nullable=True)
     composition = db.Column(db.Text, nullable=True)
     size = db.Column(db.Text, nullable=True)
@@ -97,42 +96,22 @@ class ProductDetails(db.Model):
     extra_image6 = db.Column(db.String(500), nullable=True)
     def __repr__(self):
         return f'<ProductDetails {self.id}>'
-
-class Collection(db.Model):
+class ProductVariant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    id_1 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_2 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_3 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_4 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_5 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_6 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_7 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_8 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_9 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_10 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_11 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    id_12 = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    col_description = db.Column(db.Text, nullable=True)
-    col_image = db.Column(db.String(255), nullable=True)
-    product_1 = db.relationship('Product', foreign_keys=[id_1])
-    product_2 = db.relationship('Product', foreign_keys=[id_2])
-    product_3 = db.relationship('Product', foreign_keys=[id_3])
-    product_4 = db.relationship('Product', foreign_keys=[id_4])
-    product_5 = db.relationship('Product', foreign_keys=[id_5])
-    product_6 = db.relationship('Product', foreign_keys=[id_6])
-    product_7 = db.relationship('Product', foreign_keys=[id_7])
-    product_8 = db.relationship('Product', foreign_keys=[id_8])
-    product_9 = db.relationship('Product', foreign_keys=[id_9])
-    product_10 = db.relationship('Product', foreign_keys=[id_10])
-    product_11 = db.relationship('Product', foreign_keys=[id_11])
-    product_12 = db.relationship('Product', foreign_keys=[id_12])
 
-class CollectionTable(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    id_col = db.Column(db.Integer, db.ForeignKey('collection.id'), nullable=False)
-    col_image = db.Column(db.String(255), nullable=True)
-    collection = db.relationship('Collection', backref='collection_tables')
-    col_name = db.Column(db.String(255))
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    
+    color = db.Column(db.String(100), nullable=False)
+
+    image_extra1 = db.Column(db.String(500))
+    image_extra2 = db.Column(db.String(500))
+    image_extra3 = db.Column(db.String(500))
+    image_extra4 = db.Column(db.String(500))
+    image_extra5 = db.Column(db.String(500))
+    image_extra6 = db.Column(db.String(500))
+
+    product = db.relationship('Product', backref='variants')
+    
 
 # Telegram bot
 bot = telegram.Bot(token=TOKEN)
@@ -245,23 +224,16 @@ def catalog_filter():
         
         # Базовые запросы
         query_product = Product.query.join(Product.details)
-        query_new = NewProduct.query.join(NewProduct.details)
         
         # Применяем фильтры по цене
         if min_price:
             query_product = query_product.filter(Product.price >= float(min_price))
-            query_new = query_new.filter(NewProduct.price >= float(min_price))
         
         if max_price:
             query_product = query_product.filter(Product.price <= float(max_price))
-            query_new = query_new.filter(NewProduct.price <= float(max_price))
         if categories:
             query_product = query_product.filter(
                 Product.categories.any(Category.name.in_(categories))
-            )
-
-            query_new = query_new.filter(
-                NewProduct.categories.any(Category.name.in_(categories))
             )
         # Фильтр по составу — ПРАВИЛЬНЫЙ
         if compositions:
@@ -279,21 +251,9 @@ def catalog_filter():
                     filtered_products.append(product)
             
             filtered_new = []
-            
-            for product in query_new.all():
-                if not product.details or not product.details[0].composition:
-                    continue
-                
-                # Получаем полный состав товара
-                product_composition = product.details[0].composition
-                
-                # Проверяем, содержит ли состав товара любой из выбранных фильтров
-                if any(comp in product_composition for comp in compositions):
-                    filtered_new.append(product)
-            
             all_products = filtered_new + filtered_products
         else:
-            all_products = query_new.all() + query_product.all()
+            all_products = query_product.all()
         
         # Получаем ВСЕ уникальные составы для отображения в фильтре
         all_compositions_set = set()
@@ -310,25 +270,13 @@ def catalog_filter():
                 # Добавляем полный состав как есть
                 all_compositions_set.add(detail.composition.strip())
         
-        # Для NewProduct
-        new_product_details = ProductDetails.query.filter(
-            ProductDetails.new_product_id.isnot(None),
-            ProductDetails.composition.isnot(None),
-            ProductDetails.composition != ''
-        ).all()
-        
-        for detail in new_product_details:
-            if detail.composition:
-                # Добавляем полный состав как есть
-                all_compositions_set.add(detail.composition.strip())
-        
         # Сортируем
         all_compositions = sorted(all_compositions_set)
         
         # Формируем HTML для товаров
         products_html = ""
         for product in all_products:
-            is_new_product = isinstance(product, NewProduct)
+            is_new_product = isinstance(product)
             product_type_str = 'new_product' if is_new_product else 'product'
 
             # Изображения
@@ -436,14 +384,13 @@ def collection_table():
 @app.route('/')
 def index():
     try:
-        products = NewProduct.query.order_by(NewProduct.id.desc()).limit(4).all()
-        collections = CollectionTable.query.all()
+        products = Product.query.filter_by(type='new').order_by(Product.id.desc()).limit(4).all()
         message = None if products else "Товары не найдены"
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"
         products = []
         collections = []
-    return render_template('index.html', products=products, collections=collections, message=message)
+    return render_template('index.html', products=products, message=message)
 
 @app.route('/about')
 def about():
@@ -491,28 +438,18 @@ def catalog():
 
     # Запросы
     query_product = Product.query.join(Product.details)
-    query_new = NewProduct.query.join(NewProduct.details)
 
     if min_price is not None:
         query_product = query_product.filter(Product.price >= min_price)
-        query_new = query_new.filter(NewProduct.price >= min_price)
     if max_price is not None:
         query_product = query_product.filter(Product.price <= max_price)
-        query_new = query_new.filter(NewProduct.price <= max_price)
     if category_name:
         query_product = query_product.filter(Product.categories.any(name=category_name))
-        query_new = query_new.filter(NewProduct.categories.any(name=category_name))
     if search_query:
         query_product = query_product.filter(
         or_(
             Product.name.ilike(f"%{search_query}%"),
             Product.description.ilike(f"%{search_query}%")
-        )
-    )
-        query_new = query_new.filter(
-        or_(
-            NewProduct.name.ilike(f"%{search_query}%"),
-            NewProduct.description.ilike(f"%{search_query}%")
         )
     )
 
@@ -549,7 +486,7 @@ def catalog():
 @app.route('/new')
 def new():
     try:
-        products = NewProduct.query.all()
+        products = Product.query.filter_by(type='new').all()
         message = None if products else "Товары не найдены"
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"
@@ -569,12 +506,8 @@ def sale():
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     product_type = request.args.get('product_type')
-    if product_type == 'new_product':
-        product = NewProduct.query.get_or_404(product_id)
-        details = ProductDetails.query.filter_by(new_product_id=product.id).first()
-    else:
-        product = Product.query.get_or_404(product_id)
-        details = ProductDetails.query.filter_by(product_id=product.id).first()
+    product = Product.query.get_or_404(product_id)
+    details = ProductDetails.query.filter_by(product_id=product.id).first()
     if not product:
         return "Product not found", 404
     return render_template('product_detail.html', product=product, details=details)
@@ -647,14 +580,10 @@ def make_order():
     finally:
         db.session.close()
 
-@app.route('/add_to_cart/<product_type>/<int:product_id>')
+@app.route('/add_to_cart/<int:product_id>')
 def add_to_cart(product_type, product_id):
-    if product_type == "new":
-        product = NewProduct.query.get(product_id)
-        sale = 0  # У NewProduct нет поля sale
-    else:
-        product = Product.query.get(product_id)
-        sale = getattr(product, 'sale', 0)
+    product = Product.query.get(product_id)
+    sale = getattr(product, 'sale', 0)
     if not product:
         return "Товар не найден", 404
 

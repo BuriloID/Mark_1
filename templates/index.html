@@ -9,47 +9,53 @@ CARDIGA NICK
         <input type="radio" name="r" id="r2">
         <input type="radio" name="r" id="r3">
         <input type="radio" name="r" id="r4">
-        <div class="slide s1"><img src="{{url_for('static', filename='img/slide1.jpg')}}" alt="law">
-        <div class="slide-text">
-                <div class="typing-animation">
-                            <h1>
-                                Время <br>
-                                теплых <br>
-                                моментов
-                            </h1>
-                    <p class="typing-line-2">Идеальные вязаные вещи для вашего настроения</p>
-            </div>
-        </div>
-        </div>
-                <div class="slide s2">
-            <div class="multi-image-container">
-                <div class="image-item">
-                    <img src="{{url_for('static', filename='img_collection/col1.jpg')}}" alt="Изделие 1">
-                </div>
-                <div class="image-item">
-                    <img src="{{url_for('static', filename='img_collection/col2.jpg')}}" alt="Изделие 2">
-                </div>
-                <div class="image-item">
-                    <img src="{{url_for('static', filename='img_collection/col3.jpg')}}" alt="Изделие 3">
-                </div>
-                <div class="image-item">
-                    <img src="{{url_for('static', filename='img_collection/col4.jpg')}}" alt="Изделие 4">
-                </div>
-            </div>
-            <div class="slide-cta" role="region" aria-label="Перейти к коллекциям">
-  <div class="cta-content">
-    <h2 class="cta-title">Откройте коллекции</h2>
-    <p class="cta-sub">Тёплые вязаные вещи — уют и стиль в каждом изделии</p>
-    <a class="btn-cta" href="#collections">Перейти к коллекциям</a>
-  </div>
-</div>
-        </div>
-        <div class="slide s3">
-        <video autoplay loop muted playsinline>
-            <source src="{{url_for('static', filename='videos/slide4.mp4')}}" type="video/mp4">
-            Ваш браузер не поддерживает видео.
-        </video>
+           <div class="slide s1 active">
+    <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1776632763/slide1_g1cyvd.jpg" alt="Время теплых моментов">
+    <div class="overlay"></div>
+    
+    <div class="hero-text hero-text-1">
+        <h2>Время тёплых моментов</h2>
+        <p>Идеальные вязаные вещи для вашего настроения</p>
     </div>
+</div>
+           <div class="slide s2">
+    <div class="multi-image-container">
+        <div class="image-item">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777410522/col1_tlim90.jpg" alt="Изделие 1">
+        </div>
+        <div class="image-item">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777410522/col2_zagu7a.jpg" alt="Изделие 2">
+        </div>
+        <div class="image-item">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777410521/col3_gx5rkp.jpg" alt="Изделие 3">
+        </div>
+        <div class="image-item">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777410521/col4_trneia.jpg" alt="Изделие 4">
+        </div>
+    </div>
+<div class="overlay"></div>
+    <div class="hero-text hero-text-2">
+        <span>КОЛЛЕКЦИИ</span>
+        <h2>Откройте тепло и стиль</h2>
+        <p>Тёплые вязаные вещи ручной работы — уют и характер в каждой детали</p>
+        <a href="#collections" class="explore-link">Перейти к коллекциям →</a>
+    </div>
+</div>
+            <div class="slide s3">
+                <div class="bg-layer">
+                    <video class="background-video" autoplay loop muted playsinline>
+                        <source src="https://res.cloudinary.com/dgyzlaf2t/video/upload/v1777408376/IMG_8985_nstbai.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="overlay-soft"></div>
+
+            <div class="hero-text">
+                <span>NEW</span>
+                <h2>Осень / Зима 2026</h2>
+                <p>Мягкие текстуры и тёплые оттенки, которые хочется носить каждый день</p>
+                <a href="/new" class="explore-link">НОВИНКИ →</a>
+            </div>
+            </div>
         <div class="slide"><img src="{{url_for('static', filename='img/slide4.jpg')}}" alt="law"></div>
         <div class="navigation">
             <label for="r1" class="bar"></label>
