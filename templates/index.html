@@ -56,7 +56,20 @@ CARDIGA NICK
                 <a href="/new" class="explore-link">НОВИНКИ →</a>
             </div>
             </div>
-        <div class="slide"><img src="{{url_for('static', filename='img/slide4.jpg')}}" alt="law"></div>
+        <!-- Слайд 4 — Весенняя акция / Анонс -->
+<div class="slide s4">
+    <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777499479/slide4_bbxqkz.png" 
+         alt="Весенняя коллекция вязаных вещей">
+    
+    <div class="overlay"></div>
+    
+  <div class="hero-text hero-text-4">
+        <span class="badge">АКЦИЯ</span>
+        <h2>Скидка 15% на новую коллекцию</h2>
+        <p>Тёплые вязаные вещи со скидкой • Действует до 10 ноября</p>
+        <a href="#catalog" class="explore-link">Перейти</a>
+    </div>
+</div>
         <div class="navigation">
             <label for="r1" class="bar"></label>
             <label for="r2" class="bar"></label>
@@ -66,37 +79,84 @@ CARDIGA NICK
     </div>
 </div>
 
-<div class="image__url">
-    <a href="{{ url_for('catalog', category='women') }}" class="picture_url wide">
-        <img src="{{url_for('static', filename='img/img_link1.jpg')}}" alt="Женщины">
-        <div class="image-text">Женщинам</div>
-    </a>
-    <a href="{{ url_for('catalog', category='men') }}" class="picture_url">
-        <img src="{{url_for('static', filename='img/img_link2.jpg')}}" alt="Мужчины">
-        <div class="image-text">Мужчинам</div>
-    </a>
-    <a href="{{ url_for('catalog', category='acs') }}" class="picture_url">
-        <img src="{{url_for('static', filename='img/acses.png')}}" alt="Аксессуары">
-        <div class="image-text">Аксессуары</div>
-    </a>
-    <a href="{{url_for('sale')}}" class="picture_url">
-        <img src="{{url_for('static', filename='img/sale.png')}}" alt="Распродажа">
-        <div class="image-text">Распродажа</div>
-    </a>
+<div class="categories-section">
+    <div class="categories-grid">
+
+        <!-- Женщинам - высокий вертикальный -->
+        <a href="{{ url_for('catalog', category='women') }}" class="category-card tall">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777576356/women_url_di7ekn.jpg" alt="Женщинам" loading="lazy">
+            <div class="category-overlay"></div>
+            <div class="category-content">
+                <h3>Женщинам</h3>
+            </div>
+        </a>
+
+        <!-- Мужчинам - высокий вертикальный -->
+        <a href="{{ url_for('catalog', category='men') }}" class="category-card tall">
+            <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1777576701/men_url_ldmyvu.png" alt="Мужчинам" loading="lazy">
+            <div class="category-overlay"></div>
+            <div class="category-content">
+                <h3>Мужчинам</h3>
+            </div>
+        </a>
+
+        <!-- Правая колонка - два квадрата друг над другом -->
+        <div class="right-column">
+            <a href="{{ url_for('catalog', category='acs') }}" class="category-card square">
+                <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1776632764/men_okvrdu.jpg" alt="Аксессуары" loading="lazy">
+                <div class="category-overlay"></div>
+                <div class="category-content">
+                    <h3>Аксессуары</h3>
+                </div>
+            </a>
+
+            <a href="{{url_for('sale')}}" class="category-card square sale-card">
+                <img src="https://res.cloudinary.com/dgyzlaf2t/image/upload/v1776632763/sale_xeg1vf.png" alt="Распродажа" loading="lazy">
+                <div class="category-overlay"></div>
+                <div class="category-content">
+                    <h3>Распродажа</h3>
+                </div>
+            </a>
+        </div>
+
+    </div>
 </div>
+
 <div class="directory">
-    <h1 class="block_dir">
-        <span><i class="fa fa-map-marker"></i>Доставка по всей России</span>
-        <p>Мы заботимся о том, чтобы ваша покупка была доставлена вовремя и в целости. Оформите заказ, и мы привезем ваши вязаные изделия в любую точку России с максимальной удобством для вас!</p>
-    </h1>
-    <h1 class="block_dir">
-        <span> <i class="fa fa-hand-scissors-o"></i>Ручная работа с любовью</span>
-        <p>Каждое изделие создается вручную с вниманием к деталям и заботой о качестве. Мы вкладываем душу в каждую петлю, чтобы вы могли наслаждаться не только красотой, но и комфортом наших вязаных вещей.</p>
-    </h1>
-    <h1 class="block_dir">
-        <span><i class="fa fa-diamond"></i>Авторские принты</span>
-        <p>Каждое наше изделие — это уникальный дизайн, разработанный талантливыми мастерами. Авторские принты и эксклюзивные узоры, которые добавят ярких акцентов в ваш гардероб и подчеркнут ваш стиль.</p>
-    </h1>
+
+    <div class="block_dir">
+        <div class="title">
+            <i class="fa fa-map-marker"></i>
+            <span>Доставка по всей России</span>
+        </div>
+        <p>
+            Мы заботимся о том, чтобы ваша покупка была доставлена вовремя и в целости. 
+            Оформите заказ — и мы доставим изделие в любую точку России.
+        </p>
+    </div>
+
+    <div class="block_dir">
+        <div class="title">
+            <i class="fa fa-hand-scissors-o"></i>
+            <span>Ручная работа</span>
+        </div>
+        <p>
+            Каждое изделие создается вручную с вниманием к деталям. 
+            Это не производство — это процесс создания вещи с характером.
+        </p>
+    </div>
+
+    <div class="block_dir">
+        <div class="title">
+            <i class="fa fa-diamond"></i>
+            <span>Авторский дизайн</span>
+        </div>
+        <p>
+            Уникальные узоры и формы, разработанные специально для коллекции. 
+            Никаких повторений — только оригинальность.
+        </p>
+    </div>
+
 </div>
 <h2 class="new-arrivals">Новинки</h2>
 <div class="catalog">

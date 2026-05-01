@@ -181,26 +181,47 @@
     </div>
     <div id="productsContainer" class="catalog">
         {% for product in products %}
-            <div class="product">
-                {% if product.__class__.__name__ == 'NewProduct' %}
+    <div class="product">
+        
+        <!-- Пометка "New" для новых товаров -->
+        {% if product.product_type == 'new' %}
             <div class="new-label">New</div>
         {% endif %}
-    {% if product.image_url %}
-        <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
-        <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
-    {% else %}
-        <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
-    {% endif %}
-    <h2>{{ product.description }}</h2>
-    <p>{{ product.name }}</p>
-    <p><strong>{{ product.price | int }} ₽</strong></p>
-        <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product' if product.__class__.__name__ == 'NewProduct' else 'product') }}">
+
+        <!-- Изображения -->
+        {% if product.image_url %}
+            <img src="{{ url_for('static', filename=product.image_url) }}" 
+                 alt="{{ product.name }}" 
+                 class="main-img">
+            
+            {% if product.image_url_back %}
+                <img src="{{ url_for('static', filename=product.image_url_back) }}" 
+                     alt="{{ product.name }}" 
+                     class="hover-img">
+            {% endif %}
+        {% else %}
+            <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
+        {% endif %}
+
+        <h2>{{ product.description or '' }}</h2>
+        <p>{{ product.name }}</p>
+        
+        <!-- Состав (если есть) -->
+        {% if product.details and product.details[0].composition %}
+            <p class="product-composition">
+                <small>{{ product.details[0].composition }}</small>
+            </p>
+        {% endif %}
+
+        <p><strong>{{ product.price | int }} ₽</strong></p>
+
+        <a href="{{ url_for('product_detail', product_id=product.id) }}">
             <button class="btn">Перейти</button>
         </a>
     </div>
-        {% else %}
-            <p>Товары не найдены</p>
-        {% endfor %}
+{% else %}
+    <p>Товары не найдены</p>
+{% endfor %}
     </div>
     {% if pages > 1 %}
 <nav class="pagination">

@@ -48,12 +48,17 @@ product_category = db.Table('product_category',
 
 
 class Order(db.Model):
+    __tablename__ = 'order'          # ← Это обязательно!
+
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.String(50), unique=True, nullable=False)
     status = db.Column(db.String(20), default='pending')
     cart_data = db.Column(db.Text, nullable=False)
     customer_info = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
+
+    def __repr__(self):
+        return f'<Order {self.order_id}>'
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,26 +70,31 @@ class Category(db.Model):
 
 
 class Product(db.Model):
+    __tablename__ = 'product'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(500), nullable=True)
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
-    sale = db.Column(db.Integer, default=0)
-
-    type = db.Column(db.String(20), default='regular')  # ← ВАЖНО
+    sale = db.Column(db.String(20), default='0')           # в базе TEXT
+    product_type = db.Column(db.String(20), default='regular')
 
     categories = db.relationship('Category', secondary=product_category, backref='products')
-    details = db.relationship('ProductDetails', backref='product', lazy=True)
-    variants = db.relationship('ProductVariant', backref='product', lazy=True)
+    
+    # Исправленные отношения
+    details = db.relationship('ProductDetails', back_populates='product', lazy=True)
+    variants = db.relationship('ProductVariant', back_populates='product', lazy=True)
 
     def __repr__(self):
         return f'<Product {self.name}>'
-
 class ProductDetails(db.Model):
+    __tablename__ = 'product_details'
+
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+
     full_description = db.Column(db.Text, nullable=True)
     composition = db.Column(db.Text, nullable=True)
     size = db.Column(db.Text, nullable=True)
@@ -94,11 +104,15 @@ class ProductDetails(db.Model):
     extra_image4 = db.Column(db.String(500), nullable=True)
     extra_image5 = db.Column(db.String(500), nullable=True)
     extra_image6 = db.Column(db.String(500), nullable=True)
+
+    product = db.relationship('Product', back_populates='details')
+
     def __repr__(self):
         return f'<ProductDetails {self.id}>'
 class ProductVariant(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'product_variant'
 
+    id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
     
     color = db.Column(db.String(100), nullable=False)
@@ -110,7 +124,11 @@ class ProductVariant(db.Model):
     image_extra5 = db.Column(db.String(500))
     image_extra6 = db.Column(db.String(500))
 
-    product = db.relationship('Product', backref='variants')
+    # Исправленное отношение
+    product = db.relationship('Product', back_populates='variants')
+
+    def __repr__(self):
+        return f'<ProductVariant {self.id}>'
     
 
 # Telegram bot
@@ -398,88 +416,81 @@ def about():
 
 @app.route('/catalog')
 def catalog():
+    # Параметры из URL
     page = request.args.get('page', 1, type=int)
-    per_page = 12  
+    per_page = 12
 
     min_price = request.args.get('min_price', type=float)
     max_price = request.args.get('max_price', type=float)
     category_name = request.args.get('category')
     search_query = request.args.get('search')
-    composition_filters = request.args.getlist('composition') 
+    composition_filters = request.args.getlist('composition')
+
+    # Получаем все категории для фильтра
     categories = Category.query.all()
-    compositions = (
-        db.session.query(ProductDetails.composition)
-        .filter(
-            ProductDetails.composition.isnot(None),
-            ProductDetails.composition != ''
-        )
-        .distinct()
+
+    # Получаем все уникальные составы для фильтра
+    compositions_query = db.session.query(ProductDetails.composition)\
+        .filter(ProductDetails.composition.isnot(None))\
+        .filter(ProductDetails.composition != '')\
+        .distinct()\
         .order_by(ProductDetails.composition)
-        .all()
-    )
-    compositions = [c[0] for c in compositions]
-    # Получаем минимумы и максимумы по таблицам с безопасной обработкой
-    min_product_price = db.session.query(db.func.min(Product.price)).scalar() or 0
-    max_product_price = db.session.query(db.func.max(Product.price)).scalar() or 0
-    min_new_price = db.session.query(db.func.min(NewProduct.price)).scalar() or 0
-    max_new_price = db.session.query(db.func.max(NewProduct.price)).scalar() or 0
-
-    print("COMPOSITIONS:", compositions)
-    print("CATEGORIES:", [(c.id, c.title) for c in categories])
-    # Собираем все найденные значения в список (только те, что не None)
-    all_min_prices = [p for p in [min_product_price, min_new_price] if p > 0]
-    all_max_prices = [p for p in [max_product_price, max_new_price] if p > 0]
-
-    # Определяем реальные минимальные и максимальные
-    real_min_price = int(min(all_min_prices)) if all_min_prices else min(min_product_price, min_new_price) or 0
-    real_max_price = int(max(all_max_prices)) + 100 if all_max_prices else max(max_product_price, max_new_price) or 10000
-
     
+    compositions = [c[0] for c in compositions_query.all() if c[0]]
 
-    # Запросы
-    query_product = Product.query.join(Product.details)
+    # --- Цены ---
+    min_price_db = db.session.query(db.func.min(Product.price)).scalar() or 0
+    max_price_db = db.session.query(db.func.max(Product.price)).scalar() or 0
 
+    real_min_price = int(min_price_db)
+    real_max_price = int(max_price_db) + 100 if max_price_db > 0 else 10000
+
+    # --- Основной запрос товаров ---
+    query = Product.query.join(Product.details, isouter=True)  # LEFT JOIN на детали
+
+    # Применяем фильтры
     if min_price is not None:
-        query_product = query_product.filter(Product.price >= min_price)
+        query = query.filter(Product.price >= min_price)
     if max_price is not None:
-        query_product = query_product.filter(Product.price <= max_price)
+        query = query.filter(Product.price <= max_price)
+
     if category_name:
-        query_product = query_product.filter(Product.categories.any(name=category_name))
+        query = query.filter(Product.categories.any(Category.name == category_name))
+
     if search_query:
-        query_product = query_product.filter(
-        or_(
-            Product.name.ilike(f"%{search_query}%"),
-            Product.description.ilike(f"%{search_query}%")
+        query = query.filter(
+            or_(
+                Product.name.ilike(f"%{search_query}%"),
+                Product.description.ilike(f"%{search_query}%")
+            )
         )
+
+    if composition_filters:
+        query = query.filter(
+            ProductDetails.composition.in_(composition_filters)
+        )
+
+    # Сортировка: новые товары сверху
+    query = query.order_by(
+        db.case((Product.product_type == 'new', 1), else_=2),
+        Product.id.desc()
     )
 
-# ДОБАВЛЯЕМ: Фильтр по составу (composition)
-    if composition_filters:
-        query_product = query_product.filter(
-            ProductDetails.composition.in_(composition_filters)
-        )
-        query_new = query_new.filter(
-            ProductDetails.composition.in_(composition_filters)
-        )
+    # Пагинация
+    total = query.count()
+    products = query.paginate(page=page, per_page=per_page, error_out=False).items
 
-    all_products = query_new.all() + query_product.all()
-    total = len(all_products)
-    start = (page - 1) * per_page
-    end = start + per_page
-    products = all_products[start:end]
-    pages = (total + per_page - 1) // per_page
+    # Для сохранения фильтров при переключении страниц
+    args = {k: v for k, v in request.args.to_dict(flat=True).items() if k != 'page'}
 
-    args = request.args.to_dict(flat=True)
-    args.pop('page', None)
     return render_template(
         'catalog.html',
         products=products,
         page=page,
-        pages=pages,
+        pages=(total + per_page - 1) // per_page,
         args=args,
-        request=request,
         categories=categories,
-        compositions=compositions, 
+        compositions=compositions,
         real_min_price=real_min_price,
         real_max_price=real_max_price
     )
