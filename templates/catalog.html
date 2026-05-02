@@ -179,50 +179,41 @@
         Найдено товаров: {{ products|length }}
     </div>
     </div>
-    <div id="productsContainer" class="catalog">
-        {% for product in products %}
+<div id="productsContainer" class="catalog">
+    {% for product in products %}
+    <a href="{{ url_for('product_detail', product_id=product.id) }}">
     <div class="product">
-        
-        <!-- Пометка "New" для новых товаров -->
-        {% if product.product_type == 'new' %}
-            <div class="new-label">New</div>
-        {% endif %}
+    {% if product.product_type == 'new' %}
+        <div class="new-label">New</div>
+    {% endif %}
 
-        <!-- Изображения -->
-        {% if product.image_url %}
-            <img src="{{ url_for('static', filename=product.image_url) }}" 
+    <div class="product-images">
+        <img src="{{ url_for('static', filename=product.image_url) }}" 
+             alt="{{ product.name }}" 
+             class="main-img">
+
+        {% if product.image_url_back %}
+            <img src="{{ url_for('static', filename=product.image_url_back) }}" 
                  alt="{{ product.name }}" 
-                 class="main-img">
-            
-            {% if product.image_url_back %}
-                <img src="{{ url_for('static', filename=product.image_url_back) }}" 
-                     alt="{{ product.name }}" 
-                     class="hover-img">
-            {% endif %}
-        {% else %}
-            <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
+                 class="hover-img">
         {% endif %}
+    </div>
 
-        <h2>{{ product.description or '' }}</h2>
-        <p>{{ product.name }}</p>
+    <div class="product-content">
+        <h3>{{ product.name }}</h3>
         
-        <!-- Состав (если есть) -->
         {% if product.details and product.details[0].composition %}
-            <p class="product-composition">
-                <small>{{ product.details[0].composition }}</small>
-            </p>
+            <p class="composition">{{ product.details[0].composition }}</p>
         {% endif %}
 
-        <p><strong>{{ product.price | int }} ₽</strong></p>
-
-        <a href="{{ url_for('product_detail', product_id=product.id) }}">
-            <button class="btn">Перейти</button>
-        </a>
+        <p class="price">{{ product.price | int }}</p>
+        
     </div>
-{% else %}
-    <p>Товары не найдены</p>
-{% endfor %}
-    </div>
+</div></a>
+    {% else %}
+        <p>Товары не найдены</p>
+    {% endfor %}
+</div>
     {% if pages > 1 %}
 <nav class="pagination">
     {% if page > 1 %}

@@ -78,7 +78,7 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(500), nullable=True)
     image_url_back = db.Column(db.String(500), nullable=True)
-    sale = db.Column(db.String(20), default='0')           # в базе TEXT
+    sale = db.Column(db.Float, default=0.0)
     product_type = db.Column(db.String(20), default='regular')
 
     categories = db.relationship('Category', secondary=product_category, backref='products')
