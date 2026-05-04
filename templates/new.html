@@ -1,30 +1,72 @@
 {% extends 'base.html' %}
+
 {% block title %}
-    Новые товары
+Новые товары
 {% endblock %}
-{% block menu %}
-    <!-- Меню здесь -->
-{% endblock %}
+
 {% block content %}
-    <div class="catalog">
-        {% for product in products %}
-            <div class="product">
-                    <div class="new-label">New</div>
-                {% if product.image_url %}
-                    <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
-                    <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
-                {% else %}
-                    <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
-                {% endif %}
-                <h2>{{ product.description }}</h2>
-                <p>{{ product.name }}</p>
-                <p><strong>{{ product.price | int}} ₽</strong></p>
-                    <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product') }}">
-                    <button class="btn">Перейти</button>
-                    </a>
-            </div>
-        {% else %}
-            <p>Товары не найдены</p>
-        {% endfor %}
+
+<!-- заголовок как в каталоге (если есть CSS под него) -->
+<div class="catalog-wrapper">
+    <div class="products-count">
+        Новинки: {{ products|length }}
     </div>
+</div>
+
+<div class="catalog-notice">
+    <p>*Цены зависят от выбранного размера и наличия. Актуальную стоимость уточняйте при заказе.</p>
+</div>
+
+<div class="catalog">
+
+    {% for product in products %}
+    <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product') }}">
+
+        <div class="product">
+
+            <div class="new-label">New</div>
+
+            <div class="product-images">
+
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="main-img">
+                         alt="{{ product.name }}" 
+                         class="main-img">
+
+                  {% if product.image_url_back %}
+                        <img src="{{ product.image_url_back }}" class="hover-img">
+                    {% endif %}
+
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="main-img">
+                {% endif %}
+
+            </div>
+
+            <div class="product-content">
+
+                <h3>{{ product.description }}</h3>
+
+                {% if product.details and product.details[0].composition %}
+                    <p class="composition">
+                        {{ product.details[0].composition }}
+                    </p>
+                {% endif %}
+
+                <p class="price">
+                    от {{ product.price | int }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </a>
+
+    {% else %}
+        <p>Товары не найдены</p>
+    {% endfor %}
+
+</div>
+
 {% endblock %}

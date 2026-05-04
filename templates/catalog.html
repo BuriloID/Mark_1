@@ -179,6 +179,9 @@
         Найдено товаров: {{ products|length }}
     </div>
     </div>
+    <div class="catalog-notice">
+    <p>*Цены зависят от выбранного размера и наличия. Актуальную стоимость уточняйте при заказе.</p>
+</div>
 <div id="productsContainer" class="catalog">
     {% for product in products %}
     <a href="{{ url_for('product_detail', product_id=product.id) }}">
@@ -188,25 +191,25 @@
     {% endif %}
 
     <div class="product-images">
-        <img src="{{ url_for('static', filename=product.image_url) }}" 
+        <img src="{{ product.image_url }}" 
              alt="{{ product.name }}" 
              class="main-img">
 
         {% if product.image_url_back %}
-            <img src="{{ url_for('static', filename=product.image_url_back) }}" 
+            <img src="{{ product.image_url_back }}" 
                  alt="{{ product.name }}" 
                  class="hover-img">
         {% endif %}
     </div>
 
     <div class="product-content">
-        <h3>{{ product.name }}</h3>
+        <h3>{{ product.description }}</h3>
         
         {% if product.details and product.details[0].composition %}
             <p class="composition">{{ product.details[0].composition }}</p>
         {% endif %}
 
-        <p class="price">{{ product.price | int }}</p>
+        <p class="price"> от {{ product.price | int }}</p>
         
     </div>
 </div></a>
@@ -214,21 +217,39 @@
         <p>Товары не найдены</p>
     {% endfor %}
 </div>
-    {% if pages > 1 %}
 <nav class="pagination">
-    {% if page > 1 %}
-        <a href="{{ url_for('catalog', page=page-1, **args) }}">&laquo;</a>
-    {% endif %}
-    {% for p in range(1, pages+1) %}
-        {% if p == page %}
-            <span class="current">{{ p }}</span>
-        {% else %}
-            <a href="{{ url_for('catalog', page=p, **args) }}">{{ p }}</a>
+    <ul>
+        {% if page > 1 %}
+            <li class="nav">
+                <a href="{{ url_for('catalog', page=page-1, **args) }}">←</a>
+            </li>
         {% endif %}
-    {% endfor %}
-    {% if page < pages %}
-        <a href="{{ url_for('catalog', page=page+1, **args) }}">&raquo;</a>
-    {% endif %}
+
+        {% if page > 4 %}
+            <li><a href="{{ url_for('catalog', page=1, **args) }}">1</a></li>
+            <li class="dots">…</li>
+        {% endif %}
+
+        {% for p in range(1, pages + 1) %}
+            {% if p >= page - 2 and p <= page + 2 %}
+                {% if p == page %}
+                    <li><span class="current">{{ p }}</span></li>
+                {% else %}
+                    <li><a href="{{ url_for('catalog', page=p, **args) }}">{{ p }}</a></li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% if page < pages - 3 %}
+            <li class="dots">…</li>
+            <li><a href="{{ url_for('catalog', page=pages, **args) }}">{{ pages }}</a></li>
+        {% endif %}
+
+        {% if page < pages %}
+            <li class="nav">
+                <a href="{{ url_for('catalog', page=page+1, **args) }}">→</a>
+            </li>
+        {% endif %}
+    </ul>
 </nav>
-{% endif %}
 {% endblock %}

@@ -418,7 +418,7 @@ def about():
 def catalog():
     # Параметры из URL
     page = request.args.get('page', 1, type=int)
-    per_page = 12
+    per_page = 16
 
     min_price = request.args.get('min_price', type=float)
     max_price = request.args.get('max_price', type=float)
@@ -477,8 +477,8 @@ def catalog():
     )
 
     # Пагинация
-    total = query.count()
-    products = query.paginate(page=page, per_page=per_page, error_out=False).items
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    products = pagination.items
 
     # Для сохранения фильтров при переключении страниц
     args = {k: v for k, v in request.args.to_dict(flat=True).items() if k != 'page'}
@@ -487,7 +487,7 @@ def catalog():
         'catalog.html',
         products=products,
         page=page,
-        pages=(total + per_page - 1) // per_page,
+        pages=pagination.pages,  
         args=args,
         categories=categories,
         compositions=compositions,
@@ -497,7 +497,7 @@ def catalog():
 @app.route('/new')
 def new():
     try:
-        products = Product.query.filter_by(type='new').all()
+        products = Product.query.filter_by(product_type='new').all()
         message = None if products else "Товары не найдены"
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"
