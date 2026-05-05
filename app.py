@@ -12,6 +12,7 @@ from sqlalchemy import or_
 from dotenv import load_dotenv
 import os
 import cloudinary
+import traceback
 
 load_dotenv()
 
@@ -229,89 +230,55 @@ def buy():
         db.session.close()
 @app.route('/catalog/filter', methods=['POST'])
 def catalog_filter():
-    import traceback
-    print("DEBUG: Entering catalog_filter")
     try:
-        data = request.get_json()
-        print(f"DEBUG: Received data: {data}")
-        
+        data = request.get_json() or {}
+
         min_price = data.get('min_price')
         max_price = data.get('max_price')
         compositions = data.get('compositions', [])
         categories = data.get('categories', [])
-        
-        # Базовые запросы
-        query_product = Product.query.join(Product.details)
-        
-        # Применяем фильтры по цене
-        if min_price:
-            query_product = query_product.filter(Product.price >= float(min_price))
-        
-        if max_price:
-            query_product = query_product.filter(Product.price <= float(max_price))
+
+        # ==================== ОСНОВНОЙ ЗАПРОС ====================
+        query = Product.query.join(Product.details, isouter=True)
+
+        # Фильтры
+        if min_price is not None:
+            query = query.filter(Product.price >= float(min_price))
+        if max_price is not None:
+            query = query.filter(Product.price <= float(max_price))
         if categories:
-            query_product = query_product.filter(
-                Product.categories.any(Category.name.in_(categories))
-            )
-        # Фильтр по составу — ПРАВИЛЬНЫЙ
+            query = query.filter(Product.categories.any(Category.name.in_(categories)))
+
+        # Сортировка
+        query = query.order_by(
+            db.case((Product.product_type == 'new', 1), else_=2),
+            Product.id.desc()
+        )
+
+        # ==================== ФИЛЬТР ПО СОСТАВУ ====================
         if compositions:
-            filtered_products = []
-            
-            for product in query_product.all():
-                if not product.details or not product.details[0].composition:
-                    continue
-                
-                # Получаем полный состав товара
-                product_composition = product.details[0].composition
-                
-                # Проверяем, содержит ли состав товара любой из выбранных фильтров
-                if any(comp in product_composition for comp in compositions):
-                    filtered_products.append(product)
-            
-            filtered_new = []
-            all_products = filtered_new + filtered_products
-        else:
-            all_products = query_product.all()
-        
-        # Получаем ВСЕ уникальные составы для отображения в фильтре
-        all_compositions_set = set()
-        
-        # Для Product
-        product_details = ProductDetails.query.filter(
-            ProductDetails.product_id.isnot(None),
-            ProductDetails.composition.isnot(None),
-            ProductDetails.composition != ''
-        ).all()
-        
-        for detail in product_details:
-            if detail.composition:
-                # Добавляем полный состав как есть
-                all_compositions_set.add(detail.composition.strip())
-        
-        # Сортируем
-        all_compositions = sorted(all_compositions_set)
-        
-        # Формируем HTML для товаров
+            # Более эффективный способ
+            query = query.filter(
+                ProductDetails.composition.isnot(None),
+                or_(*[ProductDetails.composition.ilike(f"%{comp}%") for comp in compositions])
+            )
+
+        products = query.all()
+
+        # ==================== ФОРМИРОВАНИЕ HTML ====================
         products_html = ""
-        for product in all_products:
-            is_new_product = isinstance(product)
-            product_type_str = 'new_product' if is_new_product else 'product'
+        for product in products:
+            is_new = product.product_type == 'new'
 
-            # Изображения
-            if product.image_url:
-                main_img = f'/static/{product.image_url}'
-                image_html = f'<img src="{main_img}" alt="{product.name}" class="main-img">'
-                if product.image_url_back:
-                    back_img = f'/static/{product.image_url_back}'
-                    image_html += f'<img src="{back_img}" alt="{product.name}" class="hover-img">'
-            else:
-                image_html = '<img src="https://via.placeholder.com/150">'
-
-            # Цена
-            price_display = int(product.price)
+            # Изображения (Cloudinary)
+            main_img = product.image_url or "https://via.placeholder.com/400x500"
+            image_html = f'<img src="{main_img}" class="main-img" alt="{product.name}">'
+            
+            if product.image_url_back:
+                image_html += f'<img src="{product.image_url_back}" class="hover-img" alt="{product.name}">'
 
             # Состав
-            composition_html = ''
+            composition_html = ""
             if product.details and product.details[0].composition:
                 composition_html = f'''
                     <p class="product-composition">
@@ -319,69 +286,41 @@ def catalog_filter():
                     </p>
                 '''
 
-            # Карточка
             products_html += f'''
-            <div class="product">
-                {f'<div class="new-label">New</div>' if is_new_product else ''}
-                {image_html}
-                <h2>{product.description or ""}</h2>
-                <p>{product.name}</p>
-                {composition_html}
-                <p><strong>{price_display} ₽</strong></p>
-                <a href="/product/{product.id}?product_type={product_type_str}">
-                    <button class="btn">Перейти</button>
-                </a>
-            </div>
+            <a href="{url_for('product_detail', product_id=product.id)}">
+                <div class="product">
+                    {'<div class="new-label">New</div>' if is_new else ''}
+                    <div class="product-images">
+                        {image_html}
+                    </div>
+                    <div class="product-content">
+                        <h3>{product.description or ""}</h3>
+                        <p>{product.name}</p>
+                        {composition_html}
+                        <p class="price">от {int(product.price)}</p>
+                    </div>
+                </div>
+            </a>
             '''
-        
-        # Если товаров нет
+
         if not products_html:
-            products_html = '<p class="no-products">Товары не найдены</p>'
-        
+            products_html = '<p class="no-products">Товары не найдены по выбранным фильтрам</p>'
+
+        # Все составы для фильтра
+        all_compositions = [c[0] for c in db.session.query(ProductDetails.composition)
+                            .filter(ProductDetails.composition.isnot(None))
+                            .distinct().all() if c[0]]
+
         return jsonify({
             'success': True,
             'products_html': products_html,
-            'products_count': len(all_products),
-            'compositions': all_compositions  # Возвращаем все составы
+            'products_count': len(products),
+            'compositions': sorted(all_compositions)
         })
+
     except Exception as e:
-        print(f"ERROR: {traceback.format_exc()}")
+        print(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
-
-    # ДОБАВЛЯЕМ новую функцию для извлечения материалов из composition
-def extract_composition_materials(composition_text):
-    if not composition_text:
-        return []
-
-    import re
-
-    text = composition_text.lower()
-
-    # Убираем проценты и цифры
-    text = re.sub(r'\d+(?:\.\d+)?\s*%?', '', text)
-
-    # Убираем служебные слова
-    text = re.sub(
-        r'\b(состав|материал|материалы|содержит)\b',
-        '',
-        text
-    )
-
-    # Нормализуем разделители
-    for sep in [',', ';', '/', '+']:
-        text = text.replace(sep, '|')
-
-    parts = [p.strip() for p in text.split('|') if p.strip()]
-
-    materials = []
-    for part in parts:
-        cleaned = re.sub(r'[^\w\s]', '', part).strip()
-        if len(cleaned) >= 3:
-            materials.append(cleaned.title())
-
-    return list(set(materials))
-
-@app.route('/collection/<int:collection_id>')
 def show_collection(collection_id):
     collection = Collection.query.get_or_404(collection_id)
     products = [
@@ -402,7 +341,13 @@ def collection_table():
 @app.route('/')
 def index():
     try:
-        products = Product.query.filter_by(type='new').order_by(Product.id.desc()).limit(4).all()
+        products = (
+    Product.query
+    .filter(Product.product_type == 'new')
+    .order_by(Product.id.desc())
+    .limit(4)
+    .all()
+)
         message = None if products else "Товары не найдены"
     except Exception as e:
         message = f"Ошибка при загрузке товаров: {str(e)}"

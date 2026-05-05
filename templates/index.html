@@ -160,22 +160,33 @@ CARDIGA NICK
 </div>
 
 <h2 class="new-arrivals">Новинки</h2>
+
 <div class="catalog">
     {% for product in products %}
         <div class="product">
-                <div class="new-label">New</div>
-            {% if product.image_url %}
-                <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.name }}" class="main-img">
-                <img src="{{ url_for('static', filename=product.image_url_back) }}" alt="{{ product.name }}" class="hover-img">
-            {% else %}
-                <img src="https://via.placeholder.com/150" alt="{{ product.name }}">
-            {% endif %}
-            <h2>{{ product.description }}</h2>
-            <p>{{ product.name }}</p>
-            <p><strong>{{ product.price | int}} ₽</strong></p>
-            <a href="{{ url_for('product_detail', product_id=product.id, product_type='new_product') }}">
-                <button class="btn">Перейти</button>
-            </a>
+
+            <div class="new-label">New</div>
+
+            <div class="product-images">
+
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" class="main-img">
+
+                    {% if product.image_url_back %}
+                        <img src="{{ product.image_url_back }}" class="hover-img">
+                    {% endif %}
+                {% else %}
+                    <img src="https://via.placeholder.com/150">
+                {% endif %}
+
+            </div>
+
+            <div class="product-content">
+                <h3>{{ product.description }}</h3>
+                <p>{{ product.name }}</p>
+                <p class="price">{{ product.price | int }} ₽</p>
+            </div>
+
         </div>
     {% else %}
         <p>Товары не найдены</p>

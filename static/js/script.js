@@ -410,14 +410,19 @@ function initCompositionSearch() {
 function applyPriceFilters(e) {
     if (e) e.preventDefault();
     
+    
     const minPrice = minPriceInput.value || minRange.min;
     const maxPrice = maxPriceInput.value || maxRange.max;
     
-    // Собираем выбранные составы (ДОБАВЛЯЕМ ЭТО)
+    // Собираем выбранные составы
     const selectedCompositions = Array.from(document.querySelectorAll('.composition-checkbox:checked'))
         .map(cb => cb.value);
-    
-    // Проверка значений
+
+    // Собираем выбранные категории
+    const selectedCategories = Array.from(document.querySelectorAll('.category-checkbox:checked'))
+        .map(cb => cb.value);                    // ← Сначала объявляем!
+
+    // Проверка цен
     if (parseInt(minPrice) > parseInt(maxPrice)) {
         alert('Минимальная цена не может быть больше максимальной');
         return;
@@ -429,10 +434,9 @@ function applyPriceFilters(e) {
         productsContainer.innerHTML = '<div class="loading-spinner">Загрузка...</div>';
     }
     
-    // Собираем ВСЕ параметры фильтрации (не только цену)
     const urlParams = new URLSearchParams(window.location.search);
     const filterData = {};
-    
+
     // 1. Цена
     if (minPrice && parseInt(minPrice) > parseInt(minRange.min)) {
         filterData.min_price = minPrice;
@@ -448,32 +452,31 @@ function applyPriceFilters(e) {
         urlParams.delete('max_price');
     }
     
-    // 2. Составы (ДОБАВЛЯЕМ ЭТО)
+    // 2. Составы
     if (selectedCompositions.length > 0) {
         filterData.compositions = selectedCompositions;
         urlParams.delete('composition');
-        selectedCompositions.forEach(comp => {
-            urlParams.append('composition', comp);
-        });
+        selectedCompositions.forEach(comp => urlParams.append('composition', comp));
     } else {
         urlParams.delete('composition');
-        delete filterData.compositions;
     }
-    
-    const selectedCategories = Array.from(
-        document.querySelectorAll('.category-checkbox:checked')
-    ).map(cb => cb.value);
-    
-    // 4. Поиск (если есть)
-    const searchQuery = urlParams.get('search') || 
-                       document.querySelector('[name="search"]')?.value;
-    if (searchQuery) filterData.search = searchQuery;
-    
-    // 5. Название товара (если есть)
-    const name = urlParams.get('name');
-    if (name) filterData.name = name;
-    
-    // Обновляем URL без перезагрузки (history API)
+
+    // 3. КАТЕГОРИИ — ИСПРАВЛЕНО
+    if (selectedCategories.length > 0) {
+        filterData.categories = selectedCategories;
+        urlParams.delete('category');
+        selectedCategories.forEach(cat => urlParams.append('category', cat));
+    } else {
+        urlParams.delete('category');
+    }
+
+    // 4. Поиск
+    const searchQuery = urlParams.get('search') || document.querySelector('[name="search"]')?.value;
+    if (searchQuery) {
+        filterData.search = searchQuery;
+    }
+
+    // Обновляем URL
     const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
     history.pushState({}, '', newUrl);
     
@@ -656,41 +659,42 @@ function initPriceFilter() {
     updateSliderRange();
 }
 
-function initFilter() {
-    if (!drawer) return;
-    
-    initPriceFilter();
-    
-    // Обработчики для ползунков
-    minRange.addEventListener('input', updateMinPrice);
-    maxRange.addEventListener('input', updateMaxPrice);
-    minRange.addEventListener('change', applyPriceFilters);
-    maxRange.addEventListener('change', applyPriceFilters);
-    
-    // Обработчики для полей ввода
-    minPriceInput.addEventListener('change', updateMinRange);
-    maxPriceInput.addEventListener('change', updateMaxRange);
-    minPriceInput.addEventListener('blur', updateMinRange);
-    maxPriceInput.addEventListener('blur', updateMaxRange);
-    
-    // Кнопки
-    applyFilter.addEventListener('click', applyPriceFilters);
-    resetFilter.addEventListener('click', resetFilters);
-    handle.addEventListener('click', openFilter);
-    closeFilter.addEventListener('click', closeFilterDrawer);
-    
-    // Закрытие по клику вне области
-    document.addEventListener('click', (e) => {
-        if (drawer.classList.contains('open') && 
-            !drawer.contains(e.target) && 
-            !handle.contains(e.target)) {
-            closeFilterDrawer();
-        }
-    });
-    document.querySelectorAll('.composition-checkbox').forEach(cb => {
-        cb.addEventListener('change', applyPriceFilters);
-    });
-}
+    function initFilter() {
+        if (!drawer) return;
+        
+        initPriceFilter();
+        
+        // Обработчики для ползунков
+        minRange.addEventListener('input', updateMinPrice);
+        maxRange.addEventListener('input', updateMaxPrice);
+        minRange.addEventListener('change', applyPriceFilters);
+        maxRange.addEventListener('change', applyPriceFilters);
+        
+        // Обработчики для полей ввода
+        minPriceInput.addEventListener('change', updateMinRange);
+        maxPriceInput.addEventListener('change', updateMaxRange);
+        minPriceInput.addEventListener('blur', updateMinRange);
+        maxPriceInput.addEventListener('blur', updateMaxRange);
+        
+        // Кнопки
+        applyFilter.addEventListener('click', applyPriceFilters);
+        resetFilter.addEventListener('click', resetFilters);
+        handle.addEventListener('click', openFilter);
+        closeFilter.addEventListener('click', closeFilterDrawer);
+        
+        // Закрытие по клику вне области
+        document.addEventListener('click', (e) => {
+            if (drawer.classList.contains('open') && 
+                !drawer.contains(e.target) && 
+                !handle.contains(e.target)) {
+                closeFilterDrawer();
+            }
+        });
+        // Обработчики для всех чекбоксов (состав + категория)
+        document.querySelectorAll('.composition-checkbox, .category-checkbox').forEach(cb => {
+            cb.addEventListener('change', applyPriceFilters);
+        });
+    }
 
 // Свайпы для фильтра
 function initFilterSwipe() {
