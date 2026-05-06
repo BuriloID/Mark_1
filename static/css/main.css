@@ -1173,23 +1173,40 @@ html { scroll-behavior: smooth; }
 }
 
 .filter-drawer {
-  position: relative;
-  overflow: hidden; 
-  border-radius: 0 0 10px 10px;    
-  margin: 15px auto 0 auto;
-  max-width: 100%;
-  transition: max-height 0.4s ease;
-  max-height: 2px;
-  background-color: whitesmoke;
-  box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-  border-top: none;
-  outline: none;
+    position: relative;
+    overflow: hidden;
+
+    margin: 14px auto 0;
+    max-width: 100%;
+
+    border-radius: 0 0 24px 24px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.96) 0%,
+            rgba(248,248,248,0.98) 100%
+        );
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,0.6);
+    border-top: none;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.08),
+        0 2px 8px rgba(0,0,0,0.04);
+
+    transition:
+        max-height 0.55s cubic-bezier(.22,.61,.36,1),
+        opacity 0.35s ease;
+
+    max-height: 2px;
+    opacity: 0.98;
 }
 
 .filter-drawer.open {
-    background: #ffffff;
-    max-height: 450px;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+    max-height: 850px;
 }
 .filter-handle {
     position: relative;
@@ -1268,21 +1285,28 @@ html { scroll-behavior: smooth; }
 }
 
 .filter-content {
-    padding: 15px;
+    padding: 34px 36px 30px;
     transition: opacity 0.3s ease;
     opacity: 1;
 }
 .filter-header {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+
+    margin-bottom: 30px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .filter-header h3 {
+    font-family: 'Sverdlovsk', fantasy;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #111;
     margin: 0;
-    color: #333;
 }
 
 .close-filter {
@@ -1316,9 +1340,15 @@ html { scroll-behavior: smooth; }
 }
 
 .filter-section h4 {
-    color: #333;
-    font-size: 20px;
-    
+    font-family: 'Sverdlovsk', fantasy;
+    font-size: 24px;
+    font-weight: 400;
+
+    margin-bottom: 22px;
+
+    color: #111;
+
+    letter-spacing: 0.5px;
 }
 
 .price-inputs {
@@ -1329,19 +1359,30 @@ html { scroll-behavior: smooth; }
 }
 
 .price-input-group {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #e8e8e8;
-    border-radius: 10px;
-    padding: 6px 12px;
+    background: rgba(255,255,255,0.95);
+
+    border: 1px solid rgba(0,0,0,0.08);
+
+    border-radius: 16px;
+
+    padding: 10px 14px;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.8),
+        0 2px 6px rgba(0,0,0,0.03);
+
     transition: all 0.3s ease;
 }
-
+.price-input-group:hover {
+    border-color: rgba(0,0,0,0.18);
+}
 .price-input-group:focus-within {
-    border-color: #333;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    border-color: #111;
+
+    box-shadow:
+        0 0 0 4px rgba(0,0,0,0.05),
+        0 8px 18px rgba(0,0,0,0.08);
+
     transform: translateY(-1px);
 }
 
@@ -1382,19 +1423,67 @@ html { scroll-behavior: smooth; }
 
 /* Адаптивность */
 @media (max-width: 480px) {
+
     .price-inputs {
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
+        margin-bottom: 20px;
     }
-    
+
     .price-input-group {
-        width: 100%;
-        justify-content: space-between;
+        position: relative;
+
+        width: 50%;
+        height: 54px;
+
+        padding: 0 18px;
+
+        border-radius: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+
+        background: #fff;
+
+        border: 1px solid rgba(0,0,0,0.06);
+
+        box-shadow:
+            0 4px 14px rgba(0,0,0,0.04);
     }
-    
+
+    .price-input-group label {
+        font-size: 13px;
+        min-width: 22px;
+        color: #888;
+    }
+
     .price-inputs input {
-        width: 100px;
+        flex: 1;
+
+        width: auto;
+
+        border: none;
+        background: transparent;
+
+        font-size: 18px;
+        font-weight: 500;
+
+        color: #222;
+
+        padding-right: 24px;
+
         text-align: left;
+    }
+
+    .price-input-group::after {
+        position: absolute;
+
+        right: 18px;
+
+        font-size: 15px;
+        color: #777;
     }
 }
 /* ========================= */
@@ -1407,45 +1496,77 @@ html { scroll-behavior: smooth; }
 
 .price-slider {
     position: relative;
-    height: 40px;
     display: flex;
     align-items: center;
+    height: 54px;
 }
 
+/* ОСНОВНАЯ ДОРОЖКА */
 .slider-track {
     position: absolute;
-    height: 4px;
-    background: #ddd;
-    width: 100%;
-    border-radius: 2px;
     left: 0;
+    width: 100%;
+    height: 6px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #e5e5e5 0%,
+            #f1f1f1 100%
+        );
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
     z-index: 1;
 }
 
-/* Чёрный диапазон */
+/* АКТИВНЫЙ ДИАПАЗОН */
 .slider-range {
     position: absolute;
-    height: 4px;
-    background: #333;
-    border-radius: 2px;
-    left: 0%;
-    width: 100%;
+
+    height: 6px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #111 0%,
+            #3a3a3a 100%
+        );
+
+    box-shadow:
+        0 0 10px rgba(0,0,0,0.15);
+
     z-index: 2;
 }
 /* Range inputs — полностью прозрачные, но кликабельные */
+/* ОБЛАСТЬ RANGE */
 .range-min,
 .range-max {
     position: absolute;
-    width: 100%;
-    height: 32px;
-    background: transparent;
-    outline: none;
-    margin: 0;
+
     left: 0;
-    top: 0;
-    pointer-events: auto;
+    top: 50%;
+
+    width: 100%;
+    height: 26px;
+
+    transform: translateY(-50%);
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    pointer-events: none;
+
     -webkit-appearance: none;
     appearance: none;
+
+    z-index: 5;
 }
 
 /* Убираем стандартную дорожку (Chrome / Safari / Edge) */
@@ -1469,46 +1590,73 @@ html { scroll-behavior: smooth; }
    =============================== */
 
 /* Chrome / Safari / Edge */
+/* Chrome / Safari / Edge */
 .range-min::-webkit-slider-thumb,
 .range-max::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
+    margin-top: -10px;
+    width: 26px;
+    height: 26px;
 
-    width: 24px;
-    height: 12px;
+    border-radius: 50%;
 
-    background: linear-gradient(#4f4f4f, #2b2b2b);
-    border-radius: 30px;
-    border: 1px solid #1a1a1a;
+    background:
+        radial-gradient(circle at 30% 30%, #ffffff, #dcdcdc);
+
+    border: 1px solid rgba(0,0,0,0.12);
 
     box-shadow:
-        0 0 4px rgba(0, 0, 0, 0.5),
-        0 1px 1px rgba(255, 255, 255, 0.1) inset,
-        0 -2px 0 rgba(0, 0, 0, 0.2) inset;
+        0 4px 14px rgba(0,0,0,0.18),
+        inset 0 2px 4px rgba(255,255,255,0.95);
 
     cursor: pointer;
+
     pointer-events: auto;
 
     position: relative;
-    z-index: 4;
+    z-index: 10;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* hover */
+.range-min::-webkit-slider-thumb:hover,
+.range-max::-webkit-slider-thumb:hover {
+    transform: scale(1.08);
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.22),
+        inset 0 2px 4px rgba(255,255,255,1);
+}
+
+/* active */
+.range-min::-webkit-slider-thumb:active,
+.range-max::-webkit-slider-thumb:active {
+    transform: scale(0.96);
 }
 
 /* Firefox */
 .range-min::-moz-range-thumb,
 .range-max::-moz-range-thumb {
-    width: 24px;
-    height: 12px;
+    width: 26px;
+    height: 26px;
 
-    background: linear-gradient(#4f4f4f, #2b2b2b);
-    border-radius: 30px;
-    border: 1px solid #1a1a1a;
+    border: none;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle at 30% 30%, #ffffff, #dcdcdc);
 
     box-shadow:
-        0 0 4px rgba(0, 0, 0, 0.5),
-        0 1px 1px rgba(255, 255, 255, 0.1) inset,
-        0 -2px 0 rgba(0, 0, 0, 0.2) inset;
+        0 4px 14px rgba(0,0,0,0.18),
+        inset 0 2px 4px rgba(255,255,255,0.95);
 
     cursor: pointer;
+
+    pointer-events: auto;
 }
 
 @media (max-width: 768px) {
@@ -1550,16 +1698,22 @@ html { scroll-behavior: smooth; }
     opacity: 1;
 }
 .composition-name {
-    font-family: 'Daray', sans-serif;
-    text-align: left;
-    font-weight: 600;
-    font-size: 17px;
-    line-height: 1.3;
-    color: #666666;
+    font-family: 'Sverdlovsk', fantasy;
+
+    font-size: 18px;
+    line-height: 1.25;
+
+    color: #444;
+
+    transition: color 0.25s ease;
+}
+
+.checkbox-wrapper:hover .composition-name {
+    color: #000;
 }
 @media (max-width: 768px) {
     .filter-section h4 {
-        font-size: 10px;
+        font-size: 20px;
     }
 
     .composition-name {

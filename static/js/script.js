@@ -671,14 +671,26 @@ function initPriceFilter() {
         maxRange.addEventListener('change', applyPriceFilters);
         
         // Обработчики для полей ввода
-        minPriceInput.addEventListener('change', updateMinRange);
-        maxPriceInput.addEventListener('change', updateMaxRange);
+        minPriceInput.addEventListener('input', () => {
+            updateMinRange();
+            applyPriceFilters();
+        });
+
+        maxPriceInput.addEventListener('input', () => {
+            updateMaxRange();
+            applyPriceFilters();
+        });
         minPriceInput.addEventListener('blur', updateMinRange);
         maxPriceInput.addEventListener('blur', updateMaxRange);
         
         // Кнопки
-        applyFilter.addEventListener('click', applyPriceFilters);
-        resetFilter.addEventListener('click', resetFilters);
+        if (applyFilter) {
+            applyFilter.addEventListener('click', applyPriceFilters);
+        }
+
+        if (resetFilter) {
+            resetFilter.addEventListener('click', resetFilters);
+        }
         handle.addEventListener('click', openFilter);
         closeFilter.addEventListener('click', closeFilterDrawer);
         
