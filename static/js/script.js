@@ -864,7 +864,7 @@ initCompositionSearch();
     // Проверка наличия куки для согласия
     if (!getCookie('cookies_accepted')) {
         console.log('Cookie not found, showing banner.');
-        document.getElementById('cookie-banner').style.display = 'block';
+        document.getElementById('cookie-banner').classList.add('show');
     } else {
         console.log('Cookie found:', getCookie('cookies_accepted'));
         document.getElementById('cookie-banner').style.display = 'none';
@@ -873,13 +873,13 @@ initCompositionSearch();
     // Обработчик для кнопки "Принять"
     document.getElementById('accept-cookies').onclick = function() {
         setCookie('cookies_accepted', 'true', 7);
-        document.getElementById('cookie-banner').style.display = 'none';
+        document.getElementById('cookie-banner').classList.remove('show');
     };
 
     // Обработчик для кнопки "Отклонить"
     document.getElementById('decline-cookies').onclick = function() {
         setCookie('cookies_accepted', 'false', 7);
-        document.getElementById('cookie-banner').style.display = 'none';
+        document.getElementById('cookie-banner').classList.remove('show');
         document.getElementById('cookie-warning').style.display = 'block';
         document.getElementById('cookie-settings').style.display = 'block';
         
@@ -894,10 +894,17 @@ initCompositionSearch();
 
     // Обработчик для кнопки "Настройки куки"
     document.getElementById('cookie-settings').onclick = function() {
-        document.getElementById('cookie-banner').style.display = 'block';
-        document.getElementById('cookie-warning').style.display = 'none';
-        this.style.display = 'none';
-    };
+    const banner = document.getElementById('cookie-banner');
+
+    banner.style.display = 'block';
+
+    setTimeout(() => {
+        banner.classList.add('show');
+    }, 10);
+
+    document.getElementById('cookie-warning').style.display = 'none';
+    this.style.display = 'none';
+};  
 
     // ==============================
     // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ

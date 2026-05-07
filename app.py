@@ -295,7 +295,6 @@ def catalog_filter():
                     </div>
                     <div class="product-content">
                         <h3>{product.description or ""}</h3>
-                        <p>{product.name}</p>
                         {composition_html}
                         <p class="price">от {int(product.price)}</p>
                     </div>
