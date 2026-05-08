@@ -117,7 +117,7 @@ class ProductVariant(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
     
     color = db.Column(db.String(100), nullable=False)
-
+    main_image = db.Column(db.String(500))
     image_extra1 = db.Column(db.String(500))
     image_extra2 = db.Column(db.String(500))
     image_extra3 = db.Column(db.String(500))
@@ -463,9 +463,10 @@ def product_detail(product_id):
     product_type = request.args.get('product_type')
     product = Product.query.get_or_404(product_id)
     details = ProductDetails.query.filter_by(product_id=product.id).first()
+    variants = ProductVariant.query.filter_by(product_id=product.id).all()
     if not product:
         return "Product not found", 404
-    return render_template('product_detail.html', product=product, details=details)
+    return render_template('product_detail.html', product=product, details=details, variants=variants)
 
 @app.route('/client')
 def client():

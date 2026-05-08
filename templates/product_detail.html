@@ -40,6 +40,21 @@
                     <div class="new-price">{{ product.price | int }} ₽</div>
                 {% endif %}
             </div>
+                    <div class="product-colors">
+                        {% for variant in variants %}
+                            <button
+                                class="color-circle"
+                                data-main="{{ variant.main_image }}"
+                                data-extra1="{{ variant.image_extra1 }}"
+                                data-extra2="{{ variant.image_extra2 }}"
+                                data-extra3="{{ variant.image_extra3 }}"
+                                data-extra4="{{ variant.image_extra4 }}"
+                                data-extra5="{{ variant.image_extra5 }}"
+                                data-extra6="{{ variant.image_extra6 }}"
+                            >
+                            </button>
+                        {% endfor %}
+                    </div>
             <div class="btn-group">
                 <button class="continue-shopping" id="open_pop_up">Купить</button>
                 <a href="{{ url_for('add_to_cart', product_type='new' if product.__class__.__name__ == 'NewProduct' else 'product', product_id=product.id) }}">

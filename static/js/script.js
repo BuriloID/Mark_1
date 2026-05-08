@@ -944,7 +944,43 @@ initCompositionSearch();
             }, 200); 
         }
     }
+// ==============================
+// ПЕРЕКЛЮЧЕНИЕ ВАРИАНТОВ ТОВАРА
+// ==============================
 
+document.querySelectorAll('.color-circle').forEach(button => {
+    button.addEventListener('click', function () {
+
+        // Главное изображение
+        const mainImage = this.dataset.main;
+        if (mainImage) {
+            changeMainImage(mainImage);
+        }
+
+        // Миниатюры
+        const thumbnailsContainer = document.querySelector('.thumbnails');
+
+        if (thumbnailsContainer) {
+            thumbnailsContainer.innerHTML = '';
+
+            for (let i = 1; i <= 6; i++) {
+                const image = this.dataset[`extra${i}`];
+
+                if (image) {
+                    const img = document.createElement('img');
+
+                    img.src = image;
+                    img.className = 'thumbnail';
+                    img.alt = `Thumbnail ${i}`;
+
+                    img.onclick = () => changeMainImage(image);
+
+                    thumbnailsContainer.appendChild(img);
+                }
+            }
+        }
+    });
+});
     // Функция проверки видимости элемента в viewport
     function isElementInViewport(el) {
         const rect = el.getBoundingClientRect();
