@@ -934,16 +934,40 @@ initCompositionSearch();
     }
 
     // Функция смены главного изображения товара
-    function changeMainImage(newSrc) {
-        let mainImage = document.getElementById("mainImage");
-        if (mainImage && mainImage.src !== newSrc) {
-            mainImage.classList.add("fade-out"); 
-            setTimeout(() => {
-                mainImage.src = newSrc;
-                mainImage.classList.remove("fade-out"); 
-            }, 200); 
+    // Глобальные функции
+function changeMainImage(newSrc) {
+    const mainImage = document.getElementById("mainImage");
+    if (!mainImage || mainImage.src === newSrc) return;
+
+    // Плавное затухание
+    mainImage.style.transition = 'opacity 0.2s ease';
+    mainImage.style.opacity = '0';
+
+    setTimeout(() => {
+        mainImage.src = newSrc;
+        mainImage.style.opacity = '1';
+    }, 180);
+
+    // Обновляем активную миниатюру
+    document.querySelectorAll('.thumbnails img').forEach(img => {
+        if (img.src === newSrc || img.getAttribute('src') === newSrc) {
+            img.classList.add('active');
+        } else {
+            img.classList.remove('active');
+        }
+    });
+}
+// ======================
+    // ИНИЦИАЛИЗАЦИЯ МИНИАТЮР НА СТРАНИЦЕ ТОВАРА
+    // ======================
+    function initProductThumbnails() {
+        const firstThumb = document.querySelector('.thumbnails img');
+        if (firstThumb) {
+            firstThumb.classList.add('active');
         }
     }
+
+    initProductThumbnails();
 // ==============================
 // ПЕРЕКЛЮЧЕНИЕ ВАРИАНТОВ ТОВАРА
 // ==============================
@@ -1090,16 +1114,28 @@ document.querySelectorAll('.color-circle').forEach(button => {
     });
 });
 
-// Глобальные функции для использования в HTML
+// ====================== ГЛОБАЛЬНАЯ ФУНКЦИЯ СМЕНЫ ИЗОБРАЖЕНИЯ ======================
 function changeMainImage(newSrc) {
-    let mainImage = document.getElementById("mainImage");
-    if (mainImage && mainImage.src !== newSrc) {
-        mainImage.classList.add("fade-out"); 
-        setTimeout(() => {
-            mainImage.src = newSrc;
-            mainImage.classList.remove("fade-out"); 
-        }, 200); 
-    }
+    const mainImage = document.getElementById("mainImage");
+    if (!mainImage || !newSrc) return;
+
+    // Плавное затухание
+    mainImage.style.transition = 'opacity 0.25s ease';
+    mainImage.style.opacity = '0';
+
+    setTimeout(() => {
+        mainImage.src = newSrc;
+        mainImage.style.opacity = '1';
+    }, 180);
+
+    // Обновляем активную миниатюру
+    document.querySelectorAll('.thumbnails img').forEach(img => {
+        if (img.src === newSrc || img.getAttribute('src') === newSrc) {
+            img.classList.add('active');
+        } else {
+            img.classList.remove('active');
+        }
+    });
 }
 
 function selectSize(size, el) {
