@@ -949,7 +949,24 @@ initCompositionSearch();
 // ==============================
 
 document.querySelectorAll('.color-circle').forEach(button => {
+    // === 1. Настройка внешнего вида (градиент) ===
+    const hexString = button.dataset.colorHex;
+   if (hexString) {
+        const colors = hexString.split('/').map(c => c.trim());
+        
+        if (colors.length === 1) {
+            button.classList.add('single-color');
+            button.style.setProperty('--color1', colors[0]);
+        } 
+        else if (colors.length >= 2) {
+            button.style.setProperty('--color1', colors[0]);
+            button.style.setProperty('--color2', colors[1]);
+        }
+    }
     button.addEventListener('click', function () {
+        // Убираем active со всех и ставим на текущий
+        document.querySelectorAll('.color-circle').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
 
         // Главное изображение
         const mainImage = this.dataset.main;
@@ -966,7 +983,12 @@ document.querySelectorAll('.color-circle').forEach(button => {
             for (let i = 1; i <= 6; i++) {
                 const image = this.dataset[`extra${i}`];
 
-                if (image) {
+                if (
+                    image &&
+                    image.trim() !== '' &&
+                    image !== 'None' &&
+                    image !== 'null'
+                ) {
                     const img = document.createElement('img');
 
                     img.src = image;

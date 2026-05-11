@@ -124,6 +124,7 @@ class ProductVariant(db.Model):
     image_extra4 = db.Column(db.String(500))
     image_extra5 = db.Column(db.String(500))
     image_extra6 = db.Column(db.String(500))
+    color_hex = db.Column(db.String(20), nullable=True)
 
     # Исправленное отношение
     product = db.relationship('Product', back_populates='variants')

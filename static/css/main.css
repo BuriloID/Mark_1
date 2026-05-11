@@ -3809,3 +3809,57 @@ h1 {
     font-weight: 400; 
     font-style: normal; 
 }
+.product-colors {
+    display: flex;
+    gap: 14px;
+    margin: 25px 0 30px 0;
+    flex-wrap: wrap;
+}
+
+.color-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #e5e5e5;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;           /* важно */
+}
+
+.color-circle:hover {
+    transform: scale(1.12);
+    border-color: #999;
+}
+
+.color-circle.active {
+    border: 3px solid #222;
+    box-shadow: 0 0 0 5px rgba(34, 34, 34, 0.15);
+}
+
+/* ===================== ЧЁТКОЕ ДИАГОНАЛЬНОЕ РАЗДЕЛЕНИЕ ===================== */
+
+.color-circle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+        135deg,          
+        var(--color1) 50%, 
+        var(--color2) 50%
+    );
+    z-index: 1;
+}
+
+/* Если только один цвет */
+.color-circle.single-color::before {
+    background: var(--color1);
+}
+
+/* Белый цвет — делаем тонкую обводку внутри, чтобы красиво выглядел */
+.color-circle.single-color[style*="--color1: #ffffff"],
+.color-circle.single-color[style*="--color1: #fff"] {
+    border: 2px solid #ddd;
+}
