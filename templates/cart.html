@@ -13,7 +13,7 @@
         <ul class="cart-items">
             {% for product_key, item in cart.items() %}
     <li class="cart-item">
-        <img src="{{ url_for('static', filename=item.image_url) }}" alt="{{ item.name }}" class="cart-item-image">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="cart-item-image">
         <div class="cart-item-details">
             <p class="cart-item-name">{{ item.name }} "{{ item.description }}"</p>
             {% if item.sale %}

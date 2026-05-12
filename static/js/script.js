@@ -769,22 +769,6 @@ initCompositionSearch();
             location.reload();
         }, 1000);
     }
-
-    // ==============================
-    // БОКОВОЕ МЕНЮ (если используется)
-    // ==============================
-    
-    const faBars = document.querySelector('.fa-bars');
-    if (faBars) {
-        faBars.addEventListener("click", function (e) {
-            e.preventDefault();
-            const sideMenu = document.querySelector('.menu');
-            const content = document.querySelector('.content');
-            if (sideMenu) sideMenu.classList.toggle('menu_active');
-            if (content) content.classList.toggle('content_active');
-        });
-    }
-
     // ==============================
     // ФОРМА ЗАКАЗА И ПОПАП
     // ==============================
@@ -1145,4 +1129,70 @@ function selectSize(size, el) {
     if (el && el.classList) {
         el.classList.add('selected');
     }
+}
+// ====================== ДОБАВЛЕНИЕ В КОРЗИНУ ======================
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.add-to-cart-btn');
+    if (!btn) return;
+
+    const productId = btn.dataset.productId;
+    const productType = btn.dataset.productType;
+
+    if (!productId) {
+        console.error('Не найден product-id');
+        return;
+    }
+
+    // Визуальная обратная связь
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Добавляем...";
+
+    fetch(`/add_to_cart/${productType}/${productId}`, {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`✅ ${data.message || 'Товар добавлен в корзину'}`);
+            
+            // Обновляем счётчик корзины
+            const countEl = document.querySelector('.cart-count');
+            if (countEl) countEl.textContent = data.cart_count || '';
+        } else {
+            showToast('❌ Не удалось добавить товар', 'error');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('❌ Ошибка соединения', 'error');
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    });
+});
+
+// Вспомогательная функция тоста
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = `
+            position: fixed; top: 80px; right: 20px; padding: 14px 22px; 
+            border-radius: 8px; color: white; z-index: 10000; 
+            font-family: "Playfair", serif; box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.style.background = type === 'success' ? '#28a745' : '#dc3545';
+    toast.textContent = message;
+    toast.style.display = 'block';
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => { toast.style.display = 'none'; toast.style.opacity = '1'; }, 400);
+    }, 2500);
 }

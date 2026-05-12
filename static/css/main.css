@@ -1728,8 +1728,8 @@ html { scroll-behavior: smooth; }
     transform: translateY(50px);
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     font-size: 48px;
-    font-family: "Playfair", serif;
-    font-weight: bold;
+    font-family: "Sverdlovsk", fantasy;
+    font-weight: 400;
     letter-spacing: -1.5px;
     text-align: left;
     margin: 20px 0 20px 20px;

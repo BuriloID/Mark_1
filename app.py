@@ -27,7 +27,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
 
 # Токен и чат
-TOKEN = '7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY'
+TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = 5208308918
 
 # Настройки для базы данных (увеличен таймаут и выключен track modifications)
@@ -537,34 +537,41 @@ def make_order():
     finally:
         db.session.close()
 
-@app.route('/add_to_cart/<int:product_id>')
+@app.route('/add_to_cart/<string:product_type>/<int:product_id>')
 def add_to_cart(product_type, product_id):
-    product = Product.query.get(product_id)
-    sale = getattr(product, 'sale', 0)
-    if not product:
-        return "Товар не найден", 404
-
+    product = Product.query.get_or_404(product_id)
+    
+    # Получаем текущую корзину
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)
+    
     cart_key = f"{product_type}_{product_id}"
 
     if cart_key in cart_items:
         cart_items[cart_key]['quantity'] += 1
+        message = "Количество товара увеличено"
     else:
         cart_items[cart_key] = {
             'name': product.name,
-            'description': product.description,
-            'price': product.price,
-            'sale': sale,
+            'description': product.description or "",
+            'price': float(product.price),
+            'sale': float(getattr(product, 'sale', 0)),
             'quantity': 1,
             'image_url': product.image_url,
             'product_type': product_type,
             'product_id': product_id
         }
-    resp = make_response(redirect(url_for('cart')))
+        message = "Товар добавлен в корзину"
+
+    # Сохраняем корзину
+    resp = make_response(jsonify({
+        'success': True,
+        'message': message,
+        'cart_count': sum(item['quantity'] for item in cart_items.values())
+    }))
+    
     resp.set_cookie('cart', json.dumps(cart_items), max_age=365*24*60*60)
     return resp
-
 @app.route('/remove_from_cart/<product_key>')
 def remove_from_cart(product_key):
     cart_cookie = request.cookies.get('cart', '{}')

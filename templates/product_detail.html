@@ -58,9 +58,12 @@
                     </div>
             <div class="btn-group">
                 <button class="continue-shopping" id="open_pop_up">Купить</button>
-                <a href="{{ url_for('add_to_cart', product_type='new' if product.__class__.__name__ == 'NewProduct' else 'product', product_id=product.id) }}">
-                    <button class="continue-shopping">Добавить в корзину</button>
-                </a>
+                <button 
+                    class="continue-shopping add-to-cart-btn" 
+                    data-product-id="{{ product.id }}"
+                    data-product-type="{{ 'new' if product.__class__.__name__ == 'NewProduct' else 'product' }}">
+                    Добавить в корзину
+                </button>
             </div>
         </div>
     </div>

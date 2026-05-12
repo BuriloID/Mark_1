@@ -6,8 +6,9 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 import os
 import smtplib
 from email.mime.text import MIMEText
-
-TOKEN = "7879922019:AAFKrDUzrPBAUqbZN0BudsTySC3C1g3MelY"
+from dotenv import load_dotenv
+load_dotenv()
+TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 
 # Укажи путь к базе, как во Flask
@@ -17,7 +18,6 @@ engine = create_engine(f"sqlite:///{DB_PATH}")
 
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
-
 # Минимальное определение модели Order
 class Order(Base):
     __tablename__ = 'Order'  # Важно: имя таблицы как во Flask!
