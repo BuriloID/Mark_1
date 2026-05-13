@@ -2268,23 +2268,49 @@ html { scroll-behavior: smooth; }
 
 .back-button {
     grid-column: 1;
-    font-size: 21px;
-    color: #333;
+    font-size: 20px;
+    color: #555;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-}
-
-.back-button:hover {
-    color: #000;
-    transform: translateX(-4px);
+    margin-bottom: 25px;
+    margin-top: 15px;
+    font-family: "Playfair", serif;
+    font-weight: 400;
+    position: relative;
+    padding-left: 8px;           /* небольшой отступ от края */
+    transition: color 0.3s ease;
 }
 
 .back-button i {
     margin-right: 10px;
-    font-size: 24px;
+    font-size: 23px;
+    transition: transform 0.3s ease;
+}
+
+/* Hover */
+.back-button:hover {
+    color: #222;
+}
+
+.back-button:hover i {
+    transform: translateX(-4px);
+}
+
+/* Тонкое подчёркивание */
+.back-button::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;               /* подняли ближе к тексту */
+    left: 0;
+    width: 0;
+    height: 1px;                /* сделали тоньше */
+    background-color: #333;
+    transition: width 0.4s ease;
+}
+
+.back-button:hover::after {
+    width: 100%;
 }
 
 /* Миниатюры */
@@ -3745,26 +3771,6 @@ h1 {
     font-size: 1.1em;
 }
 
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 40px;
-    padding: 8px 0;
-    background-color: transparent;
-    color: #555;
-    text-decoration: none;
-    border-radius: 0;
-    transition: all 0.3s ease;
-    font-size: 1.1em;
-    font-weight: 500;
-    border-bottom: 1px solid transparent;
-}
-
-.back-button:hover {
-    color: #333;
-    transform: scale(1.05);
-    border-bottom-color: #333;
-}
 
 @media (max-width: 768px) {
     .privacy-container {

@@ -953,106 +953,55 @@ function changeMainImage(newSrc) {
 
     initProductThumbnails();
 // ==============================
-// ПЕРЕКЛЮЧЕНИЕ ВАРИАНТОВ ТОВАРА
+// ПЕРЕКЛЮЧЕНИЕ ЦВЕТОВ
 // ==============================
 
 document.querySelectorAll('.color-circle').forEach(button => {
-    // === 1. Настройка внешнего вида (градиент) ===
     const hexString = button.dataset.colorHex;
-   if (hexString) {
+    if (hexString) {
         const colors = hexString.split('/').map(c => c.trim());
-        
         if (colors.length === 1) {
-            button.classList.add('single-color');
-            button.style.setProperty('--color1', colors[0]);
-        } 
-        else if (colors.length >= 2) {
-            button.style.setProperty('--color1', colors[0]);
-            button.style.setProperty('--color2', colors[1]);
+            button.style.background = colors[0];
+        } else if (colors.length >= 2) {
+            button.style.background = `linear-gradient(135deg, ${colors[0]} 50%, ${colors[1]} 50%)`;
         }
     }
+
     button.addEventListener('click', function () {
-        // Убираем active со всех и ставим на текущий
         document.querySelectorAll('.color-circle').forEach(btn => btn.classList.remove('active'));
         this.classList.add('active');
 
-        // Главное изображение
-        const mainImage = this.dataset.main;
-        if (mainImage) {
-            changeMainImage(mainImage);
-        }
+        const colorName = this.title || this.getAttribute('title') || 'Не указан';
 
-        // Миниатюры
+        // Обновляем ОБОА поля
+        const mainField = document.getElementById('selectedColor');
+        const popupField = document.getElementById('popup_selectedColor');
+
+        if (mainField) mainField.value = colorName;
+        if (popupField) popupField.value = colorName;
+
+        console.log('✅ Цвет сохранён:', colorName);
+
+        // Смена фото и миниатюр
+        if (this.dataset.main) changeMainImage(this.dataset.main);
+
         const thumbnailsContainer = document.querySelector('.thumbnails');
-
         if (thumbnailsContainer) {
             thumbnailsContainer.innerHTML = '';
-
             for (let i = 1; i <= 6; i++) {
                 const image = this.dataset[`extra${i}`];
-
-                if (
-                    image &&
-                    image.trim() !== '' &&
-                    image !== 'None' &&
-                    image !== 'null'
-                ) {
+                if (image && image.trim() !== '' && image !== 'None' && image !== 'null') {
                     const img = document.createElement('img');
-
                     img.src = image;
                     img.className = 'thumbnail';
                     img.alt = `Thumbnail ${i}`;
-
                     img.onclick = () => changeMainImage(image);
-
                     thumbnailsContainer.appendChild(img);
                 }
             }
         }
     });
 });
-    // Функция проверки видимости элемента в viewport
-    function isElementInViewport(el) {
-        const rect = el.getBoundingClientRect();
-        return (
-            rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.bottom >= 0
-        );
-    }
-
-    // Анимация появления элементов при скролле
-    const newArrivalsElements = document.querySelectorAll('.new-arrivals');
-    if (newArrivalsElements.length > 0) {
-        window.addEventListener('scroll', function() {
-            newArrivalsElements.forEach(function(el) {
-                if (isElementInViewport(el)) {
-                    el.classList.add('visible');
-                } else {
-                    el.classList.remove('visible');
-                }
-            });
-        });
-
-        // Проверка при загрузке страницы
-        window.addEventListener('load', function() {
-            newArrivalsElements.forEach(function(el) {
-                if (isElementInViewport(el)) {
-                    el.classList.add('visible');
-                }
-            });
-        });
-    }
-
-    // Функция выбора размера товара
-    function selectSize(size, el) {
-        document.getElementById('selectedSize').value = size;
-        const buttons = document.querySelectorAll('.size-options button');
-        buttons.forEach(btn => btn.classList.remove('selected'));
-        if (el && el.classList) {
-            el.classList.add('selected');
-        }
-    }
-
     // ==============================
     // FAQ СИСТЕМА
     // ==============================

@@ -166,6 +166,7 @@ def buy():
     product_name = request.form.get('product_name')
     product_price = request.form.get('product_price')
     product_descriptions = request.form.get('product_description')
+    color = request.form.get('selectedColor')
     product_url = request.form.get('product_url')
     cart_items = request.form.getlist('cart_items')
     cart_descriptions = request.form.getlist('cart_item_description')
@@ -199,7 +200,18 @@ def buy():
             db.session.add(order)
             db.session.commit()
         elif product_name:
-            message += f"📦 Товар: {product_name} ({product_descriptions})\n💰 Цена: {product_price} ₽\n🔗 Ссылка: {product_url}\n"
+            color = request.form.get('selectedColor', 'Не указан')
+            message += f"📦 Товар: {product_name}"
+            
+            if color and color != 'Не указан':
+                message += f" — {color}"          
+            
+            message += f" ({product_descriptions})\n"
+            message += f"💰 Цена: {product_price} ₽\n"
+            
+            if product_url:
+                message += f"🔗 Ссылка: {product_url}\n"
+                
             message += f"\n🆔 Заказ ID: {order_id}\n"
             keyboard = telegram.InlineKeyboardMarkup([[telegram.InlineKeyboardButton("✅ Начать выполнение", callback_data=f"start_{order_id}")]])
             order = Order(
@@ -484,22 +496,10 @@ def cart():
         for item in cart_items.values()
     )
 
-    pending_orders = Order.query.filter_by(status='pending').order_by(Order.created_at.desc()).all()
-    processing_orders = Order.query.filter_by(status='processing').order_by(Order.created_at.desc()).all()
-
-    for order in pending_orders:
-        try:
-            order.cart_data_parsed = json.loads(order.cart_data)
-            if not isinstance(order.cart_data_parsed, dict) or "items" not in order.cart_data_parsed:
-                order.cart_data_parsed = {"items": []}
-        except Exception:
-            order.cart_data_parsed = {"items": []}
 
     return render_template('cart.html',
                            cart=cart_items,
-                           total_price=total_price,
-                           pending_orders=pending_orders,
-                           processing_orders=processing_orders)
+                           total_price=total_price)
 @app.route('/make_order', methods=['POST'])
 def make_order():
     cart_cookie = request.cookies.get('cart', '{}')
@@ -528,7 +528,12 @@ def make_order():
         )
         db.session.add(order)
         db.session.commit()
-        response = redirect(url_for('cart'))
+        response = redirect(
+            url_for(
+                'order_success',
+                order_id=order.order_id
+            )
+        )
         response.set_cookie('cart', '{}', max_age=0)
         return response
     except Exception as e:
@@ -536,7 +541,6 @@ def make_order():
         return "Ошибка при оформлении заказа: " + str(e), 500
     finally:
         db.session.close()
-
 @app.route('/add_to_cart/<string:product_type>/<int:product_id>')
 def add_to_cart(product_type, product_id):
     product = Product.query.get_or_404(product_id)
