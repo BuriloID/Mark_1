@@ -63,7 +63,13 @@ def callback_start_order(call):
                 send_email(
                     email,
                     subject="Ваш заказ принят в работу",
-                    body=f"Здравствуйте{', ' + first_name if first_name else ''}! Ваш заказ №{order_id} принят в работу. Мы свяжемся с вами в ближайшее время."
+                    body=(
+                            f"Здравствуйте{', ' + first_name if first_name else ''}!\n\n"
+                            f"Ваш заказ №{order_id} принят в работу.\n\n"
+                            f"Отследить статус заказа:\n"
+                            f"http://127.0.0.1:5000/order/{order_id}"
+                            f" Мы свяжемся с вами в ближайшее время."
+                        )
                 )
             except Exception as e:
                 print(f"Ошибка отправки email: {e}")

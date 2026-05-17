@@ -1097,9 +1097,20 @@ document.addEventListener('click', function(e) {
     btn.disabled = true;
     btn.textContent = "Добавляем...";
 
+    const selectedColor =
+    document.getElementById('selectedColor')?.value || '';
+    const selectedImage =
+    document.getElementById('mainImage')?.src || '';
     fetch(`/add_to_cart/${productType}/${productId}`, {
-        method: 'GET',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            color: selectedColor,
+            image_url: selectedImage
+        })
     })
     .then(r => r.json())
     .then(data => {
@@ -1107,8 +1118,26 @@ document.addEventListener('click', function(e) {
             showToast(`✅ ${data.message || 'Товар добавлен в корзину'}`);
             
             // Обновляем счётчик корзины
-            const countEl = document.querySelector('.cart-count');
-            if (countEl) countEl.textContent = data.cart_count || '';
+            const cartIcon = document.querySelector('.cart-icon');
+            let countEl = document.querySelector('.cart-count');
+
+            if (!countEl) {
+                countEl = document.createElement('span');
+                countEl.className = 'cart-count';
+                cartIcon.appendChild(countEl);
+            }
+
+            countEl.textContent = data.cart_count;
+
+            // Анимация счётчика
+            countEl.classList.remove('cart-bump');
+            void countEl.offsetWidth;
+            countEl.classList.add('cart-bump');
+
+            // Анимация корзины
+            cartIcon.classList.remove('cart-shake');
+            void cartIcon.offsetWidth;
+            cartIcon.classList.add('cart-shake');
         } else {
             showToast('❌ Не удалось добавить товар', 'error');
         }

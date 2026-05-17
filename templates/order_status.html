@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+Статус заказа
+{% endblock %}
+
+{% block content %}
+
+<div class="order-success-page">
+
+    <div class="success-card">
+
+        <h1>Заказ #{{ order.order_id }}</h1>
+
+        <div class="order-number">
+
+            <strong>
+                {% if order.status == 'pending' %}
+                    🟡 Ожидает подтверждения
+                {% elif order.status == 'processing' %}
+                    🟢 В работе
+                {% elif order.status == 'shipped' %}
+                    🚚 Отправлен
+                {% elif order.status == 'completed' %}
+                    ✅ Выполнен
+                {% else %}
+                    ⚪ Статус неизвестен
+                {% endif %}
+            </strong>
+
+        </div>
+
+        <p class="success-subtext">
+            Мы уведомим вас об изменении статуса заказа.
+        </p>
+
+        <a href="{{ url_for('catalog') }}" class="continue-shopping">
+            Вернуться в каталог
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

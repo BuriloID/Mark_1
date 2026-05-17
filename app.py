@@ -157,16 +157,21 @@ def start_order(order_id):
 
 @app.route('/buy', methods=['POST'])
 def buy():
-    size = request.form.get('selectedSize')
     first_name = request.form.get('firstName')
     last_name = request.form.get('lastName')
     middle_name = request.form.get('middleName')
     phone = request.form.get('phone')
     email = request.form.get('email')
+    if not email or '@' not in email:
+        return jsonify({
+            'status': 'error',
+            'message': 'Введите корректный email'
+        }), 400
     product_name = request.form.get('product_name')
     product_price = request.form.get('product_price')
     product_descriptions = request.form.get('product_description')
     color = request.form.get('selectedColor')
+    cart_colors = request.form.getlist('cart_item_color')
     product_url = request.form.get('product_url')
     cart_items = request.form.getlist('cart_items')
     cart_descriptions = request.form.getlist('cart_item_description')
@@ -179,8 +184,11 @@ def buy():
         if cart_items:
             cart_total = 0
             message += "📦 Товары из корзины:\n"
-            for name, price, quantity, description in zip(cart_items, cart_prices, cart_quantities, cart_descriptions):
-                message += f"- {name} ({description}): {price} ₽ x {quantity}\n"
+            for name, price, quantity, description, color in zip(cart_items, cart_prices, cart_quantities, cart_descriptions, cart_colors):
+                if color:
+                    message += f"- {name} ({description}, {color}): {price} ₽ x {quantity}\n"
+                else:
+                    message += f"- {name} ({description}): {price} ₽ x {quantity}\n"
                 cart_total += float(price) * int(quantity)
             message += f"\n💰 Итого за корзину: {cart_total} ₽\n"
             message += f"\n🆔 Заказ ID: {order_id}\n"
@@ -541,10 +549,12 @@ def make_order():
         return "Ошибка при оформлении заказа: " + str(e), 500
     finally:
         db.session.close()
-@app.route('/add_to_cart/<string:product_type>/<int:product_id>')
+@app.route('/add_to_cart/<string:product_type>/<int:product_id>', methods=['POST'])
 def add_to_cart(product_type, product_id):
     product = Product.query.get_or_404(product_id)
-    
+    data = request.get_json() or {}
+    selected_color = data.get('color', '')
+    selected_image = data.get('image_url')
     # Получаем текущую корзину
     cart_cookie = request.cookies.get('cart', '{}')
     cart_items = json.loads(cart_cookie)
@@ -557,11 +567,12 @@ def add_to_cart(product_type, product_id):
     else:
         cart_items[cart_key] = {
             'name': product.name,
+            'color': selected_color,
             'description': product.description or "",
             'price': float(product.price),
             'sale': float(getattr(product, 'sale', 0)),
             'quantity': 1,
-            'image_url': product.image_url,
+            'image_url': selected_image or product.image_url,
             'product_type': product_type,
             'product_id': product_id
         }
@@ -594,6 +605,15 @@ def get_cart_item_count():
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+@app.route('/order/<order_id>')
+def order_status(order_id):
+
+    order = Order.query.filter_by(order_id=order_id).first_or_404()
+
+    return render_template(
+        'order_status.html',
+        order=order
+    )
 @app.context_processor
 def inject_cart_item_count():
     try:
